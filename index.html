@@ -3,1209 +3,1046 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plan Mese — Theo & Dalia</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Plan Mese · Theo & Dalia · Moonfields</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --cream: #faf6f0;
-    --warm: #f0e8d8;
-    --gold: #c9a84c;
-    --gold-light: #e8d48a;
-    --deep: #1a1410;
-    --brown: #5c3d2e;
-    --green: #3d5a47;
-    --green-light: #d4e8da;
-    --red: #8b2e2e;
-    --red-light: #f0d4d4;
-    --blue: #2e4a6b;
-    --blue-light: #d4e0f0;
-    --panel: #fff;
-    --border: #e0d4c0;
-    --shadow: rgba(26,20,16,0.12);
-    --table-r: 70px;
-  }
+:root {
+  --bg: #f5f0e8;
+  --panel: #ffffff;
+  --deep: #1a1410;
+  --brown: #5a3a28;
+  --gold: #b8924a;
+  --gold2: #d4aa62;
+  --gold-pale: #f0e4c8;
+  --border: #ddd0b8;
+  --green: #3a5c44;
+  --green-pale: #dceee3;
+  --shadow: rgba(26,20,16,0.13);
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* menu colors */
+  --c-normal: #6b4c3b;
+  --c-veg: #3a6b4c;
+  --c-vegan: #2d5c6b;
+  --c-copil: #8b6b2e;
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--deep);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
+  /* seat colors */
+  --s-normal: #c8956a;
+  --s-veg: #6aad82;
+  --s-vegan: #6a9aad;
+  --s-copil: #d4b84a;
+  --s-empty: #e0d4c0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--bg);
+  color: var(--deep);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 
-  header {
-    background: var(--deep);
-    color: var(--gold);
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-shrink: 0;
-    border-bottom: 2px solid var(--gold);
-  }
+/* ── HEADER ─────────────────────────────────── */
+header {
+  background: var(--deep);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #3a2e1e;
+  flex-shrink: 0;
+}
+.hlogo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  color: var(--gold2);
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+.hlogo span { font-style: italic; color: #c8aa7a; font-size: 0.72rem; display: block; letter-spacing: 0.03em; }
+.hstats {
+  margin-left: auto;
+  display: flex; gap: 14px;
+  font-size: 0.7rem; color: #b0997a;
+}
+.hstats b { font-size: 0.88rem; color: var(--gold2); }
 
-  header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    letter-spacing: 0.04em;
-  }
+/* ── MAIN ─────────────────────────────────── */
+.main { display: flex; flex: 1; overflow: hidden; }
 
-  header .subtitle {
-    font-size: 0.75rem;
-    color: var(--gold-light);
-    opacity: 0.7;
-    font-style: italic;
-  }
+/* ── SIDEBAR ─────────────────────────────────── */
+.sidebar {
+  width: 262px; flex-shrink: 0;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.sb { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.sb h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--brown);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
 
-  .stats {
-    margin-left: auto;
-    display: flex;
-    gap: 20px;
-    font-size: 0.75rem;
-    color: var(--gold-light);
-  }
+/* buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 11px; border: none; border-radius: 5px;
+  font-family: 'Jost', sans-serif; font-size: 0.76rem; font-weight: 500;
+  cursor: pointer; transition: all 0.13s;
+}
+.btn-gold { background: var(--gold); color: white; }
+.btn-gold:hover { background: #9e7a38; }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--brown); }
+.btn-outline:hover { background: var(--gold-pale); }
+.btn-red { background: #7a2828; color: white; font-size: 0.7rem; padding: 4px 8px; }
+.btn-red:hover { background: #5e1e1e; }
+.btn-sm { padding: 4px 8px; font-size: 0.7rem; }
+.brow { display: flex; gap: 5px; flex-wrap: wrap; }
 
-  .stats span b {
-    font-size: 1rem;
-    color: var(--gold);
-  }
+/* row-add controls */
+.rc { display: flex; gap: 6px; align-items: flex-end; flex-wrap: wrap; }
+.rc-field { display: flex; flex-direction: column; gap: 3px; }
+.rc-field label { font-size: 0.66rem; color: var(--brown); text-transform: uppercase; letter-spacing: 0.04em; }
+.rc-field input, .rc-field select {
+  width: 58px; padding: 5px 6px; border: 1px solid var(--border);
+  border-radius: 5px; font-size: 0.76rem; font-family: 'Jost', sans-serif;
+  background: var(--bg); color: var(--deep); text-align: center;
+}
+.rc-field input:focus, .rc-field select:focus { outline: none; border-color: var(--gold); }
 
-  .main {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
+/* legend */
+.legend { display: flex; gap: 8px; flex-wrap: wrap; }
+.li { display: flex; align-items: center; gap: 4px; font-size: 0.68rem; color: var(--brown); }
+.ld { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 
-  /* SIDEBAR */
-  .sidebar {
-    width: 280px;
-    flex-shrink: 0;
-    background: var(--panel);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
+/* guest pool */
+.gpool { flex: 1; overflow-y: auto; padding: 10px 12px; }
+.gpool h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--brown);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 7px;
+}
+.gsearch {
+  width: 100%; padding: 6px 8px; border: 1px solid var(--border);
+  border-radius: 5px; font-size: 0.74rem; font-family: 'Jost', sans-serif;
+  background: var(--bg); color: var(--deep); margin-bottom: 6px;
+}
+.gi {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 7px; border-radius: 5px; margin-bottom: 3px;
+  cursor: grab; border: 1px solid var(--border);
+  font-size: 0.74rem; transition: all 0.12s; user-select: none;
+  background: var(--bg);
+}
+.gi:hover { border-color: var(--gold); background: var(--gold-pale); }
+.gi.dragging { opacity: 0.3; }
+.gi.assigned { background: var(--green-pale); border-color: #a0c8b0; }
+.gi-name { flex: 1; font-weight: 400; }
+.tbadge {
+  font-size: 0.6rem; background: var(--gold); color: white;
+  padding: 1px 5px; border-radius: 3px; white-space: nowrap; font-weight: 500;
+}
+.del-g { background: none; border: none; cursor: pointer; color: #c0a090; font-size: 0.75rem; line-height: 1; }
+.del-g:hover { color: #8b2e2e; }
 
-  .sidebar-section {
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--border);
-  }
+/* ── CANVAS AREA ─────────────────────────────────── */
+.carea {
+  flex: 1; position: relative; overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(184,146,74,0.08), transparent),
+    radial-gradient(ellipse 50% 50% at 80% 20%, rgba(58,92,68,0.06), transparent),
+    var(--bg);
+}
+#cv { position: absolute; top:0; left:0; width:100%; height:100%; }
+.zctrls {
+  position: absolute; bottom: 12px; right: 12px;
+  display: flex; flex-direction: column; gap: 4px; z-index: 10;
+}
+.zb {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid var(--border); background: white;
+  font-size: 0.85rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px var(--shadow); transition: background 0.12s;
+  font-family: 'Jost', sans-serif;
+}
+.zb:hover { background: var(--gold-pale); }
+.chint {
+  position: absolute; bottom: 11px; left: 12px;
+  font-size: 0.64rem; color: var(--brown); opacity: 0.5; pointer-events: none;
+}
 
-  .sidebar-section h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.85rem;
-    color: var(--brown);
-    margin-bottom: 8px;
-    letter-spacing: 0.03em;
-  }
+/* ── POPUP ─────────────────────────────────── */
+.popup {
+  display: none; position: fixed; z-index: 60;
+  background: white; border: 1px solid var(--border);
+  border-radius: 10px; padding: 13px; min-width: 220px; max-width: 280px;
+  box-shadow: 0 10px 40px var(--shadow);
+}
+.popup h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem; color: var(--brown);
+  margin-bottom: 8px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.scnt { font-size: 0.62rem; background: var(--gold-pale); padding: 2px 6px; border-radius: 4px; color: var(--brown); font-family: 'Jost', sans-serif; }
+.pgl { list-style: none; max-height: 170px; overflow-y: auto; margin-bottom: 8px; }
+.pgl li {
+  display: flex; align-items: center; gap: 5px;
+  padding: 3px 0; font-size: 0.72rem;
+  border-bottom: 1px solid #f5f0e8;
+}
+.pgl li:last-child { border: none; }
+.seat-badge {
+  font-size: 0.58rem; padding: 1px 4px; border-radius: 3px;
+  color: white; font-weight: 500;
+}
+.rg { margin-left: auto; background: none; border: none; color: #c0a090; cursor: pointer; font-size: 0.75rem; }
+.rg:hover { color: #8b2e2e; }
+.pacts { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+.seat-adj { display: flex; align-items: center; gap: 6px; margin: 6px 0 4px; font-size: 0.7rem; color: var(--brown); }
+.seat-adj button { width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; }
+.seat-adj button:hover { background: var(--gold-pale); }
+.seat-adj span { font-weight: 600; min-width: 20px; text-align: center; }
 
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 12px;
-    border: none;
-    border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-weight: 500;
-  }
+/* ── MODALS ─────────────────────────────────── */
+.ov {
+  display: none; position: fixed; inset: 0;
+  background: rgba(26,20,16,0.55); z-index: 100;
+  align-items: center; justify-content: center;
+}
+.ov.open { display: flex; }
+.modal {
+  background: white; border-radius: 12px; padding: 22px;
+  width: 380px; max-width: 95vw; max-height: 88vh; overflow-y: auto;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.3);
+}
+.modal h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; color: var(--brown);
+  margin-bottom: 14px; border-bottom: 1px solid var(--border);
+  padding-bottom: 9px;
+}
+.fg { margin-bottom: 10px; }
+.fg label { display: block; font-size: 0.68rem; font-weight: 500; color: var(--brown); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+.fg input, .fg select, .fg textarea {
+  width: 100%; padding: 7px 9px; border: 1px solid var(--border);
+  border-radius: 5px; font-family: 'Jost', sans-serif; font-size: 0.82rem;
+  background: var(--bg); color: var(--deep);
+}
+.fg input:focus, .fg select:focus { outline: none; border-color: var(--gold); }
+.ma { display: flex; gap: 7px; margin-top: 14px; justify-content: flex-end; }
 
-  .btn-gold {
-    background: var(--gold);
-    color: white;
-  }
-  .btn-gold:hover { background: #b8923d; }
-
-  .btn-outline {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--brown);
-  }
-  .btn-outline:hover { background: var(--warm); }
-
-  .btn-danger {
-    background: var(--red);
-    color: white;
-    font-size: 0.75rem;
-    padding: 4px 8px;
-  }
-  .btn-danger:hover { background: #6e2424; }
-
-  .btn-sm {
-    padding: 4px 8px;
-    font-size: 0.72rem;
-  }
-
-  .btn-full { width: 100%; justify-content: center; }
-
-  .actions-row {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  /* GUEST LIST */
-  .guest-pool {
-    flex: 1;
-    overflow-y: auto;
-    padding: 10px 14px;
-  }
-
-  .guest-pool h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.85rem;
-    color: var(--brown);
-    margin-bottom: 8px;
-  }
-
-  .guest-search {
-    width: 100%;
-    padding: 6px 10px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-size: 0.78rem;
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--deep);
-    margin-bottom: 8px;
-  }
-
-  .guest-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 8px;
-    border-radius: 6px;
-    margin-bottom: 4px;
-    cursor: grab;
-    background: var(--warm);
-    border: 1px solid var(--border);
-    font-size: 0.78rem;
-    transition: all 0.15s;
-    user-select: none;
-  }
-
-  .guest-item:hover { background: var(--gold-light); border-color: var(--gold); }
-  .guest-item.dragging { opacity: 0.4; }
-  .guest-item.assigned { background: var(--green-light); border-color: #a0c4b0; }
-
-  .guest-menu-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .menu-carne { background: var(--red); }
-  .menu-peste { background: var(--blue); }
-  .menu-veg { background: var(--green); }
-
-  .guest-name { flex: 1; font-weight: 500; }
-  .guest-table-badge {
-    font-size: 0.65rem;
-    background: var(--gold);
-    color: white;
-    padding: 1px 5px;
-    border-radius: 3px;
-  }
-
-  /* CANVAS */
-  .canvas-wrap {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-    background:
-      radial-gradient(circle at 20% 80%, rgba(201,168,76,0.06) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(61,90,71,0.06) 0%, transparent 50%),
-      var(--cream);
-  }
-
-  #canvas {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    cursor: default;
-  }
-
-  .canvas-controls {
-    position: absolute;
-    bottom: 14px;
-    right: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    z-index: 10;
-  }
-
-  .zoom-btn {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: white;
-    font-size: 1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px var(--shadow);
-    transition: background 0.15s;
-  }
-  .zoom-btn:hover { background: var(--warm); }
-
-  .canvas-hint {
-    position: absolute;
-    bottom: 14px;
-    left: 14px;
-    font-size: 0.7rem;
-    color: var(--brown);
-    opacity: 0.6;
-    pointer-events: none;
-  }
-
-  /* MODALS */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(26,20,16,0.5);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: white;
-    border-radius: 12px;
-    padding: 24px;
-    width: 400px;
-    max-width: 95vw;
-    max-height: 85vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  }
-
-  .modal h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    color: var(--brown);
-    margin-bottom: 16px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 10px;
-  }
-
-  .form-group {
-    margin-bottom: 12px;
-  }
-
-  .form-group label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--brown);
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .form-group input, .form-group select {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    background: var(--cream);
-    color: var(--deep);
-  }
-
-  .form-group input:focus, .form-group select:focus {
-    outline: none;
-    border-color: var(--gold);
-  }
-
-  .modal-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 16px;
-    justify-content: flex-end;
-  }
-
-  /* TABLE POPUP */
-  .table-popup {
-    display: none;
-    position: fixed;
-    z-index: 50;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px;
-    min-width: 220px;
-    max-width: 280px;
-    box-shadow: 0 8px 30px var(--shadow);
-    pointer-events: all;
-  }
-
-  .table-popup h4 {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.9rem;
-    color: var(--brown);
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .popup-guests {
-    list-style: none;
-    max-height: 180px;
-    overflow-y: auto;
-    margin-bottom: 8px;
-  }
-
-  .popup-guests li {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 0;
-    font-size: 0.75rem;
-    border-bottom: 1px solid var(--warm);
-  }
-
-  .popup-guests li:last-child { border: none; }
-
-  .popup-guests .remove-guest {
-    margin-left: auto;
-    background: none;
-    border: none;
-    color: var(--red);
-    cursor: pointer;
-    font-size: 0.8rem;
-    padding: 0 2px;
-  }
-
-  .popup-actions {
-    display: flex;
-    gap: 6px;
-    margin-top: 8px;
-    flex-wrap: wrap;
-  }
-
-  .seat-count {
-    font-size: 0.65rem;
-    background: var(--warm);
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: var(--brown);
-  }
-
-  /* Legend */
-  .legend {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    font-size: 0.72rem;
-    color: var(--brown);
-  }
-  .legend-item { display: flex; align-items: center; gap: 4px; }
-  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+/* seat click tooltip */
+.stip {
+  display: none; position: fixed; z-index: 70;
+  background: var(--deep); color: white;
+  border-radius: 7px; padding: 10px 13px;
+  min-width: 180px; max-width: 240px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+  font-size: 0.74rem;
+}
+.stip h5 { font-family: 'Cormorant Garamond', serif; font-size: 0.88rem; color: var(--gold2); margin-bottom: 7px; }
+.stip .unassigned-list { max-height: 160px; overflow-y: auto; }
+.stip .ua-item {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 6px; border-radius: 4px; cursor: pointer;
+  transition: background 0.1s;
+}
+.stip .ua-item:hover { background: rgba(255,255,255,0.1); }
+.stip .ua-name { flex: 1; }
+.stip .ua-menu { font-size: 0.62rem; opacity: 0.7; }
+.stip .no-guests { opacity: 0.5; font-style: italic; font-size: 0.7rem; }
 </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>✦ Plan Mese — Theo & Dalia</h1>
-    <div class="subtitle">23 August 2026 · Moonfields, Tâncăbești</div>
-  </div>
-  <div class="stats">
-    <span><b id="stat-tables">0</b> mese</span>
-    <span><b id="stat-guests">0</b> invitați</span>
-    <span><b id="stat-assigned">0</b> așezați</span>
-    <span><b id="stat-unassigned">0</b> neașezați</span>
+  <div class="hlogo">Theo &amp; Dalia <span>23 Aug 2026 · Moonfields, Tâncăbești</span></div>
+  <div class="hstats">
+    <span><b id="s-t">0</b> mese</span>
+    <span><b id="s-g">0</b> invitați</span>
+    <span><b id="s-a">0</b> așezați</span>
+    <span><b id="s-u">0</b> liberi</span>
   </div>
 </header>
 
 <div class="main">
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <div class="sidebar-section">
+    <div class="sb">
+      <h3>Adaugă rând</h3>
+      <div class="rc">
+        <div class="rc-field"><label>Mese</label><input type="number" id="r-cnt" value="3" min="1" max="12"></div>
+        <div class="rc-field"><label>Scaune/masă</label><input type="number" id="r-seats" value="8" min="2" max="20"></div>
+        <button class="btn btn-gold" onclick="addRow()" style="margin-top:auto">＋ Rând</button>
+      </div>
+    </div>
+
+    <div class="sb">
       <h3>Acțiuni</h3>
-      <div class="actions-row">
-        <button class="btn btn-gold" onclick="openAddTable()">＋ Masă</button>
+      <div class="brow">
         <button class="btn btn-gold" onclick="openAddGuest()">＋ Invitat</button>
         <button class="btn btn-outline" onclick="exportData()">↓ Export</button>
-        <button class="btn btn-outline" onclick="importData()">↑ Import</button>
+        <button class="btn btn-outline" onclick="openImport()">↑ Import</button>
       </div>
     </div>
 
-    <div class="sidebar-section">
-      <h3>Legendă meniu</h3>
+    <div class="sb">
+      <h3>Meniuri</h3>
       <div class="legend">
-        <div class="legend-item"><div class="legend-dot menu-carne"></div> Carne</div>
-        <div class="legend-item"><div class="legend-dot menu-peste"></div> Pește</div>
-        <div class="legend-item"><div class="legend-dot menu-veg"></div> Vegetarian</div>
+        <div class="li"><div class="ld" style="background:var(--s-normal)"></div> Normal</div>
+        <div class="li"><div class="ld" style="background:var(--s-veg)"></div> Vegetarian</div>
+        <div class="li"><div class="ld" style="background:var(--s-vegan)"></div> Vegan</div>
+        <div class="li"><div class="ld" style="background:var(--s-copil)"></div> Copil</div>
+        <div class="li"><div class="ld" style="background:var(--s-empty)"></div> Liber</div>
       </div>
     </div>
 
-    <div class="guest-pool">
-      <h3>Lista invitați</h3>
-      <input class="guest-search" type="text" placeholder="Caută invitat..." oninput="filterGuests(this.value)" id="guest-search">
-      <div id="guest-list"></div>
+    <div class="gpool">
+      <h3>Invitați (<span id="gc">0</span>)</h3>
+      <input class="gsearch" type="text" id="gs" placeholder="Caută invitat..." oninput="renderGuests(this.value)">
+      <div id="gl"></div>
     </div>
   </div>
 
   <!-- CANVAS -->
-  <div class="canvas-wrap" id="canvas-wrap">
-    <canvas id="canvas"></canvas>
-    <div class="canvas-controls">
-      <button class="zoom-btn" onclick="zoom(1.15)" title="Zoom in">＋</button>
-      <button class="zoom-btn" onclick="zoom(0.87)" title="Zoom out">－</button>
-      <button class="zoom-btn" onclick="resetView()" title="Reset" style="font-size:0.7rem">⊙</button>
+  <div class="carea" id="ca">
+    <canvas id="cv"></canvas>
+    <div class="zctrls">
+      <button class="zb" onclick="doZoom(1.12)">＋</button>
+      <button class="zb" onclick="doZoom(0.89)">－</button>
+      <button class="zb" onclick="resetView()" style="font-size:0.6rem">⊙</button>
     </div>
-    <div class="canvas-hint">Click pe masă pentru opțiuni · Trage invitați pe masă · Scroll pentru zoom</div>
+    <div class="chint">Scroll = zoom · Drag masă = mută · Click scaun = asignează invitat · Drag din listă pe masă</div>
   </div>
 </div>
 
 <!-- TABLE POPUP -->
-<div class="table-popup" id="table-popup">
-  <h4>
-    <span id="popup-title"></span>
-    <span class="seat-count" id="popup-seats"></span>
-  </h4>
-  <ul class="popup-guests" id="popup-guests"></ul>
-  <div class="popup-actions">
+<div class="popup" id="tpop">
+  <h4><span id="pp-name"></span><span class="scnt" id="pp-sc"></span></h4>
+  <div class="seat-adj">
+    <span>Scaune:</span>
+    <button onclick="adjSeats(-1)">−</button>
+    <span id="pp-snum">8</span>
+    <button onclick="adjSeats(1)">＋</button>
+  </div>
+  <ul class="pgl" id="pp-gl"></ul>
+  <div class="pacts">
     <button class="btn btn-outline btn-sm" onclick="renameTable()">✎ Redenumește</button>
-    <button class="btn btn-outline btn-sm" onclick="editTableSeats()">⚙ Locuri</button>
-    <button class="btn btn-danger btn-sm" onclick="deleteTable()">✕ Șterge</button>
+    <button class="btn btn-red btn-sm" onclick="deleteTable()">✕ Șterge</button>
   </div>
 </div>
 
-<!-- ADD TABLE MODAL -->
-<div class="modal-overlay" id="modal-table">
-  <div class="modal">
-    <h2>Adaugă masă nouă</h2>
-    <div class="form-group">
-      <label>Numele mesei</label>
-      <input type="text" id="table-name-input" placeholder="ex: Masa 1, Familie, Prieteni...">
-    </div>
-    <div class="form-group">
-      <label>Număr locuri</label>
-      <input type="number" id="table-seats-input" value="10" min="1" max="30">
-    </div>
-    <div class="form-group">
-      <label>Formă</label>
-      <select id="table-shape-input">
-        <option value="round">Rotundă</option>
-        <option value="rect">Dreptunghiulară</option>
-      </select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-table')">Anulează</button>
-      <button class="btn btn-gold" onclick="confirmAddTable()">Adaugă</button>
-    </div>
-  </div>
+<!-- SEAT ASSIGN TOOLTIP -->
+<div class="stip" id="stip">
+  <h5 id="stip-title">Asignează invitat</h5>
+  <div class="unassigned-list" id="stip-list"></div>
 </div>
 
 <!-- ADD GUEST MODAL -->
-<div class="modal-overlay" id="modal-guest">
+<div class="ov" id="m-g">
   <div class="modal">
     <h2>Adaugă invitat</h2>
-    <div class="form-group">
-      <label>Nume complet</label>
-      <input type="text" id="guest-name-input" placeholder="ex: Ion Popescu">
-    </div>
-    <div class="form-group">
-      <label>Număr locuri (1 = adult, 0.5 = copil)</label>
-      <input type="number" id="guest-seats-input" value="1" min="0.5" max="3" step="0.5">
-    </div>
-    <div class="form-group">
-      <label>Meniu</label>
-      <select id="guest-menu-input">
-        <option value="carne">Carne</option>
-        <option value="peste">Pește</option>
+    <div class="fg"><label>Nume complet</label><input type="text" id="g-name" placeholder="ex: Ion Popescu"></div>
+    <div class="fg"><label>Meniu</label>
+      <select id="g-menu">
+        <option value="normal">Normal</option>
         <option value="veg">Vegetarian</option>
+        <option value="vegan">Vegan</option>
+        <option value="copil">Copil</option>
       </select>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-guest')">Anulează</button>
-      <button class="btn btn-gold" onclick="confirmAddGuest()">Adaugă</button>
+    <div class="ma">
+      <button class="btn btn-outline" onclick="cm('m-g')">Anulează</button>
+      <button class="btn btn-gold" onclick="confirmGuest()">Adaugă</button>
     </div>
   </div>
 </div>
 
 <!-- IMPORT MODAL -->
-<div class="modal-overlay" id="modal-import">
+<div class="ov" id="m-imp">
   <div class="modal">
-    <h2>Import date</h2>
-    <div class="form-group">
-      <label>Pastează JSON exportat anterior</label>
-      <textarea id="import-textarea" style="width:100%;height:120px;font-size:0.75rem;border:1px solid var(--border);border-radius:6px;padding:8px;font-family:monospace;" placeholder='{"tables":[...],"guests":[...]}'></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('modal-import')">Anulează</button>
+    <h2>Import JSON</h2>
+    <div class="fg"><label>Pastează datele exportate</label><textarea id="imp-ta" style="height:110px;font-family:monospace;font-size:0.72rem"></textarea></div>
+    <div class="ma">
+      <button class="btn btn-outline" onclick="cm('m-imp')">Anulează</button>
       <button class="btn btn-gold" onclick="confirmImport()">Importă</button>
     </div>
   </div>
 </div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────────────────
-let tables = [];
-let guests = [];
-let nextTableId = 1;
-let nextGuestId = 1;
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let tables = [];   // { id, name, x, y, seats, rotation, miri }
+let guests = [];   // { id, name, menu, tableId, seatIdx }
+let nextTid = 1, nextGid = 1;
 
-// Canvas state
-let scale = 1;
-let offsetX = 0, offsetY = 0;
-let isDraggingTable = false;
-let dragTable = null;
-let dragStartX, dragStartY, dragTableOrigX, dragTableOrigY;
-let isPanning = false;
-let panStartX, panStartY, panOffsetStartX, panOffsetStartY;
+// canvas
+let sc = 1, ox = 0, oy = 0;
+let dragT = null, dragSX, dragSY, dragTX0, dragTY0;
+let pan = false, panSX, panSY, panOX, panOY;
+let clickMoved = false;
+let activeTid = null;
+let activeSeat = null; // { tableId, seatIdx }
 
-let activePopupTableId = null;
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const ca = document.getElementById('ca');
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const wrap = document.getElementById('canvas-wrap');
+// Table dimensions (world)
+const TW = 220;  // long side (vertical, parallel to guests' walk)
+const TH = 70;   // short side
+const SEAT_R = 10;
+const SEAT_GAP = 28; // spacing between seats along the long side
 
-// ─── CANVAS SETUP ────────────────────────────────────────────────────
-function resizeCanvas() {
-  canvas.width = wrap.clientWidth;
-  canvas.height = wrap.clientHeight;
-  draw();
+// ═══════════════════════════════════════
+// CANVAS SETUP
+// ═══════════════════════════════════════
+function resize() { cv.width = ca.clientWidth; cv.height = ca.clientHeight; draw(); }
+window.addEventListener('resize', resize);
+resize();
+
+function w2s(wx,wy){ return {x: wx*sc+ox, y: wy*sc+oy}; }
+function s2w(sx,sy){ return {x:(sx-ox)/sc, y:(sy-oy)/sc}; }
+
+// ═══════════════════════════════════════
+// SEAT POSITIONS
+// Returns array of {x,y} in TABLE-LOCAL coords (center of table = 0,0)
+// Tables are VERTICAL (TH wide, TW tall) — long side runs top-bottom
+// ═══════════════════════════════════════
+function getSeatPositions(t) {
+  // table is drawn vertically: width=TH, height=TW
+  const halfW = TH / 2;
+  const halfH = TW / 2;
+  const seats = t.seats;
+  const pos = [];
+
+  // distribute seats: left column and right column
+  // left side: x = -halfW - SEAT_R, along y axis
+  // right side: x = +halfW + SEAT_R, along y axis
+  const perSide = Math.ceil(seats / 2);
+  const other = seats - perSide;
+
+  // left side (perSide seats)
+  for (let i = 0; i < perSide; i++) {
+    const frac = perSide === 1 ? 0.5 : i / (perSide - 1);
+    const y = -halfH * 0.85 + frac * halfH * 1.7;
+    pos.push({ x: -halfW - SEAT_R - 2, y });
+  }
+  // right side (other seats)
+  for (let i = 0; i < other; i++) {
+    const frac = other === 1 ? 0.5 : i / (other - 1);
+    const y = -halfH * 0.85 + frac * halfH * 1.7;
+    pos.push({ x: halfW + SEAT_R + 2, y });
+  }
+  return pos;
 }
 
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-// ─── DRAW ────────────────────────────────────────────────────────────
-function worldToScreen(wx, wy) {
-  return { x: wx * scale + offsetX, y: wy * scale + offsetY };
+// For miri table: horizontal, seats on top and bottom
+function getMiriSeatPositions(t) {
+  const halfW = TW * 0.8;  // miri table is wide
+  const halfH = TH / 2;
+  const seats = t.seats;
+  const pos = [];
+  const perSide = Math.ceil(seats / 2);
+  const other = seats - perSide;
+  for (let i = 0; i < perSide; i++) {
+    const frac = perSide === 1 ? 0.5 : i / (perSide - 1);
+    const x = -halfW * 0.85 + frac * halfW * 1.7;
+    pos.push({ x, y: -halfH - SEAT_R - 2 });
+  }
+  for (let i = 0; i < other; i++) {
+    const frac = other === 1 ? 0.5 : i / (other - 1);
+    const x = -halfW * 0.85 + frac * halfW * 1.7;
+    pos.push({ x, y: halfH + SEAT_R + 2 });
+  }
+  return pos;
 }
 
-function screenToWorld(sx, sy) {
-  return { x: (sx - offsetX) / scale, y: (sy - offsetY) / scale };
-}
+// ═══════════════════════════════════════
+// MENU COLORS
+// ═══════════════════════════════════════
+const MENU_COLORS = {
+  normal: '#c8956a',
+  veg:    '#6aad82',
+  vegan:  '#6a9aad',
+  copil:  '#d4b84a',
+  empty:  '#ddd5c5'
+};
+const MENU_LABELS = { normal:'Normal', veg:'Vegetarian', vegan:'Vegan', copil:'Copil' };
 
+function menuColor(menu) { return MENU_COLORS[menu] || MENU_COLORS.empty; }
+
+// ═══════════════════════════════════════
+// DRAW
+// ═══════════════════════════════════════
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0,0,cv.width,cv.height);
+  drawGrid();
+  // draw floor/room hint
+  tables.filter(t=>!t.miri).forEach(t=>drawTable(t));
+  tables.filter(t=>t.miri).forEach(t=>drawMiriTable(t));
+}
 
-  // Grid
+function drawGrid() {
   ctx.save();
-  ctx.strokeStyle = 'rgba(201,168,76,0.1)';
+  ctx.strokeStyle = 'rgba(184,146,74,0.08)';
   ctx.lineWidth = 1;
-  const gridSize = 40 * scale;
-  const startX = offsetX % gridSize;
-  const startY = offsetY % gridSize;
-  for (let x = startX; x < canvas.width; x += gridSize) {
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-  }
-  for (let y = startY; y < canvas.height; y += gridSize) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-  }
+  const gs = 60*sc;
+  const sx = ox%gs, sy = oy%gs;
+  for(let x=sx;x<cv.width;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,cv.height);ctx.stroke();}
+  for(let y=sy;y<cv.height;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cv.width,y);ctx.stroke();}
   ctx.restore();
-
-  tables.forEach(t => drawTable(t));
 }
 
 function drawTable(t) {
-  const s = worldToScreen(t.x, t.y);
-  const r = (t.shape === 'round' ? 70 : 55) * scale;
-  const w = (t.shape === 'rect' ? 120 : 70) * scale;
-  const h = (t.shape === 'rect' ? 80 : 70) * scale;
-
-  const guestsAtTable = guests.filter(g => g.tableId === t.id);
-  const seatsFilled = guestsAtTable.reduce((sum, g) => sum + g.seats, 0);
-  const full = seatsFilled >= t.seats;
-  const isActive = activePopupTableId === t.id;
+  const s = w2s(t.x, t.y);
+  // vertical table: width=TH*sc, height=TW*sc
+  const tw = TH*sc, th = TW*sc;
+  const rx = s.x - tw/2, ry = s.y - th/2;
+  const isAct = activeTid === t.id;
 
   ctx.save();
+  // shadow
+  ctx.shadowColor='rgba(26,20,16,0.16)';ctx.shadowBlur=12*sc;ctx.shadowOffsetY=3*sc;
+  // table body
+  ctx.beginPath(); ctx.roundRect(rx,ry,tw,th,5*sc);
+  // wood-like gradient
+  const g = ctx.createLinearGradient(rx,ry,rx+tw,ry+th);
+  g.addColorStop(0,'#f8f2e8'); g.addColorStop(0.5,'#fdfaf4'); g.addColorStop(1,'#f0e8d8');
+  ctx.fillStyle = g; ctx.fill();
+  ctx.shadowColor='transparent';
+  ctx.strokeStyle = isAct ? '#b8924a' : '#cfc0a0';
+  ctx.lineWidth = isAct ? 2.5*sc : 1.5*sc;
+  ctx.stroke();
 
-  // Shadow
-  ctx.shadowColor = 'rgba(26,20,16,0.18)';
-  ctx.shadowBlur = 12 * scale;
-  ctx.shadowOffsetY = 4 * scale;
+  // tablecloth runner (center strip)
+  ctx.beginPath(); ctx.roundRect(rx+tw*0.2, ry+th*0.06, tw*0.6, th*0.88, 3*sc);
+  ctx.fillStyle = 'rgba(255,255,255,0.65)'; ctx.fill();
+  ctx.strokeStyle='rgba(200,190,170,0.4)'; ctx.lineWidth=0.8*sc; ctx.stroke();
 
-  if (t.shape === 'round') {
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
-    ctx.fillStyle = full ? '#f0faf4' : 'white';
-    ctx.fill();
-    ctx.shadowColor = 'transparent';
-    ctx.strokeStyle = isActive ? '#c9a84c' : (full ? '#3d5a47' : '#e0d4c0');
-    ctx.lineWidth = isActive ? 3 * scale : 1.5 * scale;
-    ctx.stroke();
+  // table name
+  ctx.save();
+  ctx.translate(s.x, s.y);
+  ctx.font = `italic ${Math.max(8,11*sc)}px 'Cormorant Garamond',serif`;
+  ctx.fillStyle='#6a4a30'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(t.name, 0, -10*sc);
+  ctx.font = `${Math.max(6,9*sc)}px 'Jost',sans-serif`;
+  ctx.fillStyle='#b0a090';
+  const filled = guests.filter(g=>g.tableId===t.id).length;
+  ctx.fillText(`${filled}/${t.seats}`, 0, 6*sc);
+  ctx.restore();
 
-    // Inner ring
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, r * 0.72, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(201,168,76,0.25)';
-    ctx.lineWidth = 1 * scale;
-    ctx.stroke();
-  } else {
-    const rx = s.x - w / 2, ry = s.y - h / 2;
-    ctx.beginPath();
-    ctx.roundRect(rx, ry, w, h, 8 * scale);
-    ctx.fillStyle = full ? '#f0faf4' : 'white';
-    ctx.fill();
-    ctx.shadowColor = 'transparent';
-    ctx.strokeStyle = isActive ? '#c9a84c' : (full ? '#3d5a47' : '#e0d4c0');
-    ctx.lineWidth = isActive ? 3 * scale : 1.5 * scale;
-    ctx.stroke();
-  }
-
-  ctx.shadowColor = 'transparent';
-
-  // Table name
-  ctx.fillStyle = '#5c3d2e';
-  ctx.font = `${Math.max(10, 13 * scale)}px 'Playfair Display', serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(t.name, s.x, s.y - 8 * scale);
-
-  // Seat info
-  ctx.font = `${Math.max(8, 10 * scale)}px 'DM Sans', sans-serif`;
-  ctx.fillStyle = full ? '#3d5a47' : '#999';
-  ctx.fillText(`${seatsFilled}/${t.seats} locuri`, s.x, s.y + 8 * scale);
-
-  // Menu dots for guests
-  if (guestsAtTable.length > 0 && scale > 0.6) {
-    const dotR = 4 * scale;
-    const dotCount = guestsAtTable.length;
-    const angleStep = (Math.PI * 2) / Math.max(dotCount, 1);
-    const dotRadius = (t.shape === 'round' ? r * 0.82 : Math.min(w, h) * 0.45);
-    guestsAtTable.forEach((g, i) => {
-      const angle = i * angleStep - Math.PI / 2;
-      const dx = s.x + Math.cos(angle) * dotRadius;
-      const dy = s.y + Math.sin(angle) * dotRadius;
-      ctx.beginPath();
-      ctx.arc(dx, dy, dotR, 0, Math.PI * 2);
-      ctx.fillStyle = g.menu === 'carne' ? '#8b2e2e' : g.menu === 'peste' ? '#2e4a6b' : '#3d5a47';
-      ctx.fill();
-    });
-  }
+  // draw seats
+  const seatPos = getSeatPositions(t);
+  seatPos.forEach((sp, idx) => {
+    drawSeat(s.x + sp.x*sc, s.y + sp.y*sc, t.id, idx, t, sp);
+  });
 
   ctx.restore();
 }
 
-// ─── TABLE HIT TEST ──────────────────────────────────────────────────
-function getTableAt(sx, sy) {
-  for (let i = tables.length - 1; i >= 0; i--) {
-    const t = tables[i];
-    const s = worldToScreen(t.x, t.y);
-    const r = (t.shape === 'round' ? 70 : 55) * scale;
-    const w = (t.shape === 'rect' ? 120 : 55) * scale;
-    const h = (t.shape === 'rect' ? 80 : 55) * scale;
-    const dx = sx - s.x, dy = sy - s.y;
-    if (t.shape === 'round') {
-      if (Math.sqrt(dx * dx + dy * dy) < r) return t;
+function drawMiriTable(t) {
+  const s = w2s(t.x, t.y);
+  // horizontal, wide
+  const tw = TW*1.5*sc, th = TH*sc;
+  const rx = s.x - tw/2, ry = s.y - th/2;
+  const isAct = activeTid === t.id;
+
+  ctx.save();
+  ctx.shadowColor='rgba(201,168,76,0.4)';ctx.shadowBlur=20*sc;ctx.shadowOffsetY=4*sc;
+
+  // gold gradient
+  const g = ctx.createLinearGradient(rx,ry,rx,ry+th);
+  g.addColorStop(0,'#fffcee'); g.addColorStop(1,'#f8edc8');
+  ctx.beginPath(); ctx.roundRect(rx,ry,tw,th,6*sc);
+  ctx.fillStyle=g; ctx.fill();
+  ctx.shadowColor='transparent';
+  // outer border
+  ctx.strokeStyle = isAct ? '#9a7028' : '#c9a84c';
+  ctx.lineWidth = (isAct?3:2)*sc; ctx.stroke();
+  // inner border
+  ctx.beginPath(); ctx.roundRect(rx+4*sc,ry+4*sc,tw-8*sc,th-8*sc,3*sc);
+  ctx.strokeStyle='rgba(201,168,76,0.35)'; ctx.lineWidth=sc; ctx.stroke();
+
+  // label
+  ctx.save(); ctx.translate(s.x, s.y);
+  if(sc>0.5){ctx.font=`${14*sc}px serif`;ctx.fillStyle='#b8924a';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('♛',0,-7*sc);}
+  ctx.font=`italic ${Math.max(8,12*sc)}px 'Cormorant Garamond',serif`;
+  ctx.fillStyle='#7a5020';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(t.name, 0, (sc>0.5?6:0)*sc);
+  ctx.restore();
+
+  // seats
+  const seatPos = getMiriSeatPositions(t);
+  seatPos.forEach((sp, idx) => {
+    drawSeat(s.x + sp.x*sc, s.y + sp.y*sc, t.id, idx, t, sp);
+  });
+
+  ctx.restore();
+}
+
+function drawSeat(sx, sy, tableId, idx, t, sp) {
+  const r = SEAT_R*sc;
+  const guest = guests.find(g=>g.tableId===tableId && g.seatIdx===idx);
+  const isActiveSeat = activeSeat && activeSeat.tableId===tableId && activeSeat.seatIdx===idx;
+
+  ctx.save();
+  // seat circle
+  ctx.beginPath(); ctx.arc(sx,sy,r,0,Math.PI*2);
+  // fill based on guest menu
+  if(guest){ ctx.fillStyle=menuColor(guest.menu); }
+  else { ctx.fillStyle = '#e8e0d0'; }
+  ctx.fill();
+  ctx.strokeStyle = isActiveSeat ? '#b8924a' : (guest ? 'rgba(255,255,255,0.6)' : '#cfc5b0');
+  ctx.lineWidth = (isActiveSeat?2.5:1.2)*sc;
+  ctx.stroke();
+
+  // initials or number
+  if(sc > 0.55) {
+    ctx.font=`bold ${Math.max(5,7*sc)}px 'Jost',sans-serif`;
+    ctx.fillStyle = guest ? 'white' : '#b0a898';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    if(guest){
+      const parts = guest.name.split(' ');
+      const initials = parts.map(p=>p[0]||'').join('').substring(0,2).toUpperCase();
+      ctx.fillText(initials, sx, sy);
     } else {
-      if (Math.abs(dx) < w / 2 && Math.abs(dy) < h / 2) return t;
+      ctx.fillText(idx+1, sx, sy);
+    }
+  }
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════
+// HIT TESTS
+// ═══════════════════════════════════════
+function getTableAt(sx,sy) {
+  for(let i=tables.length-1;i>=0;i--) {
+    const t=tables[i]; const s=w2s(t.x,t.y);
+    const tw=(t.miri?TW*1.5:TH)*sc, th=(t.miri?TH:TW)*sc;
+    if(Math.abs(sx-s.x)<tw/2&&Math.abs(sy-s.y)<th/2) return t;
+  }
+  return null;
+}
+
+function getSeatAt(sx, sy) {
+  for(const t of tables) {
+    const s = w2s(t.x, t.y);
+    const positions = t.miri ? getMiriSeatPositions(t) : getSeatPositions(t);
+    for(let idx=0; idx<positions.length; idx++) {
+      const sp = positions[idx];
+      const cx = s.x + sp.x*sc, cy = s.y + sp.y*sc;
+      const r = (SEAT_R+3)*sc;
+      if(Math.sqrt((sx-cx)**2+(sy-cy)**2) < r) {
+        return { tableId: t.id, seatIdx: idx };
+      }
     }
   }
   return null;
 }
 
-// ─── CANVAS EVENTS ───────────────────────────────────────────────────
-let mouseDownX, mouseDownY, mouseDownTime;
-let clickMoved = false;
-
-canvas.addEventListener('mousedown', e => {
-  mouseDownX = e.clientX;
-  mouseDownY = e.clientY;
-  mouseDownTime = Date.now();
-  clickMoved = false;
-  closePopup();
-
-  const t = getTableAt(e.offsetX, e.offsetY);
-  if (t) {
-    isDraggingTable = true;
-    dragTable = t;
-    dragStartX = e.offsetX;
-    dragStartY = e.offsetY;
-    dragTableOrigX = t.x;
-    dragTableOrigY = t.y;
+// ═══════════════════════════════════════
+// MOUSE
+// ═══════════════════════════════════════
+let mdX,mdY;
+cv.addEventListener('mousedown', e=>{
+  mdX=e.clientX; mdY=e.clientY; clickMoved=false;
+  closeSeatTip(); closePopup();
+  const t=getTableAt(e.offsetX,e.offsetY);
+  if(t){dragT=t;dragSX=e.offsetX;dragSY=e.offsetY;dragTX0=t.x;dragTY0=t.y;}
+  else{pan=true;panSX=e.clientX;panSY=e.clientY;panOX=ox;panOY=oy;}
+});
+cv.addEventListener('mousemove', e=>{
+  if(Math.abs(e.clientX-mdX)>4||Math.abs(e.clientY-mdY)>4) clickMoved=true;
+  if(dragT){
+    const w=s2w(e.offsetX,e.offsetY),ws=s2w(dragSX,dragSY);
+    dragT.x=dragTX0+w.x-ws.x; dragT.y=dragTY0+w.y-ws.y;
+    draw(); cv.style.cursor='grabbing';
+  } else if(pan){
+    ox=panOX+e.clientX-panSX; oy=panOY+e.clientY-panSY;
+    draw(); cv.style.cursor='move';
   } else {
-    isPanning = true;
-    panStartX = e.clientX;
-    panStartY = e.clientY;
-    panOffsetStartX = offsetX;
-    panOffsetStartY = offsetY;
+    const seat=getSeatAt(e.offsetX,e.offsetY);
+    const table=getTableAt(e.offsetX,e.offsetY);
+    cv.style.cursor= seat?'pointer':(table?'grab':'default');
   }
 });
-
-canvas.addEventListener('mousemove', e => {
-  const dx = Math.abs(e.clientX - mouseDownX);
-  const dy = Math.abs(e.clientY - mouseDownY);
-  if (dx > 4 || dy > 4) clickMoved = true;
-
-  if (isDraggingTable && dragTable) {
-    const w = screenToWorld(e.offsetX, e.offsetY);
-    const ws = screenToWorld(dragStartX, dragStartY);
-    dragTable.x = dragTableOrigX + (w.x - ws.x);
-    dragTable.y = dragTableOrigY + (w.y - ws.y);
-    draw();
-    canvas.style.cursor = 'grabbing';
-  } else if (isPanning) {
-    offsetX = panOffsetStartX + (e.clientX - panStartX);
-    offsetY = panOffsetStartY + (e.clientY - panStartY);
-    draw();
-    canvas.style.cursor = 'move';
-  } else {
-    const t = getTableAt(e.offsetX, e.offsetY);
-    canvas.style.cursor = t ? 'pointer' : 'default';
+cv.addEventListener('mouseup', e=>{
+  const wasDrag=dragT&&clickMoved;
+  dragT=null; pan=false; cv.style.cursor='default';
+  if(!wasDrag){
+    const seat=getSeatAt(e.offsetX,e.offsetY);
+    if(seat){ showSeatTip(seat,e.clientX,e.clientY); return; }
+    const t=getTableAt(e.offsetX,e.offsetY);
+    if(t) showPopup(t,e.clientX,e.clientY);
   }
+  draw(); save();
+});
+cv.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const f=e.deltaY<0?1.1:0.91;
+  ox=e.offsetX-(e.offsetX-ox)*f; oy=e.offsetY-(e.offsetY-oy)*f;
+  sc=Math.min(Math.max(sc*f,0.22),3.5); draw();
+},{passive:false});
+
+// Touch
+let ltD=null,tMX,tMY,tMv;
+cv.addEventListener('touchstart',e=>{
+  if(e.touches.length===1){
+    const r=cv.getBoundingClientRect();
+    const tx=e.touches[0].clientX-r.left,ty=e.touches[0].clientY-r.top;
+    tMX=tx;tMY=ty;tMv=false;closeSeatTip();closePopup();
+    const t=getTableAt(tx,ty);
+    if(t){dragT=t;dragSX=tx;dragSY=ty;dragTX0=t.x;dragTY0=t.y;}
+    else{pan=true;panSX=e.touches[0].clientX;panSY=e.touches[0].clientY;panOX=ox;panOY=oy;}
+  } else if(e.touches.length===2){
+    ltD=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    pan=false;dragT=null;
+  }
+  e.preventDefault();
+},{passive:false});
+cv.addEventListener('touchmove',e=>{
+  if(e.touches.length===1){
+    const r=cv.getBoundingClientRect();
+    const tx=e.touches[0].clientX-r.left,ty=e.touches[0].clientY-r.top;
+    if(Math.abs(tx-tMX)>4||Math.abs(ty-tMY)>4)tMv=true;
+    if(dragT){const w=s2w(tx,ty),ws=s2w(dragSX,dragSY);dragT.x=dragTX0+w.x-ws.x;dragT.y=dragTY0+w.y-ws.y;draw();}
+    else if(pan){ox=panOX+e.touches[0].clientX-panSX;oy=panOY+e.touches[0].clientY-panSY;draw();}
+  } else if(e.touches.length===2&&ltD){
+    const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    const f=d/ltD;
+    const r=cv.getBoundingClientRect();
+    const cx=(e.touches[0].clientX+e.touches[1].clientX)/2-r.left;
+    const cy=(e.touches[0].clientY+e.touches[1].clientY)/2-r.top;
+    ox=cx-(cx-ox)*f;oy=cy-(cy-oy)*f;sc=Math.min(Math.max(sc*f,0.22),3.5);ltD=d;draw();
+  }
+  e.preventDefault();
+},{passive:false});
+cv.addEventListener('touchend',e=>{
+  if(!tMv&&e.changedTouches.length===1){
+    const r=cv.getBoundingClientRect();
+    const tx=e.changedTouches[0].clientX-r.left,ty=e.changedTouches[0].clientY-r.top;
+    const seat=getSeatAt(tx,ty);
+    if(seat){showSeatTip(seat,e.changedTouches[0].clientX,e.changedTouches[0].clientY);}
+    else{const t=getTableAt(tx,ty);if(t)showPopup(t,e.changedTouches[0].clientX,e.changedTouches[0].clientY);}
+  }
+  dragT=null;pan=false;ltD=null;save();e.preventDefault();
+},{passive:false});
+
+// Drop from sidebar
+cv.addEventListener('dragover',e=>{e.preventDefault();cv.style.outline='2px dashed #b8924a';});
+cv.addEventListener('dragleave',()=>{cv.style.outline='none';});
+cv.addEventListener('drop',e=>{
+  e.preventDefault();cv.style.outline='none';
+  const gid=parseInt(e.dataTransfer.getData('gid'));
+  const r=cv.getBoundingClientRect();
+  const t=getTableAt(e.clientX-r.left,e.clientY-r.top);
+  if(t&&gid) assignGuestToTable(gid,t.id);
 });
 
-canvas.addEventListener('mouseup', e => {
-  const wasDragging = isDraggingTable && clickMoved;
-  isDraggingTable = false;
-  isPanning = false;
-  canvas.style.cursor = 'default';
+// ═══════════════════════════════════════
+// SEAT TOOLTIP — click on a seat
+// ═══════════════════════════════════════
+function showSeatTip(seat, cx, cy) {
+  activeSeat = seat;
+  const tip = document.getElementById('stip');
+  const t = tables.find(x=>x.id===seat.tableId);
+  const existing = guests.find(g=>g.tableId===seat.tableId&&g.seatIdx===seat.seatIdx);
 
-  if (!wasDragging) {
-    const t = getTableAt(e.offsetX, e.offsetY);
-    if (t) showPopup(t, e.clientX, e.clientY);
+  document.getElementById('stip-title').textContent =
+    `${t.name} — Scaun ${seat.seatIdx+1}${existing?' (ocupat)':''}`;
+
+  const listEl = document.getElementById('stip-list');
+  listEl.innerHTML='';
+
+  if(existing){
+    // show option to remove
+    const rem = document.createElement('div');
+    rem.className='ua-item';
+    rem.style.color='#c88080';
+    rem.innerHTML=`<span class="ua-name">✕ Scoate pe ${existing.name}</span>`;
+    rem.onclick=()=>{existing.tableId=null;existing.seatIdx=null;closeSeatTip();renderGuests();updateStats();draw();save();};
+    listEl.appendChild(rem);
   }
-  dragTable = null;
-  draw();
-  saveState();
-});
 
-canvas.addEventListener('wheel', e => {
-  e.preventDefault();
-  const factor = e.deltaY < 0 ? 1.1 : 0.91;
-  const mx = e.offsetX, my = e.offsetY;
-  offsetX = mx - (mx - offsetX) * factor;
-  offsetY = my - (my - offsetY) * factor;
-  scale *= factor;
-  scale = Math.min(Math.max(scale, 0.3), 3);
-  draw();
-}, { passive: false });
-
-// Touch support
-let lastTouchDist = null;
-canvas.addEventListener('touchstart', e => {
-  if (e.touches.length === 1) {
-    const t = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const ox = t.clientX - rect.left;
-    const oy = t.clientY - rect.top;
-    mouseDownX = ox; mouseDownY = oy;
-    mouseDownTime = Date.now(); clickMoved = false;
-    const table = getTableAt(ox, oy);
-    if (table) {
-      isDraggingTable = true; dragTable = table;
-      dragStartX = ox; dragStartY = oy;
-      dragTableOrigX = table.x; dragTableOrigY = table.y;
-    } else {
-      isPanning = true;
-      panStartX = t.clientX; panStartY = t.clientY;
-      panOffsetStartX = offsetX; panOffsetStartY = offsetY;
-    }
-  } else if (e.touches.length === 2) {
-    const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-    lastTouchDist = d;
-    isPanning = false; isDraggingTable = false;
+  // unassigned guests
+  const unassigned = guests.filter(g=>!g.tableId);
+  if(unassigned.length===0&&!existing){
+    const p=document.createElement('div');p.className='no-guests';p.textContent='Toți invitații sunt așezați.';listEl.appendChild(p);
   }
-  e.preventDefault();
-}, { passive: false });
-
-canvas.addEventListener('touchmove', e => {
-  if (e.touches.length === 1) {
-    const t = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const ox = t.clientX - rect.left;
-    const oy = t.clientY - rect.top;
-    if (Math.abs(ox - mouseDownX) > 4 || Math.abs(oy - mouseDownY) > 4) clickMoved = true;
-    if (isDraggingTable && dragTable) {
-      const w = screenToWorld(ox, oy);
-      const ws = screenToWorld(dragStartX, dragStartY);
-      dragTable.x = dragTableOrigX + (w.x - ws.x);
-      dragTable.y = dragTableOrigY + (w.y - ws.y);
-      draw();
-    } else if (isPanning) {
-      offsetX = panOffsetStartX + (t.clientX - panStartX);
-      offsetY = panOffsetStartY + (t.clientY - panStartY);
-      draw();
-    }
-  } else if (e.touches.length === 2 && lastTouchDist) {
-    const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-    const factor = d / lastTouchDist;
-    const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-    const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-    const rect = canvas.getBoundingClientRect();
-    const mx = cx - rect.left, my = cy - rect.top;
-    offsetX = mx - (mx - offsetX) * factor;
-    offsetY = my - (my - offsetY) * factor;
-    scale = Math.min(Math.max(scale * factor, 0.3), 3);
-    lastTouchDist = d;
-    draw();
-  }
-  e.preventDefault();
-}, { passive: false });
-
-canvas.addEventListener('touchend', e => {
-  if (e.changedTouches.length === 1 && !clickMoved) {
-    const t = e.changedTouches[0];
-    const rect = canvas.getBoundingClientRect();
-    const ox = t.clientX - rect.left;
-    const oy = t.clientY - rect.top;
-    const table = getTableAt(ox, oy);
-    if (table) showPopup(table, t.clientX, t.clientY);
-  }
-  isDraggingTable = false; isPanning = false; dragTable = null; lastTouchDist = null;
-  saveState();
-  e.preventDefault();
-}, { passive: false });
-
-// ─── DRAG GUESTS FROM SIDEBAR ─────────────────────────────────────────
-canvas.addEventListener('dragover', e => {
-  e.preventDefault();
-  canvas.style.outline = '2px dashed #c9a84c';
-});
-
-canvas.addEventListener('dragleave', () => {
-  canvas.style.outline = 'none';
-});
-
-canvas.addEventListener('drop', e => {
-  e.preventDefault();
-  canvas.style.outline = 'none';
-  const guestId = parseInt(e.dataTransfer.getData('guestId'));
-  const rect = canvas.getBoundingClientRect();
-  const ox = e.clientX - rect.left;
-  const oy = e.clientY - rect.top;
-  const table = getTableAt(ox, oy);
-  if (table && guestId) {
-    assignGuestToTable(guestId, table.id);
-  }
-});
-
-// ─── POPUP ───────────────────────────────────────────────────────────
-function showPopup(table, cx, cy) {
-  activePopupTableId = table.id;
-  const popup = document.getElementById('table-popup');
-  document.getElementById('popup-title').textContent = table.name;
-  const guestsAtTable = guests.filter(g => g.tableId === table.id);
-  const seatsFilled = guestsAtTable.reduce((sum, g) => sum + g.seats, 0);
-  document.getElementById('popup-seats').textContent = `${seatsFilled}/${table.seats} locuri`;
-
-  const ul = document.getElementById('popup-guests');
-  ul.innerHTML = '';
-  guestsAtTable.forEach(g => {
-    const li = document.createElement('li');
-    const dot = `<span class="guest-menu-dot ${g.menu === 'carne' ? 'menu-carne' : g.menu === 'peste' ? 'menu-peste' : 'menu-veg'}" style="width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0"></span>`;
-    li.innerHTML = `${dot} <span style="flex:1">${g.name}</span> <button class="remove-guest" onclick="removeGuestFromTable(${g.id})" title="Scoate de la masă">✕</button>`;
-    li.style.display = 'flex';
-    li.style.alignItems = 'center';
-    li.style.gap = '6px';
-    ul.appendChild(li);
+  unassigned.forEach(g=>{
+    const div=document.createElement('div');div.className='ua-item';
+    div.innerHTML=`<span class="ld" style="background:${menuColor(g.menu)};width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0"></span>
+      <span class="ua-name">${g.name}</span>
+      <span class="ua-menu">${MENU_LABELS[g.menu]||''}</span>`;
+    div.onclick=()=>{
+      // remove from previous seat if any
+      if(existing){existing.tableId=null;existing.seatIdx=null;}
+      // check if seat not taken
+      const taken=guests.find(x=>x.tableId===seat.tableId&&x.seatIdx===seat.seatIdx&&x.id!==g.id);
+      if(taken){taken.tableId=null;taken.seatIdx=null;}
+      g.tableId=seat.tableId; g.seatIdx=seat.seatIdx;
+      closeSeatTip();renderGuests();updateStats();draw();save();
+    };
+    listEl.appendChild(div);
   });
 
-  // Position
-  const pw = 240, ph = 300;
-  let left = cx + 10, top = cy - 20;
-  if (left + pw > window.innerWidth) left = cx - pw - 10;
-  if (top + ph > window.innerHeight) top = window.innerHeight - ph - 20;
-  popup.style.left = left + 'px';
-  popup.style.top = top + 'px';
-  popup.style.display = 'block';
+  let left=cx+10,top=cy-20;
+  if(left+250>window.innerWidth)left=cx-260;
+  if(top+300>window.innerHeight)top=window.innerHeight-300;
+  tip.style.left=left+'px';tip.style.top=top+'px';tip.style.display='block';
   draw();
 }
 
-function closePopup() {
-  document.getElementById('table-popup').style.display = 'none';
-  activePopupTableId = null;
-  draw();
+function closeSeatTip(){
+  document.getElementById('stip').style.display='none';
+  activeSeat=null; draw();
 }
 
-document.addEventListener('click', e => {
-  const popup = document.getElementById('table-popup');
-  if (popup.style.display === 'block' && !popup.contains(e.target) && e.target !== canvas) {
-    closePopup();
-  }
+document.addEventListener('click',e=>{
+  const tip=document.getElementById('stip');
+  const pop=document.getElementById('tpop');
+  if(tip.style.display==='block'&&!tip.contains(e.target)&&e.target!==cv) closeSeatTip();
+  if(pop.style.display==='block'&&!pop.contains(e.target)&&e.target!==cv) closePopup();
 });
 
-function renameTable() {
-  const t = tables.find(x => x.id === activePopupTableId);
-  if (!t) return;
-  const name = prompt('Nume nou pentru masă:', t.name);
-  if (name && name.trim()) {
-    t.name = name.trim();
-    draw();
-    showPopup(t, parseInt(document.getElementById('table-popup').style.left), parseInt(document.getElementById('table-popup').style.top));
-    saveState();
-  }
-}
-
-function editTableSeats() {
-  const t = tables.find(x => x.id === activePopupTableId);
-  if (!t) return;
-  const s = prompt('Număr locuri:', t.seats);
-  if (s && !isNaN(s) && parseInt(s) > 0) {
-    t.seats = parseInt(s);
-    draw();
-    showPopup(t, parseInt(document.getElementById('table-popup').style.left), parseInt(document.getElementById('table-popup').style.top));
-    saveState();
-  }
-}
-
-function deleteTable() {
-  if (!confirm('Ștergi masa? Invitații vor fi neașezați.')) return;
-  const id = activePopupTableId;
-  guests.forEach(g => { if (g.tableId === id) g.tableId = null; });
-  tables = tables.filter(t => t.id !== id);
-  closePopup();
-  renderGuestList();
-  updateStats();
+// ═══════════════════════════════════════
+// TABLE POPUP
+// ═══════════════════════════════════════
+function showPopup(t, cx, cy) {
+  activeTid=t.id;
+  const pop=document.getElementById('tpop');
+  document.getElementById('pp-name').textContent=t.name;
+  document.getElementById('pp-snum').textContent=t.seats;
+  const here=guests.filter(g=>g.tableId===t.id);
+  document.getElementById('pp-sc').textContent=`${here.length}/${t.seats} ocupate`;
+  const ul=document.getElementById('pp-gl');ul.innerHTML='';
+  here.forEach(g=>{
+    const li=document.createElement('li');
+    const seatNum=g.seatIdx!=null?g.seatIdx+1:'?';
+    li.innerHTML=`<span style="background:${menuColor(g.menu)}" class="seat-badge">${seatNum}</span>
+      <span style="flex:1">${g.name}</span>
+      <span style="font-size:0.62rem;color:#b0a090">${MENU_LABELS[g.menu]||''}</span>
+      <button class="rg" onclick="unassign(${g.id})">✕</button>`;
+    ul.appendChild(li);
+  });
+  let left=cx+10,top=cy-20;
+  if(left+260>window.innerWidth)left=cx-270;
+  if(top+340>window.innerHeight)top=window.innerHeight-340;
+  pop.style.left=left+'px';pop.style.top=top+'px';pop.style.display='block';
   draw();
-  saveState();
 }
 
-function removeGuestFromTable(guestId) {
-  const g = guests.find(x => x.id === guestId);
-  if (g) {
-    g.tableId = null;
-    const t = tables.find(x => x.id === activePopupTableId);
-    if (t) showPopup(t, parseInt(document.getElementById('table-popup').style.left), parseInt(document.getElementById('table-popup').style.top));
-    renderGuestList();
-    updateStats();
-    draw();
-    saveState();
+function closePopup(){document.getElementById('tpop').style.display='none';activeTid=null;draw();}
+
+function adjSeats(delta) {
+  const t=tables.find(x=>x.id===activeTid);if(!t)return;
+  const newSeats=Math.max(1,t.seats+delta);
+  // remove guests from seats that no longer exist
+  guests.forEach(g=>{if(g.tableId===t.id&&g.seatIdx>=newSeats){g.tableId=null;g.seatIdx=null;}});
+  t.seats=newSeats;
+  document.getElementById('pp-snum').textContent=newSeats;
+  const here=guests.filter(g=>g.tableId===t.id);
+  document.getElementById('pp-sc').textContent=`${here.length}/${t.seats} ocupate`;
+  draw();renderGuests();updateStats();save();
+}
+
+function renameTable(){
+  const t=tables.find(x=>x.id===activeTid);if(!t)return;
+  const n=prompt('Nume nou:',t.name);
+  if(n&&n.trim()){t.name=n.trim();draw();save();showPopup(t,parseInt(document.getElementById('tpop').style.left),parseInt(document.getElementById('tpop').style.top));}
+}
+function deleteTable(){
+  if(!confirm('Ștergi masa? Invitații devin neașezați.'))return;
+  guests.forEach(g=>{if(g.tableId===activeTid){g.tableId=null;g.seatIdx=null;}});
+  tables=tables.filter(t=>t.id!==activeTid);
+  closePopup();renderGuests();updateStats();draw();save();
+}
+function unassign(gid){
+  const g=guests.find(x=>x.id===gid);if(!g)return;
+  g.tableId=null;g.seatIdx=null;
+  const t=tables.find(x=>x.id===activeTid);
+  if(t)showPopup(t,parseInt(document.getElementById('tpop').style.left),parseInt(document.getElementById('tpop').style.top));
+  renderGuests();updateStats();draw();save();
+}
+
+// ═══════════════════════════════════════
+// ADD ROW
+// ═══════════════════════════════════════
+function addRow() {
+  const count=parseInt(document.getElementById('r-cnt').value)||3;
+  const seats=parseInt(document.getElementById('r-seats').value)||8;
+
+  const existing=tables.filter(t=>!t.miri);
+  // find existing columns (x positions)
+  const xs=[...new Set(existing.map(t=>Math.round(t.x/10)*10))].sort((a,b)=>a-b);
+
+  // Each table occupies TH width + gap; rows are vertical (TW height)
+  const colGap = TH + 60; // horizontal spacing between columns
+  // Count unique Y rows
+  const ys=[...new Set(existing.map(t=>Math.round(t.y/10)*10))].sort((a,b)=>a-b);
+  const nextY = ys.length===0 ? 250 : Math.max(...ys) + TW + 80;
+
+  // Center columns
+  const totalW=(count-1)*colGap;
+  const startX=-totalW/2;
+
+  for(let i=0;i<count;i++){
+    const x=startX+i*colGap;
+    tables.push({id:nextTid++,name:`Masa ${nextTid-1}`,seats,shape:'rect',x,y:nextY,miri:false});
   }
+  draw();updateStats();save();
 }
 
-// ─── ADD TABLE ───────────────────────────────────────────────────────
-function openAddTable() {
-  document.getElementById('table-name-input').value = `Masa ${nextTableId}`;
-  document.getElementById('table-seats-input').value = '10';
-  document.getElementById('modal-table').classList.add('open');
-  setTimeout(() => document.getElementById('table-name-input').focus(), 100);
+// ═══════════════════════════════════════
+// GUESTS
+// ═══════════════════════════════════════
+function openAddGuest(){
+  document.getElementById('g-name').value='';
+  document.getElementById('m-g').classList.add('open');
+  setTimeout(()=>document.getElementById('g-name').focus(),80);
+}
+function confirmGuest(){
+  const name=document.getElementById('g-name').value.trim();
+  if(!name){alert('Introdu un nume.');return;}
+  const menu=document.getElementById('g-menu').value;
+  guests.push({id:nextGid++,name,menu,tableId:null,seatIdx:null});
+  cm('m-g');renderGuests();updateStats();save();
 }
 
-function confirmAddTable() {
-  const name = document.getElementById('table-name-input').value.trim() || `Masa ${nextTableId}`;
-  const seats = parseInt(document.getElementById('table-seats-input').value) || 10;
-  const shape = document.getElementById('table-shape-input').value;
-
-  // Place in grid
-  const cols = 4;
-  const idx = tables.length;
-  const col = idx % cols;
-  const row = Math.floor(idx / cols);
-  const x = 120 + col * 200;
-  const y = 120 + row * 180;
-
-  tables.push({ id: nextTableId++, name, seats, shape, x, y });
-  closeModal('modal-table');
-  updateStats();
-  draw();
-  saveState();
+function assignGuestToTable(gid, tid) {
+  const g=guests.find(x=>x.id===gid);
+  const t=tables.find(x=>x.id===tid);
+  if(!g||!t)return;
+  // find first free seat
+  const occupied=new Set(guests.filter(x=>x.tableId===tid&&x.seatIdx!=null).map(x=>x.seatIdx));
+  let freeSeat=null;
+  for(let i=0;i<t.seats;i++){if(!occupied.has(i)){freeSeat=i;break;}}
+  if(freeSeat===null){alert(`Masa "${t.name}" nu mai are scaune libere!`);return;}
+  g.tableId=tid;g.seatIdx=freeSeat;
+  renderGuests();updateStats();draw();save();
 }
 
-// ─── ADD GUEST ───────────────────────────────────────────────────────
-function openAddGuest() {
-  document.getElementById('guest-name-input').value = '';
-  document.getElementById('guest-seats-input').value = '1';
-  document.getElementById('modal-guest').classList.add('open');
-  setTimeout(() => document.getElementById('guest-name-input').focus(), 100);
-}
-
-function confirmAddGuest() {
-  const name = document.getElementById('guest-name-input').value.trim();
-  if (!name) return alert('Introdu un nume.');
-  const seats = parseFloat(document.getElementById('guest-seats-input').value) || 1;
-  const menu = document.getElementById('guest-menu-input').value;
-  guests.push({ id: nextGuestId++, name, seats, menu, tableId: null });
-  closeModal('modal-guest');
-  renderGuestList();
-  updateStats();
-  saveState();
-}
-
-// ─── GUEST LIST ──────────────────────────────────────────────────────
-function renderGuestList(filter = '') {
-  const list = document.getElementById('guest-list');
-  list.innerHTML = '';
-  const fl = filter.toLowerCase();
-  const filtered = guests.filter(g => g.name.toLowerCase().includes(fl));
-
-  filtered.forEach(g => {
-    const div = document.createElement('div');
-    div.className = 'guest-item' + (g.tableId ? ' assigned' : '');
-    div.draggable = true;
-    div.dataset.guestId = g.id;
-
-    const tableAssigned = g.tableId ? tables.find(t => t.id === g.tableId) : null;
-    div.innerHTML = `
-      <div class="guest-menu-dot ${g.menu === 'carne' ? 'menu-carne' : g.menu === 'peste' ? 'menu-peste' : 'menu-veg'}"></div>
-      <span class="guest-name">${g.name}</span>
-      ${tableAssigned ? `<span class="guest-table-badge">${tableAssigned.name}</span>` : ''}
-      <button style="background:none;border:none;cursor:pointer;color:#8b2e2e;font-size:0.8rem;padding:0 2px;" onclick="deleteGuest(${g.id}, event)" title="Șterge invitat">✕</button>
-    `;
-
-    div.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('guestId', g.id);
-      div.classList.add('dragging');
-    });
-    div.addEventListener('dragend', () => div.classList.remove('dragging'));
-
+function renderGuests(filter=''){
+  const fl=filter.toLowerCase();
+  const list=document.getElementById('gl');list.innerHTML='';
+  const filtered=guests.filter(g=>g.name.toLowerCase().includes(fl));
+  document.getElementById('gc').textContent=guests.length;
+  filtered.forEach(g=>{
+    const t=g.tableId?tables.find(x=>x.id===g.tableId):null;
+    const div=document.createElement('div');
+    div.className='gi'+(g.tableId?' assigned':'');
+    div.draggable=true;
+    div.innerHTML=`<div class="ld" style="background:${menuColor(g.menu)}"></div>
+      <span class="gi-name">${g.name}</span>
+      ${t?`<span class="tbadge">${t.name}${g.seatIdx!=null?' #'+(g.seatIdx+1):''}</span>`:''}
+      <button class="del-g" onclick="delGuest(${g.id},event)">✕</button>`;
+    div.addEventListener('dragstart',e=>{e.dataTransfer.setData('gid',g.id);div.classList.add('dragging');});
+    div.addEventListener('dragend',()=>div.classList.remove('dragging'));
     list.appendChild(div);
   });
 }
 
-function filterGuests(val) {
-  renderGuestList(val);
-}
-
-function deleteGuest(id, e) {
+function delGuest(id,e){
   e.stopPropagation();
-  guests = guests.filter(g => g.id !== id);
-  renderGuestList(document.getElementById('guest-search').value);
-  updateStats();
-  draw();
-  saveState();
+  guests=guests.filter(g=>g.id!==id);
+  renderGuests(document.getElementById('gs').value);
+  updateStats();draw();save();
 }
 
-function assignGuestToTable(guestId, tableId) {
-  const g = guests.find(x => x.id === guestId);
-  const t = tables.find(x => x.id === tableId);
-  if (!g || !t) return;
-  const seatsFilled = guests.filter(x => x.tableId === tableId).reduce((sum, x) => sum + x.seats, 0);
-  if (seatsFilled + g.seats > t.seats) {
-    alert(`Masa "${t.name}" nu mai are locuri disponibile!`);
-    return;
-  }
-  g.tableId = tableId;
-  renderGuestList(document.getElementById('guest-search').value);
-  updateStats();
-  draw();
-  saveState();
+// ═══════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════
+function updateStats(){
+  document.getElementById('s-t').textContent=tables.length;
+  document.getElementById('s-g').textContent=guests.length;
+  const a=guests.filter(g=>g.tableId).length;
+  document.getElementById('s-a').textContent=a;
+  document.getElementById('s-u').textContent=guests.length-a;
 }
 
-// ─── STATS ───────────────────────────────────────────────────────────
-function updateStats() {
-  document.getElementById('stat-tables').textContent = tables.length;
-  document.getElementById('stat-guests').textContent = guests.length;
-  const assigned = guests.filter(g => g.tableId).length;
-  document.getElementById('stat-assigned').textContent = assigned;
-  document.getElementById('stat-unassigned').textContent = guests.length - assigned;
+// ═══════════════════════════════════════
+// ZOOM
+// ═══════════════════════════════════════
+function doZoom(f){
+  const cx=cv.width/2,cy=cv.height/2;
+  ox=cx-(cx-ox)*f;oy=cy-(cy-oy)*f;
+  sc=Math.min(Math.max(sc*f,0.22),3.5);draw();
 }
+function resetView(){sc=1;ox=cv.width/2;oy=80;draw();}
 
-// ─── ZOOM / PAN ──────────────────────────────────────────────────────
-function zoom(factor) {
-  const cx = canvas.width / 2, cy = canvas.height / 2;
-  offsetX = cx - (cx - offsetX) * factor;
-  offsetY = cy - (cy - offsetY) * factor;
-  scale = Math.min(Math.max(scale * factor, 0.3), 3);
-  draw();
-}
-
-function resetView() {
-  scale = 1; offsetX = 0; offsetY = 0; draw();
-}
-
-// ─── MODALS ──────────────────────────────────────────────────────────
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
-
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
-});
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
-    closePopup();
+// ═══════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════
+function cm(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.ov').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.ov.open').forEach(m=>m.classList.remove('open'));
+    closePopup();closeSeatTip();
   }
 });
 
-// ─── EXPORT / IMPORT ─────────────────────────────────────────────────
-function exportData() {
-  const data = JSON.stringify({ tables, guests, nextTableId, nextGuestId }, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'plan-mese-theo-dalia.json'; a.click();
-  URL.revokeObjectURL(url);
+function exportData(){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify({tables,guests,nextTid,nextGid},null,2)],{type:'application/json'}));
+  a.download='mese-theo-dalia.json';a.click();
+}
+function openImport(){document.getElementById('imp-ta').value='';document.getElementById('m-imp').classList.add('open');}
+function confirmImport(){
+  try{
+    const d=JSON.parse(document.getElementById('imp-ta').value);
+    if(d.tables)tables=d.tables;if(d.guests)guests=d.guests;
+    if(d.nextTid)nextTid=d.nextTid;if(d.nextGid)nextGid=d.nextGid;
+    cm('m-imp');renderGuests();updateStats();draw();save();
+  }catch{alert('JSON invalid.');}
 }
 
-function importData() {
-  document.getElementById('import-textarea').value = '';
-  document.getElementById('modal-import').classList.add('open');
+// ═══════════════════════════════════════
+// PERSIST
+// ═══════════════════════════════════════
+function save(){try{localStorage.setItem('mp3',JSON.stringify({tables,guests,nextTid,nextGid}));}catch{}}
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem('mp3'));
+    if(d){tables=d.tables||[];guests=d.guests||[];nextTid=d.nextTid||1;nextGid=d.nextGid||1;}
+  }catch{}
 }
 
-function confirmImport() {
-  try {
-    const data = JSON.parse(document.getElementById('import-textarea').value);
-    if (data.tables) tables = data.tables;
-    if (data.guests) guests = data.guests;
-    if (data.nextTableId) nextTableId = data.nextTableId;
-    if (data.nextGuestId) nextGuestId = data.nextGuestId;
-    closeModal('modal-import');
-    renderGuestList();
-    updateStats();
-    draw();
-    saveState();
-  } catch {
-    alert('JSON invalid. Încearcă din nou.');
-  }
-}
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+load();
 
-// ─── LOCAL STORAGE ────────────────────────────────────────────────────
-function saveState() {
-  try {
-    localStorage.setItem('seating-plan', JSON.stringify({ tables, guests, nextTableId, nextGuestId }));
-  } catch {}
-}
+if(tables.length===0){
+  // Masa mirilor — orizontală, sus, centrată
+  tables.push({id:nextTid++,name:'Theo & Dalia',seats:2,x:0,y:-60,miri:true});
 
-function loadState() {
-  try {
-    const raw = localStorage.getItem('seating-plan');
-    if (raw) {
-      const data = JSON.parse(raw);
-      if (data.tables) tables = data.tables;
-      if (data.guests) guests = data.guests;
-      if (data.nextTableId) nextTableId = data.nextTableId;
-      if (data.nextGuestId) nextGuestId = data.nextGuestId;
+  // 2 rânduri × 3 mese, verticale, perpendiculare pe masa mirilor
+  const colGap=TH+60;
+  const cols=3;
+  const totalW=(cols-1)*colGap;
+  const startX=-totalW/2;
+  [200, 200+TW+80].forEach((y,ri)=>{
+    for(let i=0;i<cols;i++){
+      tables.push({id:nextTid++,name:`Masa ${nextTid-1}`,seats:8,shape:'rect',x:startX+i*colGap,y,miri:false});
     }
-  } catch {}
+  });
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────
-loadState();
-
-// Default example data if empty
-if (tables.length === 0) {
-  tables = [
-    { id: nextTableId++, name: 'Nași', seats: 10, shape: 'round', x: 200, y: 150 },
-    { id: nextTableId++, name: 'Familie mireasă', seats: 10, shape: 'round', x: 420, y: 150 },
-    { id: nextTableId++, name: 'Familie mire', seats: 10, shape: 'round', x: 640, y: 150 },
-    { id: nextTableId++, name: 'Prieteni 1', seats: 8, shape: 'round', x: 200, y: 340 },
-    { id: nextTableId++, name: 'Prieteni 2', seats: 8, shape: 'round', x: 420, y: 340 },
-  ];
-}
-
-renderGuestList();
-updateStats();
-draw();
-
-// Center view
-offsetX = canvas.width / 2 - 400;
-offsetY = 40;
-draw();
+renderGuests();updateStats();
+setTimeout(()=>{ox=cv.width/2;oy=100;draw();},50);
 </script>
 </body>
 </html>
