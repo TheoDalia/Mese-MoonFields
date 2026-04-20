@@ -350,7 +350,7 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
       <button class="zb" onclick="doZoom(0.89)">－</button>
       <button class="zb" onclick="resetView()" style="font-size:.58rem">⊙</button>
     </div>
-    <div class="chint">Scroll=zoom · Drag masă=mută · Click colț auriu=redimensionează · Click scaun=asignează · Drag din listă pe masă</div>
+    <div class="chint">Scroll=zoom · Drag masă=mută · Click colț auriu=redimensionează · Drag scaun ocupat=mută invitat · Click scaun liber=asignează</div>
   </div>
 </div>
 
@@ -540,6 +540,53 @@ function draw(){
   decorElements.forEach(d=>drawDecor(d));
   tables.filter(t=>!t.miri).forEach(t=>drawTable(t));
   tables.filter(t=>t.miri).forEach(t=>drawMiriTable(t));
+  if(dragSeat) drawDragGhost(dragSeat);
+}
+
+function drawDragGhost(ds){
+  const r=(SEAT_R+2)*sc;
+  ctx.save();
+  // Evidențiază scaunul sursă
+  const fromTable=tables.find(t=>t.id==ds.fromTableId);
+  if(fromTable){
+    const sp=getSeatPositions(fromTable);
+    const s=w2s(fromTable.x,fromTable.y);
+    const fp=sp[ds.fromSeatIdx];
+    if(fp){
+      ctx.beginPath();ctx.arc(s.x+fp.x*sc,s.y+fp.y*sc,r,0,Math.PI*2);
+      ctx.strokeStyle='#b8924a';ctx.lineWidth=2.5*sc;ctx.setLineDash([4*sc,3*sc]);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+  // Evidențiază scaunul țintă hover
+  const tSeat=getSeatAt(ds.curX,ds.curY);
+  if(tSeat&&(tSeat.tableId!=ds.fromTableId||tSeat.seatIdx!=ds.fromSeatIdx)){
+    const tbl=tables.find(t=>t.id==tSeat.tableId);
+    if(tbl){
+      const sp=getSeatPositions(tbl);
+      const s=w2s(tbl.x,tbl.y);
+      const fp=sp[tSeat.seatIdx];
+      if(fp){
+        ctx.beginPath();ctx.arc(s.x+fp.x*sc,s.y+fp.y*sc,r*1.2,0,Math.PI*2);
+        ctx.fillStyle='rgba(184,146,74,0.25)';ctx.fill();
+        ctx.strokeStyle='#b8924a';ctx.lineWidth=2*sc;ctx.stroke();
+      }
+    }
+  }
+  // Ghost cerc care urmează cursorul
+  ctx.beginPath();ctx.arc(ds.curX,ds.curY,r,0,Math.PI*2);
+  ctx.fillStyle=menuColor(ds.guest.menu);
+  ctx.globalAlpha=0.75;ctx.fill();
+  ctx.globalAlpha=1;
+  ctx.strokeStyle='white';ctx.lineWidth=1.5*sc;ctx.stroke();
+  // Inițiale
+  if(sc>0.4){
+    const initials=ds.guest.name.split(' ').map(p=>p[0]||'').join('').substring(0,2).toUpperCase();
+    ctx.font=`bold ${Math.max(5,7*sc)}px 'Jost',sans-serif`;
+    ctx.fillStyle='white';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(initials,ds.curX,ds.curY);
+  }
+  ctx.restore();
 }
 
 function drawGrid(){
@@ -749,6 +796,7 @@ function getDecorCornerAt(sx,sy){
 }
 
 let dragD=null, dragDSX, dragDSY, dragDX0, dragDY0;
+let dragSeat=null; // {guest, fromTableId, fromSeatIdx, curX, curY} — drag scaun→scaun
 let activeDecor=null;
 let resizingDecor=null; // {d, corner, startSX, startSY, origW, origH, origX, origY}
 
@@ -801,6 +849,18 @@ cv.addEventListener('mousedown',e=>{
     return;
   }
 
+  // Seat drag — dacă scaunul e ocupat, inițiem drag invitat
+  const seatHit=getSeatAt(e.offsetX,e.offsetY);
+  if(seatHit){
+    const g=guests.find(x=>x.tableId==seatHit.tableId&&x.seatIdx==seatHit.seatIdx);
+    if(g){
+      dragSeat={guest:g,fromTableId:seatHit.tableId,fromSeatIdx:seatHit.seatIdx,
+                curX:e.offsetX,curY:e.offsetY};
+      cv.style.cursor='grabbing';
+      return;
+    }
+  }
+
   // Table drag
   const t=getTableAt(e.offsetX,e.offsetY);
   if(t){dragT=t;dragSX=e.offsetX;dragSY=e.offsetY;dragTX0=t.x;dragTY0=t.y;return;}
@@ -840,6 +900,7 @@ cv.addEventListener('mousemove',e=>{
     cv.style.cursor='nwse-resize';draw();return;
   }
 
+  if(dragSeat){dragSeat.curX=e.offsetX;dragSeat.curY=e.offsetY;draw();cv.style.cursor='grabbing';return;}
   if(dragT){const w=s2w(e.offsetX,e.offsetY),ws=s2w(dragSX,dragSY);dragT.x=dragTX0+w.x-ws.x;dragT.y=dragTY0+w.y-ws.y;draw();cv.style.cursor='grabbing';}
   else if(dragD){const w=s2w(e.offsetX,e.offsetY),ws=s2w(dragDSX,dragDSY);dragD.x=dragDX0+w.x-ws.x;dragD.y=dragDY0+w.y-ws.y;draw();cv.style.cursor='grabbing';}
   else if(pan){ox=panOX+e.clientX-panSX;oy=panOY+e.clientY-panSY;draw();cv.style.cursor='move';}
@@ -848,7 +909,12 @@ cv.addEventListener('mousemove',e=>{
     if(getCornerAt(e.offsetX,e.offsetY)||getDecorCornerAt(e.offsetX,e.offsetY)){cv.style.cursor='nwse-resize';return;}
     const seat=getSeatAt(e.offsetX,e.offsetY);
     const dec=getDecorAt(e.offsetX,e.offsetY);
-    cv.style.cursor=seat?'pointer':(getTableAt(e.offsetX,e.offsetY)||dec?'grab':'default');
+    if(seat){
+      const gSeat=guests.find(x=>x.tableId==seat.tableId&&x.seatIdx==seat.seatIdx);
+      cv.style.cursor=gSeat?'grab':'pointer';
+    } else {
+      cv.style.cursor=getTableAt(e.offsetX,e.offsetY)||dec?'grab':'default';
+    }
   }
 });
 cv.addEventListener('mouseup',e=>{
@@ -863,6 +929,25 @@ cv.addEventListener('mouseup',e=>{
     }
     draw();save();return;
   }
+  // Drop scaun→scaun
+  if(dragSeat){
+    const ds=dragSeat; dragSeat=null; cv.style.cursor='default';
+    const targetSeat=getSeatAt(e.offsetX,e.offsetY);
+    if(targetSeat && (targetSeat.tableId!=ds.fromTableId || targetSeat.seatIdx!=ds.fromSeatIdx)){
+      // Verifică dacă scaunul țintă e ocupat
+      const targetGuest=guests.find(x=>x.tableId==targetSeat.tableId&&x.seatIdx==targetSeat.seatIdx);
+      if(targetGuest){
+        // Schimbă locurile între ei (swap)
+        targetGuest.tableId=ds.fromTableId;
+        targetGuest.seatIdx=ds.fromSeatIdx;
+      }
+      // Mută invitatul drag-uit pe scaunul țintă
+      ds.guest.tableId=targetSeat.tableId;
+      ds.guest.seatIdx=targetSeat.seatIdx;
+    }
+    renderGuests();updateStats();draw();save();return;
+  }
+
   const wasDrag=dragT&&clickMoved;dragT=null;pan=false;cv.style.cursor='default';
   if(!wasDrag){
     const seat=getSeatAt(e.offsetX,e.offsetY);
@@ -885,6 +970,11 @@ cv.addEventListener('touchstart',e=>{
     const r=cv.getBoundingClientRect();const tx=e.touches[0].clientX-r.left,ty=e.touches[0].clientY-r.top;
     tMX=tx;tMY=ty;tMv=false;closeST();closePopup();
     document.querySelector('.sadj').style.display='';
+    const seatHitT=getSeatAt(tx,ty);
+    if(seatHitT){
+      const gT=guests.find(x=>x.tableId==seatHitT.tableId&&x.seatIdx==seatHitT.seatIdx);
+      if(gT){dragSeat={guest:gT,fromTableId:seatHitT.tableId,fromSeatIdx:seatHitT.seatIdx,curX:tx,curY:ty};return;}
+    }
     const t=getTableAt(tx,ty);
     if(t){dragT=t;dragSX=tx;dragSY=ty;dragTX0=t.x;dragTY0=t.y;}
     else{
@@ -898,7 +988,8 @@ cv.addEventListener('touchmove',e=>{
   if(e.touches.length===1){
     const r=cv.getBoundingClientRect();const tx=e.touches[0].clientX-r.left,ty=e.touches[0].clientY-r.top;
     if(Math.abs(tx-tMX)>4||Math.abs(ty-tMY)>4)tMv=true;
-    if(dragT){const w=s2w(tx,ty),ws=s2w(dragSX,dragSY);dragT.x=dragTX0+w.x-ws.x;dragT.y=dragTY0+w.y-ws.y;draw();}
+    if(dragSeat){dragSeat.curX=tx;dragSeat.curY=ty;draw();}
+    else if(dragT){const w=s2w(tx,ty),ws=s2w(dragSX,dragSY);dragT.x=dragTX0+w.x-ws.x;dragT.y=dragTY0+w.y-ws.y;draw();}
     else if(dragD){const w=s2w(tx,ty),ws=s2w(dragDSX,dragDSY);dragD.x=dragDX0+w.x-ws.x;dragD.y=dragDY0+w.y-ws.y;draw();}
     else if(pan){ox=panOX+e.touches[0].clientX-panSX;oy=panOY+e.touches[0].clientY-panSY;draw();}
   }else if(e.touches.length===2&&ltD){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);const f=d/ltD;const r=cv.getBoundingClientRect();const cx=(e.touches[0].clientX+e.touches[1].clientX)/2-r.left;const cy=(e.touches[0].clientY+e.touches[1].clientY)/2-r.top;ox=cx-(cx-ox)*f;oy=cy-(cy-oy)*f;sc=Math.min(Math.max(sc*f,.18),3.5);ltD=d;draw();}
@@ -915,7 +1006,19 @@ cv.addEventListener('touchend',e=>{
       else{const d=getDecorAt(tx,ty);if(d){activeDecor=d;showDecorPopup(d,e.changedTouches[0].clientX,e.changedTouches[0].clientY);}}
     }
   }
-  dragT=null;dragD=null;pan=false;ltD=null;resizing=null;resizingDecor=null;save();e.preventDefault();},{passive:false});
+  if(dragSeat&&!tMv===false){
+    const r=cv.getBoundingClientRect();
+    const tx2=e.changedTouches[0].clientX-r.left,ty2=e.changedTouches[0].clientY-r.top;
+    const ds=dragSeat;dragSeat=null;
+    const targetSeat=getSeatAt(tx2,ty2);
+    if(targetSeat&&(targetSeat.tableId!=ds.fromTableId||targetSeat.seatIdx!=ds.fromSeatIdx)){
+      const tg=guests.find(x=>x.tableId==targetSeat.tableId&&x.seatIdx==targetSeat.seatIdx);
+      if(tg){tg.tableId=ds.fromTableId;tg.seatIdx=ds.fromSeatIdx;}
+      ds.guest.tableId=targetSeat.tableId;ds.guest.seatIdx=targetSeat.seatIdx;
+    }
+    renderGuests();updateStats();draw();save();
+  }
+  dragSeat=null;dragT=null;dragD=null;pan=false;ltD=null;resizing=null;resizingDecor=null;save();e.preventDefault();},{passive:false});
 
 cv.addEventListener('dragover',e=>{e.preventDefault();cv.style.outline='2px dashed #b8924a';});
 cv.addEventListener('dragleave',()=>{cv.style.outline='none';});
