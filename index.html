@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan Mese · Theo & Dalia · Moonfields</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root {
   --bg:#f5f0e8;--panel:#fff;--deep:#1a1410;--brown:#5a3a28;
@@ -149,7 +149,7 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
       <div class="brow">
         <button class="btn btn-gold" onclick="openAddGuest()">＋ Invitat</button>
         <button class="btn btn-outline" onclick="exportPDF()">↓ PDF</button>
-        <button class="btn btn-outline" onclick="openImport()">↑ Word</button>
+        <button class="btn btn-outline" onclick="openImport()">↑ Excel</button>
       </div>
     </div>
     <div class="sb">
@@ -229,13 +229,13 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
   </div>
 </div>
 
-<!-- WORD IMPORT -->
+<!-- EXCEL IMPORT -->
 <div class="ov" id="m-imp">
   <div class="modal">
-    <h2>Import din Word</h2>
+    <h2>Import din Excel</h2>
     <div class="fg">
-      <label>Selectează fișierul .docx (template completat)</label>
-      <input type="file" id="imp-file" accept=".docx" style="font-size:.76rem;padding:5px;">
+      <label>Selectează fișierul .xlsx (template completat)</label>
+      <input type="file" id="imp-file" accept=".xlsx,.xls" style="font-size:.76rem;padding:5px;">
     </div>
     <div class="import-result" id="imp-res"></div>
     <div class="ma">
@@ -958,65 +958,73 @@ function openImport(){document.getElementById('imp-file').value='';document.getE
 
 function confirmImport(){
   const file=document.getElementById('imp-file').files[0];
-  if(!file){alert('Selectează un fișier .docx');return;}
+  if(!file){alert('Selectează un fișier .xlsx');return;}
   const resEl=document.getElementById('imp-res');
   const reader=new FileReader();
-  reader.onload=async(e)=>{
+  reader.onload=(e)=>{
     try{
-      const result=await mammoth.extractRawText({arrayBuffer:e.target.result});
-      const text=result.value;
-      const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);
+      const wb=XLSX.read(e.target.result,{type:'array'});
+      // Read first sheet
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
 
-      // Find table rows: look for lines that contain tab-separated or whitespace-separated data
-      // Columns: Nume | Meniu | Cazare | Observatii
-      // Skip header and instruction lines
-      const validMenus=['normal','vegetarian','veg','vegan','copil'];
-      const validCazare=['da','nu'];
+      let imported=0, skipped=0, assigned=0;
 
-      let imported=0, skipped=0;
+      // Column name normalization helpers
+      function col(row, ...names){
+        for(const n of names){
+          for(const k of Object.keys(row)){
+            if(k.toLowerCase().replace(/[^a-zăîșțâ]/gi,'').includes(n.toLowerCase().replace(/[^a-zăîșțâ]/gi,'')))
+              return String(row[k]).trim();
+          }
+        }
+        return '';
+      }
 
-      for(const line of lines){
-        // Split by tabs or multiple spaces
-        const parts=line.split(/\t/).map(p=>p.trim());
-        if(parts.length<2)continue;
+      for(const row of rows){
+        const name=col(row,'Nume complet','Nume','Name');
+        if(!name||name.toLowerCase().includes('instruc')||name.toLowerCase()==='nume complet')continue;
 
-        const name=parts[0];
-        const menuRaw=(parts[1]||'').toLowerCase().trim();
-        const cazareRaw=(parts[2]||'').toLowerCase().trim();
-        const obs=(parts[3]||'').trim();
-
-        // Skip header row
-        if(name.toLowerCase()==='nume complet'||name.toLowerCase()==='nume')continue;
-        // Skip empty or instruction lines
-        if(!name||name.startsWith('•')||name.startsWith('Instrucțiuni')||name.startsWith('Complet'))continue;
-        // Skip example rows (italics lost in extract, but check for obvious examples)
-        if(menuRaw&&!validMenus.some(m=>menuRaw.includes(m)))continue;
+        const menuRaw=col(row,'Meniu','Menu').toLowerCase();
+        const cazareRaw=col(row,'Cazare').toLowerCase();
+        const masaRaw=col(row,'Masă','Masa','Table');
+        const obs=col(row,'Observa','Note','Obs');
 
         // Normalize menu
         let menu='normal';
         if(menuRaw.includes('vegetarian'))menu='veg';
         else if(menuRaw.includes('vegan'))menu='vegan';
         else if(menuRaw.includes('copil'))menu='copil';
-        else if(menuRaw.includes('veg'))menu='veg';
 
         // Normalize cazare
-        let cazare='nu';
-        if(cazareRaw==='da')cazare='da';
+        const cazare=cazareRaw==='da'?'da':'nu';
 
-        // Check if already exists
-        if(!guests.find(g=>g.name.toLowerCase()===name.toLowerCase())){
-          guests.push({id:nextGid++,name,menu,cazare,obs,tableId:null,seatIdx:null});
-          imported++;
-        } else { skipped++; }
+        // Check duplicate
+        if(guests.find(g=>g.name.toLowerCase()===name.toLowerCase())){skipped++;continue;}
+
+        const newGuest={id:nextGid++,name,menu,cazare,obs,tableId:null,seatIdx:null};
+
+        // Auto-assign to table if Masă column is filled
+        if(masaRaw){
+          const t=tables.find(t=>t.name.toLowerCase()===masaRaw.toLowerCase());
+          if(t){
+            const occ=new Set(guests.filter(x=>x.tableId===t.id&&x.seatIdx!=null).map(x=>x.seatIdx));
+            let free=null;
+            for(let i=0;i<t.seats;i++){if(!occ.has(i)){free=i;break;}}
+            if(free!==null){newGuest.tableId=t.id;newGuest.seatIdx=free;assigned++;}
+          }
+        }
+
+        guests.push(newGuest);
+        imported++;
       }
 
-      resEl.className='import-result';
-      resEl.style.display='block';
-      resEl.textContent=`✓ Importat: ${imported} invitați${skipped?`, ${skipped} deja existenți (săriți)`:''}`;
-      renderGuests();updateStats();save();
+      resEl.className='import-result';resEl.style.display='block';
+      resEl.textContent=`✓ ${imported} invitați importați${assigned?' ('+assigned+' auto-asignați la masă)':''}${skipped?', '+skipped+' deja existenți (săriți)':''}`;
+      renderGuests();updateStats();draw();save();
     }catch(err){
       resEl.className='import-result err';resEl.style.display='block';
-      resEl.textContent='Eroare la citirea fișierului: '+err.message;
+      resEl.textContent='Eroare: '+err.message;
     }
   };
   reader.readAsArrayBuffer(file);
