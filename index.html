@@ -490,14 +490,10 @@ function getSeatPositions(t) {
   const half2 = seats - half1;
 
   if(t.miri) {
-    // Vertical table → seats on LEFT and RIGHT sides
-    for(let i=0;i<half1;i++){
-      const frac = half1===1?0.5:i/(half1-1);
+    // Masa mirilor: TOATE scaunele pe stânga
+    for(let i=0;i<seats;i++){
+      const frac = seats===1?0.5:i/(seats-1);
       pos.push({x: -hw-SEAT_R-2, y: -hh*0.88 + frac*hh*1.76});
-    }
-    for(let i=0;i<half2;i++){
-      const frac = half2===1?0.5:i/(half2-1);
-      pos.push({x: hw+SEAT_R+2, y: -hh*0.88 + frac*hh*1.76});
     }
   } else {
     // Horizontal table → seats on TOP and BOTTOM
@@ -602,7 +598,7 @@ function drawTable(t){
   const tw=tW(t)*sc, th=tH(t)*sc;
   const rx=s.x-tw/2, ry=s.y-th/2;
   const isAct=activeTid===t.id;
-  const gHere=guests.filter(g=>Number(g.tableId)===Number(t.id));
+  const gHere=guests.filter(g=>g.tableId==t.id);
   const filled=gHere.length;
 
   ctx.save();
@@ -676,8 +672,8 @@ function drawCornerHandles(t) {
 
 function drawSeat(sx,sy,tableId,idx){
   const r=SEAT_R*sc;
-  const g=guests.find(x=>Number(x.tableId)===Number(tableId)&&Number(x.seatIdx)===Number(idx));
-  const isAct=activeSeat&&activeSeat.tableId===tableId&&activeSeat.seatIdx===idx;
+  const g=guests.find(x=>x.tableId==tableId&&x.seatIdx==idx);
+  const isAct=activeSeat&&activeSeat.tableId==tableId&&activeSeat.seatIdx==idx;
   ctx.save();
   ctx.beginPath();ctx.arc(sx,sy,r,0,Math.PI*2);
   ctx.fillStyle=g?menuColor(g.menu):'#e8e0d0';ctx.fill();
@@ -714,7 +710,7 @@ function getSeatAt(sx,sy){
     for(let idx=0;idx<spos.length;idx++){
       const sp=spos[idx];
       const cx=s.x+sp.x*sc,cy=s.y+sp.y*sc;
-      if(Math.sqrt((sx-cx)**2+(sy-cy)**2)<(SEAT_R+4)*sc)return{tableId:Number(t.id),seatIdx:Number(idx)};
+      if(Math.sqrt((sx-cx)**2+(sy-cy)**2)<(SEAT_R+4)*sc)return{tableId:t.id,seatIdx:idx};
     }
   }
   return null;
@@ -938,7 +934,7 @@ function showST(seat,cx,cy){
   activeSeat=seat;
   const tip=document.getElementById('stip');
   const t=tables.find(x=>x.id===seat.tableId);
-  const existing=guests.find(g=>Number(g.tableId)===Number(seat.tableId)&&Number(g.seatIdx)===Number(seat.seatIdx));
+  const existing=guests.find(g=>g.tableId==seat.tableId&&g.seatIdx==seat.seatIdx);
   document.getElementById('stip-t').textContent=`${t.name} — Scaun ${seat.seatIdx+1}${existing?' (ocupat)':''}`;
   const l=document.getElementById('stip-l');l.innerHTML='';
   if(existing){
@@ -975,7 +971,7 @@ function showPopup(t,cx,cy){
   activeTid=t.id;
   document.getElementById('pp-name').textContent=t.name;
   document.getElementById('pp-snum').textContent=t.seats;
-  const here=guests.filter(g=>Number(g.tableId)===Number(t.id));
+  const here=guests.filter(g=>g.tableId==t.id);
   document.getElementById('pp-sc').textContent=`${here.length}/${t.seats}`;
   const ul=document.getElementById('pp-gl');ul.innerHTML='';
   here.forEach(g=>{
@@ -1006,9 +1002,9 @@ function closePopup(){
 function adjSeats(d){
   const t=tables.find(x=>x.id===activeTid);if(!t)return;
   const ns=Math.max(1,t.seats+d);
-  guests.forEach(g=>{if(g.tableId===t.id&&g.seatIdx>=ns){g.tableId=null;g.seatIdx=null;}});
+  guests.forEach(g=>{if(g.tableId==t.id&&g.seatIdx>=ns){g.tableId=null;g.seatIdx=null;}});
   t.seats=ns;document.getElementById('pp-snum').textContent=ns;
-  const here=guests.filter(g=>g.tableId===t.id);
+  const here=guests.filter(g=>g.tableId==t.id);
   document.getElementById('pp-sc').textContent=`${here.length}/${ns}`;
   draw();renderGuests();updateStats();save();
 }
@@ -1018,7 +1014,7 @@ function renameTable(){
 }
 function deleteTable(){
   if(!confirm('Ștergi masa?'))return;
-  guests.forEach(g=>{if(g.tableId===activeTid){g.tableId=null;g.seatIdx=null;}});
+  guests.forEach(g=>{if(g.tableId==activeTid){g.tableId=null;g.seatIdx=null;}});
   tables=tables.filter(t=>t.id!==activeTid);
   closePopup();renderGuests();updateStats();draw();save();
 }
@@ -1069,7 +1065,7 @@ function confirmGuest(){
 }
 function assignToTable(gid,tid){
   const g=guests.find(x=>x.id===gid),t=tables.find(x=>x.id===tid);if(!g||!t)return;
-  const occ=new Set(guests.filter(x=>x.tableId===tid&&x.seatIdx!=null).map(x=>x.seatIdx));
+  const occ=new Set(guests.filter(x=>x.tableId==tid&&x.seatIdx!=null).map(x=>x.seatIdx));
   let free=null;for(let i=0;i<t.seats;i++){if(!occ.has(i)){free=i;break;}}
   if(free===null){alert(`Masa "${t.name}" e plină!`);return;}
   g.tableId=tid;g.seatIdx=free;renderGuests();updateStats();draw();save();
@@ -1104,7 +1100,7 @@ function delGuest(id,e){
 function updateStats(){
   document.getElementById('s-t').textContent=tables.length;
   document.getElementById('s-g').textContent=guests.length;
-  const a=guests.filter(g=>g.tableId!==null&&g.tableId!==undefined&&g.tableId!=='').length;
+  const a=guests.filter(g=>g.tableId!=null).length;
   document.getElementById('s-a').textContent=a;
   document.getElementById('s-u').textContent=guests.length-a;
   document.getElementById('s-caz').textContent=guests.filter(g=>g.cazare==='da').length;
@@ -1142,79 +1138,103 @@ async function confirmImport(){
     const ab=await file.arrayBuffer();
     const rows=await XLSXMini.read(ab);
 
-    let imported=0,skipped=0,assigned=0;
+    let imported=0, skipped=0, assigned=0;
 
-    // Find value by trying multiple candidate column names
-    // Strategy: exact match (case-insensitive) > startsWith > includes
-    function col(row,...candidates){
-      const keys=Object.keys(row);
-      for(const cand of candidates){
-        const cl=cand.toLowerCase();
-        // exact
-        let k=keys.find(k=>k.toLowerCase()===cl);
-        if(k) return String(row[k]).trim();
-        // starts with
-        k=keys.find(k=>k.toLowerCase().startsWith(cl)||cl.startsWith(k.toLowerCase()));
-        if(k) return String(row[k]).trim();
-        // includes
-        k=keys.find(k=>k.toLowerCase().includes(cl)||cl.includes(k.toLowerCase()));
-        if(k&&k.length>2) return String(row[k]).trim();
+    // Găsește valoarea unei coloane după nume — încearcă exact, apoi parțial
+    function getCol(row, ...keys){
+      for(const key of keys){
+        const kl = key.toLowerCase();
+        // 1. match exact (ignoră majuscule)
+        for(const k of Object.keys(row)){
+          if(k.toLowerCase() === kl) return String(row[k]||'').trim();
+        }
+        // 2. cheia conține textul căutat
+        for(const k of Object.keys(row)){
+          if(k.toLowerCase().includes(kl)) return String(row[k]||'').trim();
+        }
       }
       return '';
     }
 
     for(const row of rows){
-      const name=col(row,'Nume complet','Nume','Name');
+      const name = getCol(row, 'Nume complet', 'Nume', 'Name');
       if(!name) continue;
-      const nl=name.toLowerCase();
-      if(nl.includes('instruc')||nl.includes('exemplu')||nl==='nume complet'||nl==='nume') continue;
+      const nl = name.toLowerCase();
+      // sari rânduri de header/instrucțiuni/exemplu
+      if(nl === 'nume complet' || nl === 'nume' || nl.includes('instruc') || nl.includes('exemplu')) continue;
 
-      const telefon = col(row,'Telefon','Tel','Phone');
-      const menuRaw = col(row,'Meniu','Menu').toLowerCase();
-      const cazRaw  = col(row,'Cazare').toLowerCase();
-      const masaRaw = col(row,'Masă','Masa','Masă','Table');
-      const obs     = col(row,'Observații / Note','Observatii','Observații','Note','Obs');
+      const telefon  = getCol(row, 'Telefon', 'Tel', 'Phone');
+      const menuRaw  = getCol(row, 'Meniu', 'Menu').toLowerCase();
+      const cazRaw   = getCol(row, 'Cazare').toLowerCase();
+      const masaNume = getCol(row, 'Masă', 'Masa', 'Table');
+      const obs      = getCol(row, 'Observații / Note', 'Observatii', 'Observații', 'Note', 'Obs');
 
-      let menu='normal';
-      if(menuRaw.includes('vegetarian')) menu='veg';
-      else if(menuRaw.includes('vegan')) menu='vegan';
-      else if(menuRaw.includes('copil')) menu='copil';
+      // normalizare meniu
+      let menu = 'normal';
+      if(menuRaw.includes('vegetarian')) menu = 'veg';
+      else if(menuRaw.includes('vegan'))  menu = 'vegan';
+      else if(menuRaw.includes('copil'))  menu = 'copil';
 
-      const cazare = cazRaw==='da' ? 'da' : 'nu';
+      const cazare = (cazRaw === 'da') ? 'da' : 'nu';
 
-      if(guests.find(g=>g.name.toLowerCase()===name.toLowerCase())){skipped++;continue;}
+      // skip duplicat
+      if(guests.find(g => g.name.toLowerCase() === nl)){ skipped++; continue; }
 
-      const g={id:nextGid++,name,telefon,menu,cazare,obs,tableId:null,seatIdx:null};
+      // crează invitatul
+      const g = {
+        id:      nextGid++,
+        name,
+        telefon,
+        menu,
+        cazare,
+        obs,
+        tableId: null,
+        seatIdx: null
+      };
 
-      if(masaRaw){
-        const t=tables.find(t=>t.name.toLowerCase()===masaRaw.toLowerCase());
-        if(t){
-          const occ=new Set(guests.filter(x=>Number(x.tableId)===Number(t.id)&&x.seatIdx!=null).map(x=>Number(x.seatIdx)));
-          let free=null;
-          for(let i=0;i<t.seats;i++){if(!occ.has(i)){free=i;break;}}
-          if(free!==null){g.tableId=Number(t.id);g.seatIdx=Number(free);assigned++;}
+      // asignare automată la masă dacă e completată coloana Masă
+      if(masaNume){
+        const masa = tables.find(t => t.name.toLowerCase() === masaNume.toLowerCase());
+        if(masa){
+          const ocupate = new Set(
+            guests
+              .filter(x => x.tableId === masa.id && x.seatIdx !== null)
+              .map(x => x.seatIdx)
+          );
+          let scaunLiber = null;
+          for(let i = 0; i < masa.seats; i++){
+            if(!ocupate.has(i)){ scaunLiber = i; break; }
+          }
+          if(scaunLiber !== null){
+            g.tableId = masa.id;   // păstrăm tipul original al id-ului
+            g.seatIdx = scaunLiber;
+            assigned++;
+          }
         }
       }
 
-      // Debug: log assignment
-      console.log('Import row:', name, '| masaRaw:', masaRaw, '| tableId:', g.tableId, '| seatIdx:', g.seatIdx);
-      guests.push(g);imported++;
+      guests.push(g);
+      imported++;
     }
 
-    const tableNames=tables.map(t=>t.name).join(', ');
-    let msg=`✓ ${imported} invitați importați`;
-    if(assigned) msg+=` · ${assigned} asignați la masă`;
-    else msg+=` · 0 asignați (mese în plan: ${tableNames})`;
-    if(skipped)  msg+=` · ${skipped} deja existenți (săriți)`;
-    if(imported===0){
-      const preview=rows.length ? 'Coloane găsite: '+Object.keys(rows[0]).join(' | ') : 'Niciun rând citit';
-      msg=`⚠ 0 importați din ${rows.length} rânduri. ${preview}`;
+    // mesaj rezultat
+    let msg = `✓ ${imported} invitați importați`;
+    if(assigned)      msg += ` · ${assigned} asignați automat la masă`;
+    if(skipped)       msg += ` · ${skipped} deja existenți (săriți)`;
+    if(imported === 0){
+      const coloane = rows.length ? Object.keys(rows[0]).join(' | ') : 'niciun rând';
+      msg = `⚠ 0 importați din ${rows.length} rânduri. Coloane citite: ${coloane}`;
     }
-    resEl.className='import-result';resEl.textContent=msg;
-    renderGuests();updateStats();draw();save();
+    resEl.className = 'import-result';
+    resEl.textContent = msg;
+    renderGuests();
+    updateStats();
+    draw();
+    save();
+
   }catch(err){
-    resEl.className='import-result err';
-    resEl.textContent='Eroare: '+err.message;
+    resEl.className = 'import-result err';
+    resEl.textContent = 'Eroare: ' + err.message;
     console.error(err);
   }
 }
@@ -1225,7 +1245,7 @@ async function confirmImport(){
 function exportPDF(){
   const win=window.open('','_blank','width=1200,height=800');
   const tablesByTable=tables.map(t=>{
-    const here=guests.filter(g=>g.tableId===t.id).sort((a,b)=>a.seatIdx-b.seatIdx);
+    const here=guests.filter(g=>g.tableId==t.id).sort((a,b)=>a.seatIdx-b.seatIdx);
     return{t,here};
   });
   const totalG=guests.length;
@@ -1374,10 +1394,10 @@ function toggleSidebar(){
 // ══════════════════════════════════════════
 // PERSIST
 // ══════════════════════════════════════════
-function save(){try{localStorage.setItem('mp6',JSON.stringify({tables,guests,decorElements,nextTid,nextGid,cityIdx}));}catch{}}
+function save(){try{localStorage.setItem('mp7',JSON.stringify({tables,guests,decorElements,nextTid,nextGid,cityIdx}));}catch{}}
 function load(){
   try{
-    const d=JSON.parse(localStorage.getItem('mp6'));
+    const d=JSON.parse(localStorage.getItem('mp7'));
     if(d){tables=d.tables||[];guests=d.guests||[];decorElements=d.decorElements||[];nextTid=d.nextTid||1;nextGid=d.nextGid||1;cityIdx=d.cityIdx||0;}
   }catch{}
 }
@@ -1401,7 +1421,7 @@ if(tables.length===0){
   // Masa mirilor — VERTICAL: narrow width, tall height
   // tw = TH_DEF (narrow), th = totalH + TH_DEF (as tall as the 4-table group)
   const miriH = totalH + TH_DEF*2;
-  tables.push({id:nextTid++,name:'Roma',seats:8,x:-TH_DEF/2-30,y:0,miri:true,
+  tables.push({id:nextTid++,name:'Roma',seats:4,x:-TH_DEF/2-30,y:0,miri:true,
     tw:TH_DEF, th:miriH});
 
   // Group 1: 4 columns × 4 rows
