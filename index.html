@@ -152,6 +152,7 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
         <button class="btn btn-outline" onclick="exportPDF()">↓ PDF</button>
         <button class="btn btn-outline" onclick="exportExcelTemplate()">↓ CSV</button>
         <button class="btn btn-outline" onclick="openImport()">↑ Excel</button>
+        <button class="btn btn-red btn-sm" onclick="confirmReset()" style="width:100%;margin-top:4px;justify-content:center;font-size:.72rem;" title="Șterge tot și resetează la layout default">⟳ Reset complet</button>
       </div>
     </div>
     <div class="sb">
@@ -621,14 +622,18 @@ function drawDecor(d){
   ctx.setLineDash([]);
 
   ctx.textAlign='center';ctx.textBaseline='middle';
-  if(sc>0.45){
-    ctx.font=`${Math.max(12,18*sc)}px serif`;
+  if(sc>0.4){
+    // Emoji — un singur caracter, font mic fix ca să nu se repete
+    const icon=d.type==='ring'?'♫':d.type==='bar'?'♦':'+';
+    const emojiMap={'ring':'💃','bar':'🥂','stage':'🎸'};
+    const em=emojiMap[d.type]||'✦';
+    ctx.font=`${Math.min(20,Math.max(14,16*sc))}px serif`;
     ctx.fillStyle=strokeColor;
-    const icon=d.type==='ring'?'♪':d.type==='bar'?'🍾':'♫';
-    ctx.fillText(icon,s.x,s.y-8*sc);
-    ctx.font=`600 ${Math.max(8,11*sc)}px 'Jost',sans-serif`;
+    ctx.fillText(em,s.x,s.y-9*sc);
+    // Label
+    ctx.font=`600 ${Math.max(9,11*sc)}px 'Jost',sans-serif`;
     ctx.fillStyle=strokeColor;
-    ctx.fillText(d.label,s.x,s.y+8*sc);
+    ctx.fillText(d.label,s.x,s.y+9*sc);
   } else {
     ctx.font=`${Math.max(7,10*sc)}px 'Jost',sans-serif`;
     ctx.fillStyle=strokeColor;ctx.fillText(d.label,s.x,s.y);
@@ -1492,6 +1497,63 @@ function exportExcelTemplate(){
 }
 
 
+
+// ══════════════════════════════════════════
+// RESET COMPLET
+// ══════════════════════════════════════════
+function confirmReset(){
+  if(!confirm('Ești sigur? Se vor șterge TOATE mesele, invitații și configurația salvată.')) return;
+  try{ localStorage.removeItem('mp10'); }catch(e){}
+  tables=[]; guests=[]; decorElements=[];
+  nextTid=1; nextGid=1; cityIdx=0;
+  sc=1; ox=0; oy=0;
+  initDefaultLayout();
+  renderGuests();
+  updateStats();
+  setTimeout(()=>{ fitView(); draw(); }, 50);
+}
+
+function initDefaultLayout(){
+  cityIdx=0;
+  const rowGap=TH_DEF+52;
+  const colGap=TW_DEF+55;
+  const rows=4;
+  const totalH=(rows-1)*rowGap;
+  const startY=-totalH/2;
+  const miriH=totalH+TH_DEF*2;
+  tables.push({id:nextTid++,name:'Roma',seats:4,x:-TH_DEF/2-30,y:0,miri:true,tw:TH_DEF,th:miriH});
+  const g1startX=80;
+  for(let col=0;col<4;col++){
+    for(let row=0;row<4;row++){
+      tables.push({id:nextTid++,name:nextCity(),seats:8,x:g1startX+col*colGap,y:startY+row*rowGap,miri:false});
+    }
+  }
+  const ringX=g1startX+4*colGap+120;
+  const ringW=190, ringH=260;
+  const stageH=100, barH=100, gap=20;
+  // Toate centrate pe ringX, stacked vertical
+  decorElements.push({type:'ring',  x:ringX, y:0,                                   w:ringW,   h:ringH,  label:'Ring dans'});
+  decorElements.push({type:'stage', x:ringX, y:-(ringH/2 + gap + stageH/2),         w:ringW,   h:stageH, label:'Scenă / Formație'});
+  decorElements.push({type:'bar',   x:ringX, y: (ringH/2 + gap + barH/2),           w:ringW,   h:barH,   label:'Bar'});
+  const g2startX=ringX+ringW/2+100;
+  for(let col=0;col<4;col++){
+    for(let row=0;row<4;row++){
+      tables.push({id:nextTid++,name:nextCity(),seats:8,x:g2startX+col*colGap,y:startY+row*rowGap,miri:false});
+    }
+  }
+}
+
+function fitView(){
+  if(!tables.length)return;
+  const xs=tables.map(t=>t.x),ys=tables.map(t=>t.y);
+  const minX=Math.min(...xs)-TW_DEF,maxX=Math.max(...xs)+TW_DEF;
+  const minY=Math.min(...ys)-TH_DEF*3,maxY=Math.max(...ys)+TH_DEF*3;
+  const scX=cv.width/(maxX-minX+120),scY=cv.height/(maxY-minY+100);
+  sc=Math.min(scX,scY,0.88);
+  ox=cv.width/2-((minX+maxX)/2)*sc;
+  oy=cv.height/2-((minY+maxY)/2)*sc;
+}
+
 function toggleSidebar(){
   const sb = document.getElementById('sidebar');
   const btn = document.getElementById('sb-toggle');
@@ -1504,10 +1566,10 @@ function toggleSidebar(){
 // ══════════════════════════════════════════
 // PERSIST
 // ══════════════════════════════════════════
-function save(){try{localStorage.setItem('mp8',JSON.stringify({tables,guests,decorElements,nextTid,nextGid,cityIdx}));}catch{}}
+function save(){try{localStorage.setItem('mp10',JSON.stringify({tables,guests,decorElements,nextTid,nextGid,cityIdx}));}catch{}}
 function load(){
   try{
-    const d=JSON.parse(localStorage.getItem('mp8'));
+    const d=JSON.parse(localStorage.getItem('mp10'));
     if(d){tables=d.tables||[];guests=d.guests||[];decorElements=d.decorElements||[];nextTid=d.nextTid||1;nextGid=d.nextGid||1;cityIdx=d.cityIdx||0;}
   }catch{}
 }
@@ -1519,58 +1581,10 @@ function load(){
 // Stage above ring, Bar below ring
 // ══════════════════════════════════════════
 load();
-
-if(tables.length===0){
-  cityIdx=0;
-  const rowGap=TH_DEF+52;
-  const colGap=TW_DEF+55;
-  const rows=4;
-  const totalH=(rows-1)*rowGap;
-  const startY=-totalH/2;
-
-  // Masa mirilor — VERTICAL: narrow width, tall height
-  // tw = TH_DEF (narrow), th = totalH + TH_DEF (as tall as the 4-table group)
-  const miriH = totalH + TH_DEF*2;
-  tables.push({id:nextTid++,name:'Roma',seats:4,x:-TH_DEF/2-30,y:0,miri:true,
-    tw:TH_DEF, th:miriH});
-
-  // Group 1: 4 columns × 4 rows
-  const g1startX=80;
-  for(let col=0;col<4;col++){
-    for(let row=0;row<4;row++){
-      tables.push({id:nextTid++,name:nextCity(),seats:8,x:g1startX+col*colGap,y:startY+row*rowGap,miri:false});
-    }
-  }
-
-  // Ring, Stage, Bar
-  const ringX=g1startX+4*colGap+120;
-  const ringW=180,ringH=230;
-  decorElements.push({type:'ring',x:ringX,y:0,w:ringW,h:ringH,label:'Ring dans'});
-  decorElements.push({type:'stage',x:ringX,y:-ringH/2-70,w:ringW+20,h:100,label:'Scenă / Formație'});
-  decorElements.push({type:'bar',x:ringX,y:ringH/2+70,w:ringW+20,h:100,label:'Bar'});
-
-  // Group 2: 4 columns × 4 rows
-  const g2startX=ringX+ringW/2+100;
-  for(let col=0;col<4;col++){
-    for(let row=0;row<4;row++){
-      tables.push({id:nextTid++,name:nextCity(),seats:8,x:g2startX+col*colGap,y:startY+row*rowGap,miri:false});
-    }
-  }
-}
-
-renderGuests();updateStats();
-setTimeout(()=>{
-  if(tables.length){
-    const xs=tables.map(t=>t.x), ys=tables.map(t=>t.y);
-    const minX=Math.min(...xs)-TW_DEF, maxX=Math.max(...xs)+TW_DEF;
-    const minY=Math.min(...ys)-TH_DEF*3, maxY=Math.max(...ys)+TH_DEF*3;
-    const scX=cv.width/(maxX-minX+120), scY=cv.height/(maxY-minY+100);
-    sc=Math.min(scX,scY,0.88);
-    ox=cv.width/2-((minX+maxX)/2)*sc;
-    oy=cv.height/2-((minY+maxY)/2)*sc;
-  }
-  draw();
-},60);
+if(tables.length===0) initDefaultLayout();
+renderGuests();
+updateStats();
+setTimeout(()=>{ fitView(); draw(); }, 60);
 </script>
 </body>
 </html>
