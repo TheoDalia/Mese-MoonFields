@@ -5,7 +5,180 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan Mese · Theo & Dalia · Moonfields</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ── Minimal XLSX parser (no external dependencies) ──────────────────────────
+// Reads .xlsx files using browser's native ZIP (via fflate-like approach with
+// DataView) + DOMParser for XML. Works offline in all modern browsers.
+const XLSXMini = (() => {
+  // ── ZIP parser ─────────────────────────────────────────────────────────────
+  function parseZip(ab) {
+    const view = new DataView(ab);
+    const files = {};
+    let i = 0;
+    const u8 = new Uint8Array(ab);
+    while (i < u8.length - 4) {
+      if (view.getUint32(i, true) !== 0x04034b50) { i++; continue; }
+      const flags      = view.getUint16(i + 6,  true);
+      const method     = view.getUint16(i + 8,  true);
+      let   cmpSize    = view.getUint32(i + 18, true);
+      let   uncmpSize  = view.getUint32(i + 22, true);
+      const fnLen      = view.getUint16(i + 26, true);
+      const extraLen   = view.getUint16(i + 28, true);
+      const fname      = new TextDecoder().decode(u8.slice(i + 30, i + 30 + fnLen));
+      const dataStart  = i + 30 + fnLen + extraLen;
+
+      // Handle data descriptor (flag bit 3)
+      if (flags & 0x08) {
+        // sizes in local header may be 0; find data descriptor after compressed data
+        // We'll locate it after we decompress — skip for now, use central dir later
+      }
+
+      if (method === 0) {
+        // Stored
+        files[fname] = u8.slice(dataStart, dataStart + uncmpSize);
+      } else if (method === 8) {
+        // Deflated — use DecompressionStream if available
+        try {
+          const compressed = u8.slice(dataStart, dataStart + cmpSize);
+          files[fname] = { compressed, uncmpSize, deferred: true };
+        } catch(e) {}
+      }
+      i = dataStart + cmpSize;
+    }
+    return files;
+  }
+
+  async function decompressEntry(entry) {
+    if (!entry.deferred) return entry;
+    const cs = new DecompressionStream('deflate-raw');
+    const writer = cs.writable.getWriter();
+    writer.write(entry.compressed);
+    writer.close();
+    const chunks = [];
+    const reader = cs.readable.getReader();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+    const total = chunks.reduce((s, c) => s + c.length, 0);
+    const out = new Uint8Array(total);
+    let off = 0;
+    for (const c of chunks) { out.set(c, off); off += c.length; }
+    return out;
+  }
+
+  function u8str(u8) { return new TextDecoder('utf-8').decode(u8); }
+
+  function xmlDoc(str) {
+    return new DOMParser().parseFromString(str, 'application/xml');
+  }
+
+  // ── Main read function ─────────────────────────────────────────────────────
+  async function read(arrayBuffer) {
+    const raw = parseZip(arrayBuffer);
+
+    // Decompress all needed files
+    async function getText(name) {
+      const e = raw[name]; if (!e) return '';
+      const u8 = e.deferred ? await decompressEntry(e) : e;
+      return u8str(u8);
+    }
+
+    const ssXml   = await getText('xl/sharedStrings.xml');
+    const sh1Xml  = await getText('xl/worksheets/sheet1.xml');
+
+    // Parse shared strings
+    const ssDoc = xmlDoc(ssXml);
+    const sharedStrings = [];
+    ssDoc.querySelectorAll('si').forEach(si => {
+      // Collect all <t> text, handle rich text
+      let txt = '';
+      si.querySelectorAll('t').forEach(t => { txt += t.textContent; });
+      sharedStrings.push(txt);
+    });
+
+    // Parse sheet1
+    const shDoc = sh1Xml ? xmlDoc(sh1Xml) : null;
+    if (!shDoc) return [];
+
+    // Build cell map
+    const cellMap = {};
+    shDoc.querySelectorAll('c').forEach(c => {
+      const ref = c.getAttribute('r');
+      const t   = c.getAttribute('t'); // type: s=shared string, else number/inline
+      const vEl = c.querySelector('v');
+      const isEl = c.querySelector('is');
+      let val = '';
+      if (isEl) {
+        // inline string
+        isEl.querySelectorAll('t').forEach(t => { val += t.textContent; });
+      } else if (vEl) {
+        if (t === 's') {
+          val = sharedStrings[parseInt(vEl.textContent)] || '';
+        } else {
+          val = vEl.textContent;
+        }
+      }
+      cellMap[ref] = val;
+    });
+
+    // Find dimensions
+    const dimEl = shDoc.querySelector('dimension');
+    let maxRow = 200, maxCol = 10;
+    if (dimEl) {
+      const ref = dimEl.getAttribute('ref') || '';
+      const m = ref.match(/:([A-Z]+)(\d+)$/);
+      if (m) { maxCol = colNum(m[1]); maxRow = parseInt(m[2]); }
+    }
+
+    // Convert to row objects using row 3 as header
+    // Find header row (row with "Nume complet")
+    let headerRow = 3;
+    for (let r = 1; r <= 5; r++) {
+      for (let c = 1; c <= maxCol; c++) {
+        const v = (cellMap[cellRef(r,c)]||'').toLowerCase();
+        if (v.includes('nume')) { headerRow = r; break; }
+      }
+    }
+
+    const headers = [];
+    for (let c = 1; c <= maxCol; c++) {
+      headers.push((cellMap[cellRef(headerRow, c)] || '').trim());
+    }
+
+    const rows = [];
+    for (let r = headerRow + 1; r <= maxRow; r++) {
+      const row = {};
+      let hasData = false;
+      for (let c = 1; c <= maxCol; c++) {
+        const v = (cellMap[cellRef(r, c)] || '').trim();
+        if (headers[c-1]) row[headers[c-1]] = v;
+        if (v) hasData = true;
+      }
+      if (hasData) rows.push(row);
+    }
+    return rows;
+  }
+
+  function cellRef(r, c) {
+    return colLetter(c) + r;
+  }
+  function colLetter(n) {
+    let s = '';
+    while (n > 0) { s = String.fromCharCode(65 + (n-1)%26) + s; n = Math.floor((n-1)/26); }
+    return s;
+  }
+  function colNum(s) {
+    let n = 0;
+    for (const ch of s) n = n * 26 + ch.charCodeAt(0) - 64;
+    return n;
+  }
+
+  return { read };
+})();
+</script>
+
 <style>
 :root {
   --bg:#f5f0e8;--panel:#fff;--deep:#1a1410;--brown:#5a3a28;
@@ -149,7 +322,7 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
       <div class="brow">
         <button class="btn btn-gold" onclick="openAddGuest()">＋ Invitat</button>
         <button class="btn btn-outline" onclick="exportPDF()">↓ PDF</button>
-        <button class="btn btn-outline" onclick="exportExcelTemplate()">↓ Excel</button>
+        <button class="btn btn-outline" onclick="exportExcelTemplate()">↓ CSV</button>
         <button class="btn btn-outline" onclick="openImport()">↑ Excel</button>
       </div>
     </div>
@@ -237,7 +410,7 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
     <h2>Import din Excel</h2>
     <div class="fg">
       <label>Selectează fișierul .xlsx (template completat)</label>
-      <input type="file" id="imp-file" accept=".xlsx,.xls" style="font-size:.76rem;padding:5px;">
+      <input type="file" id="imp-file" accept=".xlsx,.xls,.csv" style="font-size:.76rem;padding:5px;">
     </div>
     <div class="import-result" id="imp-res"></div>
     <div class="ma">
@@ -959,79 +1132,78 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelec
 // ══════════════════════════════════════════
 function openImport(){document.getElementById('imp-file').value='';document.getElementById('imp-res').style.display='none';document.getElementById('m-imp').classList.add('open');}
 
-function confirmImport(){
+async function confirmImport(){
   const file=document.getElementById('imp-file').files[0];
   if(!file){alert('Selectează un fișier .xlsx');return;}
   const resEl=document.getElementById('imp-res');
-  const reader=new FileReader();
-  reader.onload=(e)=>{
-    try{
-      const wb=XLSX.read(e.target.result,{type:'array'});
-      // Read first sheet
-      const ws=wb.Sheets[wb.SheetNames[0]];
-      const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+  resEl.className='import-result';resEl.style.display='block';resEl.textContent='⏳ Se procesează...';
 
-      let imported=0, skipped=0, assigned=0;
+  try{
+    const ab=await file.arrayBuffer();
+    const rows=await XLSXMini.read(ab);
 
-      // Column name normalization helpers
-      function col(row, ...names){
-        for(const n of names){
-          for(const k of Object.keys(row)){
-            if(k.toLowerCase().replace(/[^a-zăîșțâ]/gi,'').includes(n.toLowerCase().replace(/[^a-zăîșțâ]/gi,'')))
-              return String(row[k]).trim();
-          }
+    let imported=0,skipped=0,assigned=0;
+
+    // Match column by partial name (handles diacritics stripped)
+    function col(row,...names){
+      for(const n of names){
+        const nClean=n.toLowerCase().replace(/[^a-z]/g,'');
+        for(const k of Object.keys(row)){
+          const kClean=k.toLowerCase().replace(/[^a-z]/g,'');
+          if(kClean.includes(nClean)||nClean.includes(kClean))
+            return String(row[k]).trim();
         }
-        return '';
       }
-
-      for(const row of rows){
-        const name=col(row,'Nume complet','Nume','Name');
-        if(!name||name.toLowerCase().includes('instruc')||name.toLowerCase()==='nume complet')continue;
-
-        const telefon=col(row,'Telefon','Tel','Phone');
-        const menuRaw=col(row,'Meniu','Menu').toLowerCase();
-        const cazareRaw=col(row,'Cazare').toLowerCase();
-        const masaRaw=col(row,'Masă','Masa','Table');
-        const obs=col(row,'Observa','Note','Obs');
-
-        // Normalize menu
-        let menu='normal';
-        if(menuRaw.includes('vegetarian'))menu='veg';
-        else if(menuRaw.includes('vegan'))menu='vegan';
-        else if(menuRaw.includes('copil'))menu='copil';
-
-        // Normalize cazare
-        const cazare=cazareRaw==='da'?'da':'nu';
-
-        // Check duplicate
-        if(guests.find(g=>g.name.toLowerCase()===name.toLowerCase())){skipped++;continue;}
-
-        const newGuest={id:nextGid++,name,telefon,menu,cazare,obs,tableId:null,seatIdx:null};
-
-        // Auto-assign to table if Masă column is filled
-        if(masaRaw){
-          const t=tables.find(t=>t.name.toLowerCase()===masaRaw.toLowerCase());
-          if(t){
-            const occ=new Set(guests.filter(x=>x.tableId===t.id&&x.seatIdx!=null).map(x=>x.seatIdx));
-            let free=null;
-            for(let i=0;i<t.seats;i++){if(!occ.has(i)){free=i;break;}}
-            if(free!==null){newGuest.tableId=t.id;newGuest.seatIdx=free;assigned++;}
-          }
-        }
-
-        guests.push(newGuest);
-        imported++;
-      }
-
-      resEl.className='import-result';resEl.style.display='block';
-      resEl.textContent=`✓ ${imported} invitați importați${assigned?' ('+assigned+' auto-asignați la masă)':''}${skipped?', '+skipped+' deja existenți (săriți)':''}`;
-      renderGuests();updateStats();draw();save();
-    }catch(err){
-      resEl.className='import-result err';resEl.style.display='block';
-      resEl.textContent='Eroare: '+err.message;
+      return '';
     }
-  };
-  reader.readAsArrayBuffer(file);
+
+    for(const row of rows){
+      const name=col(row,'Numecomplet','Nume','Name');
+      if(!name)continue;
+      const nl=name.toLowerCase();
+      if(nl.includes('instruc')||nl==='numecomplet'||nl==='nume'||nl.includes('exemplu'))continue;
+
+      const telefon=col(row,'Telefon','Tel','Phone');
+      const menuRaw=col(row,'Meniu','Menu').toLowerCase();
+      const cazareRaw=col(row,'Cazare').toLowerCase();
+      const masaRaw=col(row,'Mas','Table');
+      const obs=col(row,'Observa','Note','Obs');
+
+      let menu='normal';
+      if(menuRaw.includes('vegetarian'))menu='veg';
+      else if(menuRaw.includes('vegan'))menu='vegan';
+      else if(menuRaw.includes('copil'))menu='copil';
+
+      const cazare=cazareRaw==='da'?'da':'nu';
+
+      if(guests.find(g=>g.name.toLowerCase()===name.toLowerCase())){skipped++;continue;}
+
+      const g={id:nextGid++,name,telefon,menu,cazare,obs,tableId:null,seatIdx:null};
+
+      if(masaRaw){
+        const t=tables.find(t=>t.name.toLowerCase()===masaRaw.toLowerCase());
+        if(t){
+          const occ=new Set(guests.filter(x=>x.tableId===t.id&&x.seatIdx!=null).map(x=>x.seatIdx));
+          let free=null;
+          for(let i=0;i<t.seats;i++){if(!occ.has(i)){free=i;break;}}
+          if(free!==null){g.tableId=t.id;g.seatIdx=free;assigned++;}
+        }
+      }
+
+      guests.push(g);imported++;
+    }
+
+    let msg=`✓ ${imported} invitați importați`;
+    if(assigned) msg+=` · ${assigned} auto-asignați la masă`;
+    if(skipped)  msg+=` · ${skipped} deja existenți (săriți)`;
+    if(imported===0) msg+=` — niciun rând valid găsit (${rows.length} rânduri citite). Verifică că ai șters rândurile exemplu din Excel.`;
+    resEl.className='import-result';resEl.textContent=msg;
+    renderGuests();updateStats();draw();save();
+  }catch(err){
+    resEl.className='import-result err';
+    resEl.textContent='Eroare: '+err.message;
+    console.error(err);
+  }
 }
 
 // ══════════════════════════════════════════
@@ -1134,92 +1306,46 @@ function exportPDF(){
 }
 
 // ══════════════════════════════════════════
-// EXCEL TEMPLATE EXPORT (cu mese dinamice)
+// EXCEL/CSV EXPORT (fără librării externe)
 // ══════════════════════════════════════════
 function exportExcelTemplate(){
-  const wb = XLSX.utils.book_new();
+  // Generate CSV cu BOM pentru Excel (suportă diacritice)
+  const MENU_MAP = {normal:'Normal',veg:'Vegetarian',vegan:'Vegan',copil:'Copil'};
 
-  // ── Sheet 1: Invitați ──────────────────
-  const tableNames = tables.map(t=>t.name).join(',');
+  const headers = ['Nume complet','Telefon','Meniu','Cazare','Masă','Observații','ID'];
 
-  // Existing guests as pre-filled rows
-  const existingRows = guests.map((g,i)=>{
+  // Existing guests
+  const existingRows = guests.map(g=>{
     const t = g.tableId ? tables.find(x=>x.id===g.tableId) : null;
-    const menuLabel = {normal:'Normal',veg:'Vegetarian',vegan:'Vegan',copil:'Copil'}[g.menu]||'Normal';
-    return {
-      'Nume complet': g.name,
-      'Telefon': g.telefon||'',
-      'Meniu': menuLabel,
-      'Cazare': g.cazare==='da'?'Da':'Nu',
-      'Masă': t?t.name:'',
-      'Observații': g.obs||'',
-      'ID': g.id
-    };
+    return [
+      g.name,
+      g.telefon||'',
+      MENU_MAP[g.menu]||'Normal',
+      g.cazare==='da'?'Da':'Nu',
+      t?t.name:'',
+      g.obs||'',
+      g.id
+    ];
   });
 
-  // Empty rows for new guests
-  const emptyRows = Array.from({length:60},(_,i)=>({
-    'Nume complet':'','Telefon':'','Meniu':'','Cazare':'','Masă':'','Observații':'','ID':''
-  }));
+  // Empty rows
+  const emptyRows = Array.from({length:60},()=>['','','','','','','']);
 
-  const allRows = [...existingRows, ...emptyRows];
-  const ws = XLSX.utils.json_to_sheet(allRows, {
-    header:['Nume complet','Telefon','Meniu','Cazare','Masă','Observații','ID']
-  });
+  const allRows = [headers, ...existingRows, ...emptyRows];
 
-  // Column widths
-  ws['!cols'] = [
-    {wch:28},{wch:16},{wch:14},{wch:10},{wch:18},{wch:30},{wch:6}
-  ];
+  // Escape CSV cell
+  function esc(v){
+    const s=String(v??'');
+    return (s.includes(',') || s.includes('"') || s.includes('\n'))
+      ? '"'+s.replace(/"/g,'""')+'"' : s;
+  }
 
-  // Data validations
-  ws['!dataValidation'] = [
-    {
-      type:'list', sqref:`C2:C${allRows.length+1}`,
-      formula1:'"Normal,Vegetarian,Vegan,Copil"',
-      showDropDown:false, showErrorMessage:true
-    },
-    {
-      type:'list', sqref:`D2:D${allRows.length+1}`,
-      formula1:'"Da,Nu"',
-      showDropDown:false, showErrorMessage:true
-    },
-    // Masa dropdown cu mesele din plan (max 255 chars)
-    ...(tableNames.length < 250 ? [{
-      type:'list', sqref:`E2:E${allRows.length+1}`,
-      formula1:`"${tableNames}"`,
-      showDropDown:false, showErrorMessage:true
-    }] : [])
-  ];
-
-  XLSX.utils.book_append_sheet(wb, ws, 'Invitați');
-
-  // ── Sheet 2: Mese (referință) ───────────────────────
-  const masaSheet = XLSX.utils.aoa_to_sheet([
-    ['Masă','Scaune','Ocupate'],
-    ...tables.map(t=>{
-      const occ = guests.filter(g=>g.tableId===t.id).length;
-      return [t.name, t.seats, occ];
-    })
-  ]);
-  masaSheet['!cols']=[{wch:20},{wch:10},{wch:10}];
-  XLSX.utils.book_append_sheet(wb, masaSheet, 'Mese');
-
-  // ── Sheet 3: Rezumat ────────────────────────────────
-  const rezSheet = XLSX.utils.aoa_to_sheet([
-    ['Rezumat',''],
-    ['Total invitați',`=COUNTA(Invitați!A2:A${allRows.length+1})`],
-    ['Normal',`=COUNTIF(Invitați!C2:C${allRows.length+1},"Normal")`],
-    ['Vegetarian',`=COUNTIF(Invitați!C2:C${allRows.length+1},"Vegetarian")`],
-    ['Vegan',`=COUNTIF(Invitați!C2:C${allRows.length+1},"Vegan")`],
-    ['Copil',`=COUNTIF(Invitați!C2:C${allRows.length+1},"Copil")`],
-    ['Cu cazare',`=COUNTIF(Invitați!D2:D${allRows.length+1},"Da")`],
-    ['Fără cazare',`=COUNTIF(Invitați!D2:D${allRows.length+1},"Nu")`],
-  ]);
-  rezSheet['!cols']=[{wch:16},{wch:10}];
-  XLSX.utils.book_append_sheet(wb, rezSheet, 'Rezumat');
-
-  XLSX.writeFile(wb, 'invitatii-theo-dalia.xlsx');
+  const csv = '\uFEFF' + allRows.map(r=>r.map(esc).join(',')).join('\r\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='invitatii-theo-dalia.csv'; a.click();
+  URL.revokeObjectURL(url);
 }
 
 
