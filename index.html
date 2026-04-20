@@ -443,9 +443,14 @@ let nextTid = 1, nextGid = 1;
 
 let sc = 1, ox = 0, oy = 0;
 let dragT = null, dragSX, dragSY, dragTX0, dragTY0;
+let dragD = null, dragDSX, dragDSY, dragDX0, dragDY0;
+let dragSeat = null; // {guest, fromTableId, fromSeatIdx, curX, curY}
 let pan = false, panSX, panSY, panOX, panOY;
 let clickMoved = false;
-let activeTid = null, activeSeat = null;
+let activeTid = null;
+let activeSeat = null;
+let activeDecor = null;
+let resizingDecor = null;
 
 const cv = document.getElementById('cv');
 const ctx = cv.getContext('2d');
@@ -795,10 +800,8 @@ function getDecorCornerAt(sx,sy){
   return null;
 }
 
-let dragD=null, dragDSX, dragDSY, dragDX0, dragDY0;
-let dragSeat=null; // {guest, fromTableId, fromSeatIdx, curX, curY} — drag scaun→scaun
-let activeDecor=null;
-let resizingDecor=null; // {d, corner, startSX, startSY, origW, origH, origX, origY}
+
+
 
 function showDecorPopup(d, cx, cy){
   activeDecor=d;
