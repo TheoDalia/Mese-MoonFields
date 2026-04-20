@@ -544,7 +544,7 @@ function draw(){
 }
 
 function drawDragGhost(ds){
-  const r=(SEAT_R+2)*sc;
+  const r=Math.max(10,(SEAT_R+2)*sc);
   ctx.save();
   // Evidențiază scaunul sursă
   const fromTable=tables.find(t=>t.id==ds.fromTableId);
@@ -718,7 +718,7 @@ function drawCornerHandles(t) {
 }
 
 function drawSeat(sx,sy,tableId,idx){
-  const r=SEAT_R*sc;
+  const r=Math.max(5,SEAT_R*sc);
   const g=guests.find(x=>x.tableId==tableId&&x.seatIdx==idx);
   const isAct=activeSeat&&activeSeat.tableId==tableId&&activeSeat.seatIdx==idx;
   ctx.save();
@@ -757,7 +757,7 @@ function getSeatAt(sx,sy){
     for(let idx=0;idx<spos.length;idx++){
       const sp=spos[idx];
       const cx=s.x+sp.x*sc,cy=s.y+sp.y*sc;
-      if(Math.sqrt((sx-cx)**2+(sy-cy)**2)<(SEAT_R+4)*sc)return{tableId:t.id,seatIdx:idx};
+      if(Math.sqrt((sx-cx)**2+(sy-cy)**2)<Math.max(12,(SEAT_R+4)*sc))return{tableId:t.id,seatIdx:idx};
     }
   }
   return null;
@@ -849,12 +849,12 @@ cv.addEventListener('mousedown',e=>{
     return;
   }
 
-  // Seat drag — dacă scaunul e ocupat, inițiem drag invitat
+  // Seat drag — scaun ocupat are prioritate față de table drag
   const seatHit=getSeatAt(e.offsetX,e.offsetY);
   if(seatHit){
-    const g=guests.find(x=>x.tableId==seatHit.tableId&&x.seatIdx==seatHit.seatIdx);
-    if(g){
-      dragSeat={guest:g,fromTableId:seatHit.tableId,fromSeatIdx:seatHit.seatIdx,
+    const gDrag=guests.find(x=>x.tableId==seatHit.tableId&&x.seatIdx==seatHit.seatIdx);
+    if(gDrag){
+      dragSeat={guest:gDrag,fromTableId:seatHit.tableId,fromSeatIdx:seatHit.seatIdx,
                 curX:e.offsetX,curY:e.offsetY};
       cv.style.cursor='grabbing';
       return;
@@ -933,17 +933,21 @@ cv.addEventListener('mouseup',e=>{
   if(dragSeat){
     const ds=dragSeat; dragSeat=null; cv.style.cursor='default';
     const targetSeat=getSeatAt(e.offsetX,e.offsetY);
-    if(targetSeat && (targetSeat.tableId!=ds.fromTableId || targetSeat.seatIdx!=ds.fromSeatIdx)){
-      // Verifică dacă scaunul țintă e ocupat
-      const targetGuest=guests.find(x=>x.tableId==targetSeat.tableId&&x.seatIdx==targetSeat.seatIdx);
-      if(targetGuest){
-        // Schimbă locurile între ei (swap)
-        targetGuest.tableId=ds.fromTableId;
-        targetGuest.seatIdx=ds.fromSeatIdx;
+    if(targetSeat){
+      const isDifferent = (targetSeat.tableId!=ds.fromTableId || targetSeat.seatIdx!=ds.fromSeatIdx);
+      if(isDifferent){
+        // Dacă scaunul țintă e ocupat → swap
+        const targetGuest=guests.find(x=>x.tableId==targetSeat.tableId&&x.seatIdx==targetSeat.seatIdx);
+        if(targetGuest){
+          targetGuest.tableId=ds.fromTableId;
+          targetGuest.seatIdx=ds.fromSeatIdx;
+        }
+        ds.guest.tableId=targetSeat.tableId;
+        ds.guest.seatIdx=targetSeat.seatIdx;
       }
-      // Mută invitatul drag-uit pe scaunul țintă
-      ds.guest.tableId=targetSeat.tableId;
-      ds.guest.seatIdx=targetSeat.seatIdx;
+    } else {
+      // Drop în afara oricărui scaun → scoate invitatul de la masă
+      // (nu facem nimic — rămâne pe scaunul original)
     }
     renderGuests();updateStats();draw();save();return;
   }
@@ -1006,10 +1010,10 @@ cv.addEventListener('touchend',e=>{
       else{const d=getDecorAt(tx,ty);if(d){activeDecor=d;showDecorPopup(d,e.changedTouches[0].clientX,e.changedTouches[0].clientY);}}
     }
   }
-  if(dragSeat&&!tMv===false){
+  if(dragSeat){
     const r=cv.getBoundingClientRect();
     const tx2=e.changedTouches[0].clientX-r.left,ty2=e.changedTouches[0].clientY-r.top;
-    const ds=dragSeat;dragSeat=null;
+    const ds=dragSeat; dragSeat=null;
     const targetSeat=getSeatAt(tx2,ty2);
     if(targetSeat&&(targetSeat.tableId!=ds.fromTableId||targetSeat.seatIdx!=ds.fromSeatIdx)){
       const tg=guests.find(x=>x.tableId==targetSeat.tableId&&x.seatIdx==targetSeat.seatIdx);
@@ -1497,10 +1501,10 @@ function toggleSidebar(){
 // ══════════════════════════════════════════
 // PERSIST
 // ══════════════════════════════════════════
-function save(){try{localStorage.setItem('mp7',JSON.stringify({tables,guests,decorElements,nextTid,nextGid,cityIdx}));}catch{}}
+function save(){try{localStorage.setItem('mp8',JSON.stringify({tables,guests,decorElements,nextTid,nextGid,cityIdx}));}catch{}}
 function load(){
   try{
-    const d=JSON.parse(localStorage.getItem('mp7'));
+    const d=JSON.parse(localStorage.getItem('mp8'));
     if(d){tables=d.tables||[];guests=d.guests||[];decorElements=d.decorElements||[];nextTid=d.nextTid||1;nextGid=d.nextGid||1;cityIdx=d.cityIdx||0;}
   }catch{}
 }
