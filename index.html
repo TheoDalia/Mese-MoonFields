@@ -31,10 +31,13 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
 .ms-dot{width:7px;height:7px;border-radius:50%;}
 
 /* MAIN */
-.main{display:flex;flex:1;overflow:hidden;}
-
+.main{display:flex;flex:1;overflow:hidden;position:relative;}
 /* SIDEBAR */
-.sidebar{width:255px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar{width:255px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:width .25s ease,opacity .2s ease;position:relative;}
+.sidebar.collapsed{width:0;opacity:0;border-right:none;pointer-events:none;}
+/* Toggle tab — lives on the .main container, always visible */
+#sb-toggle{position:absolute;top:50%;transform:translateY(-50%);left:255px;z-index:30;width:18px;height:52px;background:var(--deep);border:none;border-radius:0 7px 7px 0;cursor:pointer;color:var(--gold2);font-size:.75rem;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:2px 0 8px var(--shadow);transition:left .25s ease,background .13s;padding:0;}
+#sb-toggle:hover{background:#2e2018;}
 .sb{padding:9px 11px;border-bottom:1px solid var(--border);}
 .sb h3{font-family:'Cormorant Garamond',serif;font-size:.78rem;font-weight:600;color:var(--brown);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;}
 .btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border:none;border-radius:5px;font-family:'Jost',sans-serif;font-size:.73rem;font-weight:500;cursor:pointer;transition:all .12s;}
@@ -131,7 +134,8 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
   </div>
 </header>
 <div class="main">
-  <div class="sidebar">
+  <button id="sb-toggle" onclick="toggleSidebar()" title="Ascunde/Arată panoul">◀</button>
+  <div class="sidebar" id="sidebar">
     <div class="sb">
       <h3>Adaugă rând</h3>
       <div class="rc">
@@ -1115,6 +1119,19 @@ function exportPDF(){
   <script>window.onload=()=>window.print();<\/script>
   </body></html>`;
   win.document.write(html);win.document.close();
+}
+
+
+// ══════════════════════════════════════════
+// SIDEBAR TOGGLE
+// ══════════════════════════════════════════
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar');
+  const btn = document.getElementById('sb-toggle');
+  const isCollapsed = sb.classList.toggle('collapsed');
+  btn.textContent = isCollapsed ? '▶' : '◀';
+  btn.style.left = isCollapsed ? '0px' : '255px';
+  setTimeout(() => resize(), 270);
 }
 
 // ══════════════════════════════════════════
