@@ -149,6 +149,7 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
       <div class="brow">
         <button class="btn btn-gold" onclick="openAddGuest()">＋ Invitat</button>
         <button class="btn btn-outline" onclick="exportPDF()">↓ PDF</button>
+        <button class="btn btn-outline" onclick="exportExcelTemplate()">↓ Excel</button>
         <button class="btn btn-outline" onclick="openImport()">↑ Excel</button>
       </div>
     </div>
@@ -207,6 +208,7 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
   <div class="modal">
     <h2>Adaugă invitat</h2>
     <div class="fg"><label>Nume complet</label><input type="text" id="g-name" placeholder="ex: Ion Popescu"></div>
+    <div class="fg"><label>Telefon</label><input type="text" id="g-tel" placeholder="ex: 0722 123 456"></div>
     <div class="fg"><label>Meniu</label>
       <select id="g-menu">
         <option value="normal">Normal</option>
@@ -806,7 +808,7 @@ function showPopup(t,cx,cy){
   here.forEach(g=>{
     const li=document.createElement('li');
     li.innerHTML=`<span class="sbadge" style="background:${menuColor(g.menu)}">${g.seatIdx!=null?g.seatIdx+1:'?'}</span>
-      <span style="flex:1">${g.name}</span>
+      <span style="flex:1">${g.name}${g.telefon?` <span style="font-size:.58rem;color:#a09080">· ${g.telefon}</span>`:''}</span>
       <span style="font-size:.58rem;color:#b0a090">${MENU_LABELS[g.menu]||''}${g.cazare==='da'?' 🏨':''}</span>
       <button class="rg" onclick="unassign(${g.id})">✕</button>`;
     ul.appendChild(li);
@@ -881,14 +883,15 @@ function addRow(){
 // ══════════════════════════════════════════
 // GUESTS
 // ══════════════════════════════════════════
-function openAddGuest(){document.getElementById('g-name').value='';document.getElementById('m-g').classList.add('open');setTimeout(()=>document.getElementById('g-name').focus(),80);}
+function openAddGuest(){document.getElementById('g-name').value='';document.getElementById('g-tel').value='';document.getElementById('m-g').classList.add('open');setTimeout(()=>document.getElementById('g-name').focus(),80);}
 function confirmGuest(){
   const name=document.getElementById('g-name').value.trim();
   if(!name){alert('Introdu un nume.');return;}
+  const telefon=document.getElementById('g-tel').value.trim();
   const menu=document.getElementById('g-menu').value;
   const cazare=document.getElementById('g-caz').value;
   const obs=document.getElementById('g-obs').value.trim();
-  guests.push({id:nextGid++,name,menu,cazare,obs,tableId:null,seatIdx:null});
+  guests.push({id:nextGid++,name,telefon,menu,cazare,obs,tableId:null,seatIdx:null});
   cm('m-g');renderGuests();updateStats();save();
 }
 function assignToTable(gid,tid){
@@ -985,6 +988,7 @@ function confirmImport(){
         const name=col(row,'Nume complet','Nume','Name');
         if(!name||name.toLowerCase().includes('instruc')||name.toLowerCase()==='nume complet')continue;
 
+        const telefon=col(row,'Telefon','Tel','Phone');
         const menuRaw=col(row,'Meniu','Menu').toLowerCase();
         const cazareRaw=col(row,'Cazare').toLowerCase();
         const masaRaw=col(row,'Masă','Masa','Table');
@@ -1002,7 +1006,7 @@ function confirmImport(){
         // Check duplicate
         if(guests.find(g=>g.name.toLowerCase()===name.toLowerCase())){skipped++;continue;}
 
-        const newGuest={id:nextGid++,name,menu,cazare,obs,tableId:null,seatIdx:null};
+        const newGuest={id:nextGid++,name,telefon,menu,cazare,obs,tableId:null,seatIdx:null};
 
         // Auto-assign to table if Masă column is filled
         if(masaRaw){
@@ -1129,10 +1133,96 @@ function exportPDF(){
   win.document.write(html);win.document.close();
 }
 
+// ══════════════════════════════════════════
+// EXCEL TEMPLATE EXPORT (cu mese dinamice)
+// ══════════════════════════════════════════
+function exportExcelTemplate(){
+  const wb = XLSX.utils.book_new();
 
-// ══════════════════════════════════════════
-// SIDEBAR TOGGLE
-// ══════════════════════════════════════════
+  // ── Sheet 1: Invitați ──────────────────
+  const tableNames = tables.map(t=>t.name).join(',');
+
+  // Existing guests as pre-filled rows
+  const existingRows = guests.map((g,i)=>{
+    const t = g.tableId ? tables.find(x=>x.id===g.tableId) : null;
+    const menuLabel = {normal:'Normal',veg:'Vegetarian',vegan:'Vegan',copil:'Copil'}[g.menu]||'Normal';
+    return {
+      'Nume complet': g.name,
+      'Telefon': g.telefon||'',
+      'Meniu': menuLabel,
+      'Cazare': g.cazare==='da'?'Da':'Nu',
+      'Masă': t?t.name:'',
+      'Observații': g.obs||'',
+      'ID': g.id
+    };
+  });
+
+  // Empty rows for new guests
+  const emptyRows = Array.from({length:60},(_,i)=>({
+    'Nume complet':'','Telefon':'','Meniu':'','Cazare':'','Masă':'','Observații':'','ID':''
+  }));
+
+  const allRows = [...existingRows, ...emptyRows];
+  const ws = XLSX.utils.json_to_sheet(allRows, {
+    header:['Nume complet','Telefon','Meniu','Cazare','Masă','Observații','ID']
+  });
+
+  // Column widths
+  ws['!cols'] = [
+    {wch:28},{wch:16},{wch:14},{wch:10},{wch:18},{wch:30},{wch:6}
+  ];
+
+  // Data validations
+  ws['!dataValidation'] = [
+    {
+      type:'list', sqref:`C2:C${allRows.length+1}`,
+      formula1:'"Normal,Vegetarian,Vegan,Copil"',
+      showDropDown:false, showErrorMessage:true
+    },
+    {
+      type:'list', sqref:`D2:D${allRows.length+1}`,
+      formula1:'"Da,Nu"',
+      showDropDown:false, showErrorMessage:true
+    },
+    // Masa dropdown cu mesele din plan (max 255 chars)
+    ...(tableNames.length < 250 ? [{
+      type:'list', sqref:`E2:E${allRows.length+1}`,
+      formula1:`"${tableNames}"`,
+      showDropDown:false, showErrorMessage:true
+    }] : [])
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Invitați');
+
+  // ── Sheet 2: Mese (referință) ───────────────────────
+  const masaSheet = XLSX.utils.aoa_to_sheet([
+    ['Masă','Scaune','Ocupate'],
+    ...tables.map(t=>{
+      const occ = guests.filter(g=>g.tableId===t.id).length;
+      return [t.name, t.seats, occ];
+    })
+  ]);
+  masaSheet['!cols']=[{wch:20},{wch:10},{wch:10}];
+  XLSX.utils.book_append_sheet(wb, masaSheet, 'Mese');
+
+  // ── Sheet 3: Rezumat ────────────────────────────────
+  const rezSheet = XLSX.utils.aoa_to_sheet([
+    ['Rezumat',''],
+    ['Total invitați',`=COUNTA(Invitați!A2:A${allRows.length+1})`],
+    ['Normal',`=COUNTIF(Invitați!C2:C${allRows.length+1},"Normal")`],
+    ['Vegetarian',`=COUNTIF(Invitați!C2:C${allRows.length+1},"Vegetarian")`],
+    ['Vegan',`=COUNTIF(Invitați!C2:C${allRows.length+1},"Vegan")`],
+    ['Copil',`=COUNTIF(Invitați!C2:C${allRows.length+1},"Copil")`],
+    ['Cu cazare',`=COUNTIF(Invitați!D2:D${allRows.length+1},"Da")`],
+    ['Fără cazare',`=COUNTIF(Invitați!D2:D${allRows.length+1},"Nu")`],
+  ]);
+  rezSheet['!cols']=[{wch:16},{wch:10}];
+  XLSX.utils.book_append_sheet(wb, rezSheet, 'Rezumat');
+
+  XLSX.writeFile(wb, 'invitatii-theo-dalia.xlsx');
+}
+
+
 function toggleSidebar(){
   const sb = document.getElementById('sidebar');
   const btn = document.getElementById('sb-toggle');
