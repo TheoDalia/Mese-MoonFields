@@ -602,7 +602,7 @@ function drawTable(t){
   const tw=tW(t)*sc, th=tH(t)*sc;
   const rx=s.x-tw/2, ry=s.y-th/2;
   const isAct=activeTid===t.id;
-  const gHere=guests.filter(g=>g.tableId===t.id);
+  const gHere=guests.filter(g=>Number(g.tableId)===Number(t.id));
   const filled=gHere.length;
 
   ctx.save();
@@ -676,7 +676,7 @@ function drawCornerHandles(t) {
 
 function drawSeat(sx,sy,tableId,idx){
   const r=SEAT_R*sc;
-  const g=guests.find(x=>x.tableId===tableId&&x.seatIdx===idx);
+  const g=guests.find(x=>Number(x.tableId)===Number(tableId)&&Number(x.seatIdx)===Number(idx));
   const isAct=activeSeat&&activeSeat.tableId===tableId&&activeSeat.seatIdx===idx;
   ctx.save();
   ctx.beginPath();ctx.arc(sx,sy,r,0,Math.PI*2);
@@ -714,7 +714,7 @@ function getSeatAt(sx,sy){
     for(let idx=0;idx<spos.length;idx++){
       const sp=spos[idx];
       const cx=s.x+sp.x*sc,cy=s.y+sp.y*sc;
-      if(Math.sqrt((sx-cx)**2+(sy-cy)**2)<(SEAT_R+4)*sc)return{tableId:t.id,seatIdx:idx};
+      if(Math.sqrt((sx-cx)**2+(sy-cy)**2)<(SEAT_R+4)*sc)return{tableId:Number(t.id),seatIdx:Number(idx)};
     }
   }
   return null;
@@ -938,7 +938,7 @@ function showST(seat,cx,cy){
   activeSeat=seat;
   const tip=document.getElementById('stip');
   const t=tables.find(x=>x.id===seat.tableId);
-  const existing=guests.find(g=>g.tableId===seat.tableId&&g.seatIdx===seat.seatIdx);
+  const existing=guests.find(g=>Number(g.tableId)===Number(seat.tableId)&&Number(g.seatIdx)===Number(seat.seatIdx));
   document.getElementById('stip-t').textContent=`${t.name} — Scaun ${seat.seatIdx+1}${existing?' (ocupat)':''}`;
   const l=document.getElementById('stip-l');l.innerHTML='';
   if(existing){
@@ -975,7 +975,7 @@ function showPopup(t,cx,cy){
   activeTid=t.id;
   document.getElementById('pp-name').textContent=t.name;
   document.getElementById('pp-snum').textContent=t.seats;
-  const here=guests.filter(g=>g.tableId===t.id);
+  const here=guests.filter(g=>Number(g.tableId)===Number(t.id));
   document.getElementById('pp-sc').textContent=`${here.length}/${t.seats}`;
   const ul=document.getElementById('pp-gl');ul.innerHTML='';
   here.forEach(g=>{
@@ -1104,7 +1104,7 @@ function delGuest(id,e){
 function updateStats(){
   document.getElementById('s-t').textContent=tables.length;
   document.getElementById('s-g').textContent=guests.length;
-  const a=guests.filter(g=>g.tableId).length;
+  const a=guests.filter(g=>g.tableId!==null&&g.tableId!==undefined&&g.tableId!=='').length;
   document.getElementById('s-a').textContent=a;
   document.getElementById('s-u').textContent=guests.length-a;
   document.getElementById('s-caz').textContent=guests.filter(g=>g.cazare==='da').length;
@@ -1189,10 +1189,10 @@ async function confirmImport(){
       if(masaRaw){
         const t=tables.find(t=>t.name.toLowerCase()===masaRaw.toLowerCase());
         if(t){
-          const occ=new Set(guests.filter(x=>x.tableId===t.id&&x.seatIdx!=null).map(x=>x.seatIdx));
+          const occ=new Set(guests.filter(x=>Number(x.tableId)===Number(t.id)&&x.seatIdx!=null).map(x=>Number(x.seatIdx)));
           let free=null;
           for(let i=0;i<t.seats;i++){if(!occ.has(i)){free=i;break;}}
-          if(free!==null){g.tableId=t.id;g.seatIdx=free;assigned++;}
+          if(free!==null){g.tableId=Number(t.id);g.seatIdx=Number(free);assigned++;}
         }
       }
 
