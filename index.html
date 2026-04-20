@@ -1144,37 +1144,43 @@ async function confirmImport(){
 
     let imported=0,skipped=0,assigned=0;
 
-    // Match column by partial name (handles diacritics stripped)
-    function col(row,...names){
-      for(const n of names){
-        const nClean=n.toLowerCase().replace(/[^a-z]/g,'');
-        for(const k of Object.keys(row)){
-          const kClean=k.toLowerCase().replace(/[^a-z]/g,'');
-          if(kClean.includes(nClean)||nClean.includes(kClean))
-            return String(row[k]).trim();
-        }
+    // Find value by trying multiple candidate column names
+    // Strategy: exact match (case-insensitive) > startsWith > includes
+    function col(row,...candidates){
+      const keys=Object.keys(row);
+      for(const cand of candidates){
+        const cl=cand.toLowerCase();
+        // exact
+        let k=keys.find(k=>k.toLowerCase()===cl);
+        if(k) return String(row[k]).trim();
+        // starts with
+        k=keys.find(k=>k.toLowerCase().startsWith(cl)||cl.startsWith(k.toLowerCase()));
+        if(k) return String(row[k]).trim();
+        // includes
+        k=keys.find(k=>k.toLowerCase().includes(cl)||cl.includes(k.toLowerCase()));
+        if(k&&k.length>2) return String(row[k]).trim();
       }
       return '';
     }
 
     for(const row of rows){
-      const name=col(row,'Numecomplet','Nume','Name');
-      if(!name)continue;
+      const name=col(row,'Nume complet','Nume','Name');
+      if(!name) continue;
       const nl=name.toLowerCase();
-      if(nl.includes('instruc')||nl==='numecomplet'||nl==='nume'||nl.includes('exemplu'))continue;
+      if(nl.includes('instruc')||nl.includes('exemplu')||nl==='nume complet'||nl==='nume') continue;
 
-      const telefon=col(row,'Telefon','Tel','Phone');
-      const menuRaw=col(row,'Meniu','Menu').toLowerCase();
-      const cazareRaw=col(row,'Cazare').toLowerCase();
-      const masaRaw=col(row,'Mas','Table');
-      const obs=col(row,'Observa','Note','Obs');
+      const telefon = col(row,'Telefon','Tel','Phone');
+      const menuRaw = col(row,'Meniu','Menu').toLowerCase();
+      const cazRaw  = col(row,'Cazare').toLowerCase();
+      const masaRaw = col(row,'Masă','Masa','Masă','Table');
+      const obs     = col(row,'Observații / Note','Observatii','Observații','Note','Obs');
 
       let menu='normal';
-      if(menuRaw.includes('vegetarian'))menu='veg';
-      else if(menuRaw.includes('vegan'))menu='vegan';
-      else if(menuRaw.includes('copil'))menu='copil';
+      if(menuRaw.includes('vegetarian')) menu='veg';
+      else if(menuRaw.includes('vegan')) menu='vegan';
+      else if(menuRaw.includes('copil')) menu='copil';
 
-      const cazare=cazareRaw==='da'?'da':'nu';
+      const cazare = cazRaw==='da' ? 'da' : 'nu';
 
       if(guests.find(g=>g.name.toLowerCase()===name.toLowerCase())){skipped++;continue;}
 
@@ -1190,13 +1196,20 @@ async function confirmImport(){
         }
       }
 
+      // Debug: log assignment
+      console.log('Import row:', name, '| masaRaw:', masaRaw, '| tableId:', g.tableId, '| seatIdx:', g.seatIdx);
       guests.push(g);imported++;
     }
 
+    const tableNames=tables.map(t=>t.name).join(', ');
     let msg=`✓ ${imported} invitați importați`;
-    if(assigned) msg+=` · ${assigned} auto-asignați la masă`;
+    if(assigned) msg+=` · ${assigned} asignați la masă`;
+    else msg+=` · 0 asignați (mese în plan: ${tableNames})`;
     if(skipped)  msg+=` · ${skipped} deja existenți (săriți)`;
-    if(imported===0) msg+=` — niciun rând valid găsit (${rows.length} rânduri citite). Verifică că ai șters rândurile exemplu din Excel.`;
+    if(imported===0){
+      const preview=rows.length ? 'Coloane găsite: '+Object.keys(rows[0]).join(' | ') : 'Niciun rând citit';
+      msg=`⚠ 0 importați din ${rows.length} rânduri. ${preview}`;
+    }
     resEl.className='import-result';resEl.textContent=msg;
     renderGuests();updateStats();draw();save();
   }catch(err){
