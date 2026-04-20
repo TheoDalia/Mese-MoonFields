@@ -5,330 +5,181 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan Mese · Theo & Dalia · Moonfields</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <style>
 :root {
-  --bg: #f5f0e8;
-  --panel: #ffffff;
-  --deep: #1a1410;
-  --brown: #5a3a28;
-  --gold: #b8924a;
-  --gold2: #d4aa62;
-  --gold-pale: #f0e4c8;
-  --border: #ddd0b8;
-  --green: #3a5c44;
-  --green-pale: #dceee3;
-  --shadow: rgba(26,20,16,0.13);
+  --bg:#f5f0e8;--panel:#fff;--deep:#1a1410;--brown:#5a3a28;
+  --gold:#b8924a;--gold2:#d4aa62;--gold-pale:#f0e4c8;--border:#ddd0b8;
+  --green:#3a5c44;--green-pale:#dceee3;--shadow:rgba(26,20,16,.13);
+  --s-normal:#c8956a;--s-veg:#6aad82;--s-vegan:#6a9aad;--s-copil:#d4b84a;--s-empty:#ddd5c5;
+  --ring-col:#e8e0f0;--bar-col:#d0e8d8;--stage-col:#e8d8c0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Jost',sans-serif;background:var(--bg);color:var(--deep);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 
-  /* menu colors */
-  --c-normal: #6b4c3b;
-  --c-veg: #3a6b4c;
-  --c-vegan: #2d5c6b;
-  --c-copil: #8b6b2e;
+/* HEADER */
+header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #3a2e1e;flex-shrink:0;flex-wrap:wrap;gap:8px;}
+.hlogo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--gold2);letter-spacing:.05em;line-height:1.2;white-space:nowrap;}
+.hlogo span{font-style:italic;color:#c8aa7a;font-size:.68rem;display:block;letter-spacing:.03em;}
+.hstats{display:flex;gap:0;flex-wrap:wrap;margin-left:auto;}
+.hstat{padding:3px 10px;border-left:1px solid #3a2e1e;font-size:.68rem;color:#b0997a;white-space:nowrap;}
+.hstat b{font-size:.82rem;color:var(--gold2);display:block;}
+.hstat.highlight b{color:#f0d090;}
+/* menu summary */
+.menu-summary{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding-left:10px;border-left:1px solid #3a2e1e;}
+.ms-item{display:flex;align-items:center;gap:3px;font-size:.64rem;color:#b0997a;}
+.ms-dot{width:7px;height:7px;border-radius:50%;}
 
-  /* seat colors */
-  --s-normal: #c8956a;
-  --s-veg: #6aad82;
-  --s-vegan: #6a9aad;
-  --s-copil: #d4b84a;
-  --s-empty: #e0d4c0;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Jost', sans-serif;
-  background: var(--bg);
-  color: var(--deep);
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+/* MAIN */
+.main{display:flex;flex:1;overflow:hidden;}
 
-/* ── HEADER ─────────────────────────────────── */
-header {
-  background: var(--deep);
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid #3a2e1e;
-  flex-shrink: 0;
-}
-.hlogo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.1rem;
-  color: var(--gold2);
-  letter-spacing: 0.06em;
-  line-height: 1.2;
-}
-.hlogo span { font-style: italic; color: #c8aa7a; font-size: 0.72rem; display: block; letter-spacing: 0.03em; }
-.hstats {
-  margin-left: auto;
-  display: flex; gap: 14px;
-  font-size: 0.7rem; color: #b0997a;
-}
-.hstats b { font-size: 0.88rem; color: var(--gold2); }
+/* SIDEBAR */
+.sidebar{width:255px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sb{padding:9px 11px;border-bottom:1px solid var(--border);}
+.sb h3{font-family:'Cormorant Garamond',serif;font-size:.78rem;font-weight:600;color:var(--brown);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border:none;border-radius:5px;font-family:'Jost',sans-serif;font-size:.73rem;font-weight:500;cursor:pointer;transition:all .12s;}
+.btn-gold{background:var(--gold);color:white;}.btn-gold:hover{background:#9e7a38;}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--brown);}.btn-outline:hover{background:var(--gold-pale);}
+.btn-red{background:#7a2828;color:white;font-size:.68rem;padding:3px 7px;}.btn-red:hover{background:#5e1e1e;}
+.btn-sm{padding:3px 7px;font-size:.68rem;}
+.brow{display:flex;gap:4px;flex-wrap:wrap;}
+.rc{display:flex;gap:5px;align-items:flex-end;flex-wrap:wrap;}
+.rcf{display:flex;flex-direction:column;gap:2px;}
+.rcf label{font-size:.62rem;color:var(--brown);text-transform:uppercase;letter-spacing:.04em;}
+.rcf input,.rcf select{padding:4px 5px;border:1px solid var(--border);border-radius:4px;font-size:.72rem;font-family:'Jost',sans-serif;background:var(--bg);color:var(--deep);}
+.rcf input{width:52px;text-align:center;}
+.rcf input:focus,.rcf select:focus{outline:none;border-color:var(--gold);}
+.legend{display:flex;gap:7px;flex-wrap:wrap;}
+.li{display:flex;align-items:center;gap:3px;font-size:.65rem;color:var(--brown);}
+.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 
-/* ── MAIN ─────────────────────────────────── */
-.main { display: flex; flex: 1; overflow: hidden; }
+/* GUEST POOL */
+.gpool{flex:1;overflow-y:auto;padding:9px 11px;}
+.gpool h3{font-family:'Cormorant Garamond',serif;font-size:.78rem;font-weight:600;color:var(--brown);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.gsearch{width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:4px;font-size:.72rem;font-family:'Jost',sans-serif;background:var(--bg);color:var(--deep);margin-bottom:5px;}
+.gi{display:flex;align-items:center;gap:5px;padding:4px 6px;border-radius:4px;margin-bottom:2px;cursor:grab;border:1px solid var(--border);font-size:.72rem;transition:all .11s;user-select:none;background:var(--bg);}
+.gi:hover{border-color:var(--gold);background:var(--gold-pale);}
+.gi.dragging{opacity:.3;}
+.gi.assigned{background:var(--green-pale);border-color:#a0c8b0;}
+.gi-name{flex:1;font-weight:400;}
+.tbadge{font-size:.58rem;background:var(--gold);color:white;padding:1px 4px;border-radius:3px;white-space:nowrap;font-weight:500;}
+.cazare-tag{font-size:.58rem;background:#3a5c44;color:white;padding:1px 4px;border-radius:3px;}
+.del-g{background:none;border:none;cursor:pointer;color:#c0a090;font-size:.72rem;line-height:1;}
+.del-g:hover{color:#8b2e2e;}
 
-/* ── SIDEBAR ─────────────────────────────────── */
-.sidebar {
-  width: 262px; flex-shrink: 0;
-  background: var(--panel);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  overflow: hidden;
-}
-.sb { padding: 10px 12px; border-bottom: 1px solid var(--border); }
-.sb h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.82rem; font-weight: 600;
-  color: var(--brown);
-  text-transform: uppercase; letter-spacing: 0.08em;
-  margin-bottom: 8px;
-}
+/* CANVAS */
+.carea{flex:1;position:relative;overflow:hidden;background:radial-gradient(ellipse 60% 40% at 20% 80%,rgba(184,146,74,.07),transparent),radial-gradient(ellipse 50% 50% at 80% 20%,rgba(58,92,68,.05),transparent),var(--bg);}
+#cv{position:absolute;top:0;left:0;width:100%;height:100%;}
+.zctrls{position:absolute;bottom:10px;right:10px;display:flex;flex-direction:column;gap:4px;z-index:10;}
+.zb{width:27px;height:27px;border-radius:50%;border:1px solid var(--border);background:white;font-size:.82rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px var(--shadow);transition:background .11s;font-family:'Jost',sans-serif;}
+.zb:hover{background:var(--gold-pale);}
+.chint{position:absolute;bottom:10px;left:10px;font-size:.6rem;color:var(--brown);opacity:.45;pointer-events:none;}
 
-/* buttons */
-.btn {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 6px 11px; border: none; border-radius: 5px;
-  font-family: 'Jost', sans-serif; font-size: 0.76rem; font-weight: 500;
-  cursor: pointer; transition: all 0.13s;
-}
-.btn-gold { background: var(--gold); color: white; }
-.btn-gold:hover { background: #9e7a38; }
-.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--brown); }
-.btn-outline:hover { background: var(--gold-pale); }
-.btn-red { background: #7a2828; color: white; font-size: 0.7rem; padding: 4px 8px; }
-.btn-red:hover { background: #5e1e1e; }
-.btn-sm { padding: 4px 8px; font-size: 0.7rem; }
-.brow { display: flex; gap: 5px; flex-wrap: wrap; }
+/* POPUPS */
+.popup,.stip{display:none;position:fixed;z-index:60;background:white;border:1px solid var(--border);border-radius:9px;box-shadow:0 10px 40px var(--shadow);}
+.popup{padding:12px;min-width:210px;max-width:270px;}
+.popup h4{font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--brown);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.scnt{font-size:.6rem;background:var(--gold-pale);padding:2px 5px;border-radius:3px;color:var(--brown);font-family:'Jost',sans-serif;}
+.pgl{list-style:none;max-height:160px;overflow-y:auto;margin-bottom:6px;}
+.pgl li{display:flex;align-items:center;gap:4px;padding:3px 0;font-size:.7rem;border-bottom:1px solid #f5f0e8;}
+.pgl li:last-child{border:none;}
+.sbadge{font-size:.56rem;padding:1px 4px;border-radius:3px;color:white;font-weight:500;}
+.rg{margin-left:auto;background:none;border:none;color:#c0a090;cursor:pointer;font-size:.72rem;}
+.rg:hover{color:#8b2e2e;}
+.pacts{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px;}
+.sadj{display:flex;align-items:center;gap:5px;margin:5px 0 3px;font-size:.68rem;color:var(--brown);}
+.sadj button{width:20px;height:20px;border-radius:3px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;}
+.sadj button:hover{background:var(--gold-pale);}
+.sadj span{font-weight:600;min-width:18px;text-align:center;}
+.stip{padding:11px;min-width:190px;max-width:250px;background:var(--deep);}
+.stip h5{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:var(--gold2);margin-bottom:6px;}
+.stip .ul{max-height:150px;overflow-y:auto;}
+.ua{display:flex;align-items:center;gap:5px;padding:3px 5px;border-radius:3px;cursor:pointer;transition:background .1s;font-size:.7rem;color:#e0d4c0;}
+.ua:hover{background:rgba(255,255,255,.1);}
+.ua-name{flex:1;}
+.no-g{opacity:.5;font-style:italic;font-size:.68rem;color:#a09080;}
 
-/* row-add controls */
-.rc { display: flex; gap: 6px; align-items: flex-end; flex-wrap: wrap; }
-.rc-field { display: flex; flex-direction: column; gap: 3px; }
-.rc-field label { font-size: 0.66rem; color: var(--brown); text-transform: uppercase; letter-spacing: 0.04em; }
-.rc-field input, .rc-field select {
-  width: 58px; padding: 5px 6px; border: 1px solid var(--border);
-  border-radius: 5px; font-size: 0.76rem; font-family: 'Jost', sans-serif;
-  background: var(--bg); color: var(--deep); text-align: center;
-}
-.rc-field input:focus, .rc-field select:focus { outline: none; border-color: var(--gold); }
-
-/* legend */
-.legend { display: flex; gap: 8px; flex-wrap: wrap; }
-.li { display: flex; align-items: center; gap: 4px; font-size: 0.68rem; color: var(--brown); }
-.ld { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-
-/* guest pool */
-.gpool { flex: 1; overflow-y: auto; padding: 10px 12px; }
-.gpool h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.82rem; font-weight: 600;
-  color: var(--brown);
-  text-transform: uppercase; letter-spacing: 0.08em;
-  margin-bottom: 7px;
-}
-.gsearch {
-  width: 100%; padding: 6px 8px; border: 1px solid var(--border);
-  border-radius: 5px; font-size: 0.74rem; font-family: 'Jost', sans-serif;
-  background: var(--bg); color: var(--deep); margin-bottom: 6px;
-}
-.gi {
-  display: flex; align-items: center; gap: 6px;
-  padding: 5px 7px; border-radius: 5px; margin-bottom: 3px;
-  cursor: grab; border: 1px solid var(--border);
-  font-size: 0.74rem; transition: all 0.12s; user-select: none;
-  background: var(--bg);
-}
-.gi:hover { border-color: var(--gold); background: var(--gold-pale); }
-.gi.dragging { opacity: 0.3; }
-.gi.assigned { background: var(--green-pale); border-color: #a0c8b0; }
-.gi-name { flex: 1; font-weight: 400; }
-.tbadge {
-  font-size: 0.6rem; background: var(--gold); color: white;
-  padding: 1px 5px; border-radius: 3px; white-space: nowrap; font-weight: 500;
-}
-.del-g { background: none; border: none; cursor: pointer; color: #c0a090; font-size: 0.75rem; line-height: 1; }
-.del-g:hover { color: #8b2e2e; }
-
-/* ── CANVAS AREA ─────────────────────────────────── */
-.carea {
-  flex: 1; position: relative; overflow: hidden;
-  background:
-    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(184,146,74,0.08), transparent),
-    radial-gradient(ellipse 50% 50% at 80% 20%, rgba(58,92,68,0.06), transparent),
-    var(--bg);
-}
-#cv { position: absolute; top:0; left:0; width:100%; height:100%; }
-.zctrls {
-  position: absolute; bottom: 12px; right: 12px;
-  display: flex; flex-direction: column; gap: 4px; z-index: 10;
-}
-.zb {
-  width: 28px; height: 28px; border-radius: 50%;
-  border: 1px solid var(--border); background: white;
-  font-size: 0.85rem; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 8px var(--shadow); transition: background 0.12s;
-  font-family: 'Jost', sans-serif;
-}
-.zb:hover { background: var(--gold-pale); }
-.chint {
-  position: absolute; bottom: 11px; left: 12px;
-  font-size: 0.64rem; color: var(--brown); opacity: 0.5; pointer-events: none;
-}
-
-/* ── POPUP ─────────────────────────────────── */
-.popup {
-  display: none; position: fixed; z-index: 60;
-  background: white; border: 1px solid var(--border);
-  border-radius: 10px; padding: 13px; min-width: 220px; max-width: 280px;
-  box-shadow: 0 10px 40px var(--shadow);
-}
-.popup h4 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.95rem; color: var(--brown);
-  margin-bottom: 8px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.scnt { font-size: 0.62rem; background: var(--gold-pale); padding: 2px 6px; border-radius: 4px; color: var(--brown); font-family: 'Jost', sans-serif; }
-.pgl { list-style: none; max-height: 170px; overflow-y: auto; margin-bottom: 8px; }
-.pgl li {
-  display: flex; align-items: center; gap: 5px;
-  padding: 3px 0; font-size: 0.72rem;
-  border-bottom: 1px solid #f5f0e8;
-}
-.pgl li:last-child { border: none; }
-.seat-badge {
-  font-size: 0.58rem; padding: 1px 4px; border-radius: 3px;
-  color: white; font-weight: 500;
-}
-.rg { margin-left: auto; background: none; border: none; color: #c0a090; cursor: pointer; font-size: 0.75rem; }
-.rg:hover { color: #8b2e2e; }
-.pacts { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
-.seat-adj { display: flex; align-items: center; gap: 6px; margin: 6px 0 4px; font-size: 0.7rem; color: var(--brown); }
-.seat-adj button { width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; }
-.seat-adj button:hover { background: var(--gold-pale); }
-.seat-adj span { font-weight: 600; min-width: 20px; text-align: center; }
-
-/* ── MODALS ─────────────────────────────────── */
-.ov {
-  display: none; position: fixed; inset: 0;
-  background: rgba(26,20,16,0.55); z-index: 100;
-  align-items: center; justify-content: center;
-}
-.ov.open { display: flex; }
-.modal {
-  background: white; border-radius: 12px; padding: 22px;
-  width: 380px; max-width: 95vw; max-height: 88vh; overflow-y: auto;
-  box-shadow: 0 24px 70px rgba(0,0,0,0.3);
-}
-.modal h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.1rem; color: var(--brown);
-  margin-bottom: 14px; border-bottom: 1px solid var(--border);
-  padding-bottom: 9px;
-}
-.fg { margin-bottom: 10px; }
-.fg label { display: block; font-size: 0.68rem; font-weight: 500; color: var(--brown); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
-.fg input, .fg select, .fg textarea {
-  width: 100%; padding: 7px 9px; border: 1px solid var(--border);
-  border-radius: 5px; font-family: 'Jost', sans-serif; font-size: 0.82rem;
-  background: var(--bg); color: var(--deep);
-}
-.fg input:focus, .fg select:focus { outline: none; border-color: var(--gold); }
-.ma { display: flex; gap: 7px; margin-top: 14px; justify-content: flex-end; }
-
-/* seat click tooltip */
-.stip {
-  display: none; position: fixed; z-index: 70;
-  background: var(--deep); color: white;
-  border-radius: 7px; padding: 10px 13px;
-  min-width: 180px; max-width: 240px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
-  font-size: 0.74rem;
-}
-.stip h5 { font-family: 'Cormorant Garamond', serif; font-size: 0.88rem; color: var(--gold2); margin-bottom: 7px; }
-.stip .unassigned-list { max-height: 160px; overflow-y: auto; }
-.stip .ua-item {
-  display: flex; align-items: center; gap: 6px;
-  padding: 4px 6px; border-radius: 4px; cursor: pointer;
-  transition: background 0.1s;
-}
-.stip .ua-item:hover { background: rgba(255,255,255,0.1); }
-.stip .ua-name { flex: 1; }
-.stip .ua-menu { font-size: 0.62rem; opacity: 0.7; }
-.stip .no-guests { opacity: 0.5; font-style: italic; font-size: 0.7rem; }
+/* MODALS */
+.ov{display:none;position:fixed;inset:0;background:rgba(26,20,16,.55);z-index:100;align-items:center;justify-content:center;}
+.ov.open{display:flex;}
+.modal{background:white;border-radius:11px;padding:20px;width:380px;max-width:95vw;max-height:88vh;overflow-y:auto;box-shadow:0 24px 70px rgba(0,0,0,.28);}
+.modal h2{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--brown);margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:8px;}
+.fg{margin-bottom:9px;}
+.fg label{display:block;font-size:.65rem;font-weight:500;color:var(--brown);margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em;}
+.fg input,.fg select,.fg textarea{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:4px;font-family:'Jost',sans-serif;font-size:.8rem;background:var(--bg);color:var(--deep);}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--gold);}
+.ma{display:flex;gap:6px;margin-top:12px;justify-content:flex-end;}
+.import-result{margin-top:8px;font-size:.72rem;color:var(--green);padding:6px 8px;background:var(--green-pale);border-radius:4px;display:none;}
+.import-result.err{color:#8b2e2e;background:#f5e0e0;}
 </style>
 </head>
 <body>
-
 <header>
   <div class="hlogo">Theo &amp; Dalia <span>23 Aug 2026 · Moonfields, Tâncăbești</span></div>
   <div class="hstats">
-    <span><b id="s-t">0</b> mese</span>
-    <span><b id="s-g">0</b> invitați</span>
-    <span><b id="s-a">0</b> așezați</span>
-    <span><b id="s-u">0</b> liberi</span>
+    <div class="hstat"><b id="s-t">0</b>mese</div>
+    <div class="hstat"><b id="s-g">0</b>invitați</div>
+    <div class="hstat highlight"><b id="s-a">0</b>așezați</div>
+    <div class="hstat"><b id="s-u">0</b>liberi</div>
+    <div class="hstat"><b id="s-caz">0</b>cazare</div>
+  </div>
+  <div class="menu-summary">
+    <div class="ms-item"><div class="ms-dot" style="background:var(--s-normal)"></div><span id="ms-n">0</span> Normal</div>
+    <div class="ms-item"><div class="ms-dot" style="background:var(--s-veg)"></div><span id="ms-v">0</span> Veg</div>
+    <div class="ms-item"><div class="ms-dot" style="background:var(--s-vegan)"></div><span id="ms-vn">0</span> Vegan</div>
+    <div class="ms-item"><div class="ms-dot" style="background:var(--s-copil)"></div><span id="ms-c">0</span> Copil</div>
   </div>
 </header>
-
 <div class="main">
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sb">
       <h3>Adaugă rând</h3>
       <div class="rc">
-        <div class="rc-field"><label>Mese</label><input type="number" id="r-cnt" value="3" min="1" max="12"></div>
-        <div class="rc-field"><label>Scaune/masă</label><input type="number" id="r-seats" value="8" min="2" max="20"></div>
-        <button class="btn btn-gold" onclick="addRow()" style="margin-top:auto">＋ Rând</button>
+        <div class="rcf"><label>Mese</label><input type="number" id="r-cnt" value="4" min="1" max="12"></div>
+        <div class="rcf"><label>Scaune</label><input type="number" id="r-seats" value="8" min="2" max="20"></div>
+        <button class="btn btn-gold" onclick="addRow()" style="margin-top:auto">＋</button>
       </div>
     </div>
-
     <div class="sb">
       <h3>Acțiuni</h3>
       <div class="brow">
         <button class="btn btn-gold" onclick="openAddGuest()">＋ Invitat</button>
-        <button class="btn btn-outline" onclick="exportData()">↓ Export</button>
-        <button class="btn btn-outline" onclick="openImport()">↑ Import</button>
+        <button class="btn btn-outline" onclick="exportPDF()">↓ PDF</button>
+        <button class="btn btn-outline" onclick="openImport()">↑ Word</button>
       </div>
     </div>
-
     <div class="sb">
       <h3>Meniuri</h3>
       <div class="legend">
-        <div class="li"><div class="ld" style="background:var(--s-normal)"></div> Normal</div>
-        <div class="li"><div class="ld" style="background:var(--s-veg)"></div> Vegetarian</div>
-        <div class="li"><div class="ld" style="background:var(--s-vegan)"></div> Vegan</div>
-        <div class="li"><div class="ld" style="background:var(--s-copil)"></div> Copil</div>
-        <div class="li"><div class="ld" style="background:var(--s-empty)"></div> Liber</div>
+        <div class="li"><div class="ld" style="background:var(--s-normal)"></div>Normal</div>
+        <div class="li"><div class="ld" style="background:var(--s-veg)"></div>Vegetarian</div>
+        <div class="li"><div class="ld" style="background:var(--s-vegan)"></div>Vegan</div>
+        <div class="li"><div class="ld" style="background:var(--s-copil)"></div>Copil</div>
+        <div class="li"><div class="ld" style="background:var(--s-empty)"></div>Liber</div>
       </div>
     </div>
-
     <div class="gpool">
       <h3>Invitați (<span id="gc">0</span>)</h3>
-      <input class="gsearch" type="text" id="gs" placeholder="Caută invitat..." oninput="renderGuests(this.value)">
+      <input class="gsearch" type="text" id="gs" placeholder="Caută..." oninput="renderGuests(this.value)">
       <div id="gl"></div>
     </div>
   </div>
 
-  <!-- CANVAS -->
   <div class="carea" id="ca">
     <canvas id="cv"></canvas>
     <div class="zctrls">
       <button class="zb" onclick="doZoom(1.12)">＋</button>
       <button class="zb" onclick="doZoom(0.89)">－</button>
-      <button class="zb" onclick="resetView()" style="font-size:0.6rem">⊙</button>
+      <button class="zb" onclick="resetView()" style="font-size:.58rem">⊙</button>
     </div>
-    <div class="chint">Scroll = zoom · Drag masă = mută · Click scaun = asignează invitat · Drag din listă pe masă</div>
+    <div class="chint">Scroll=zoom · Drag masă=mută · Click colț auriu=redimensionează · Click scaun=asignează · Drag din listă pe masă</div>
   </div>
 </div>
 
 <!-- TABLE POPUP -->
 <div class="popup" id="tpop">
   <h4><span id="pp-name"></span><span class="scnt" id="pp-sc"></span></h4>
-  <div class="seat-adj">
+  <div class="sadj">
     <span>Scaune:</span>
     <button onclick="adjSeats(-1)">−</button>
     <span id="pp-snum">8</span>
@@ -341,13 +192,13 @@ header {
   </div>
 </div>
 
-<!-- SEAT ASSIGN TOOLTIP -->
+<!-- SEAT TIP -->
 <div class="stip" id="stip">
-  <h5 id="stip-title">Asignează invitat</h5>
-  <div class="unassigned-list" id="stip-list"></div>
+  <h5 id="stip-t">Scaun</h5>
+  <div class="ul" id="stip-l"></div>
 </div>
 
-<!-- ADD GUEST MODAL -->
+<!-- ADD GUEST -->
 <div class="ov" id="m-g">
   <div class="modal">
     <h2>Adaugă invitat</h2>
@@ -360,6 +211,13 @@ header {
         <option value="copil">Copil</option>
       </select>
     </div>
+    <div class="fg"><label>Cazare necesară?</label>
+      <select id="g-caz">
+        <option value="nu">Nu</option>
+        <option value="da">Da</option>
+      </select>
+    </div>
+    <div class="fg"><label>Observații</label><input type="text" id="g-obs" placeholder="ex: alergie nuci, scaun bebe..."></div>
     <div class="ma">
       <button class="btn btn-outline" onclick="cm('m-g')">Anulează</button>
       <button class="btn btn-gold" onclick="confirmGuest()">Adaugă</button>
@@ -367,11 +225,15 @@ header {
   </div>
 </div>
 
-<!-- IMPORT MODAL -->
+<!-- WORD IMPORT -->
 <div class="ov" id="m-imp">
   <div class="modal">
-    <h2>Import JSON</h2>
-    <div class="fg"><label>Pastează datele exportate</label><textarea id="imp-ta" style="height:110px;font-family:monospace;font-size:0.72rem"></textarea></div>
+    <h2>Import din Word</h2>
+    <div class="fg">
+      <label>Selectează fișierul .docx (template completat)</label>
+      <input type="file" id="imp-file" accept=".docx" style="font-size:.76rem;padding:5px;">
+    </div>
+    <div class="import-result" id="imp-res"></div>
     <div class="ma">
       <button class="btn btn-outline" onclick="cm('m-imp')">Anulează</button>
       <button class="btn btn-gold" onclick="confirmImport()">Importă</button>
@@ -380,367 +242,506 @@ header {
 </div>
 
 <script>
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
+// ITALIAN CITY NAMES for tables
+// ══════════════════════════════════════════
+const CITY_NAMES = [
+  'Roma','Venezia','Firenze','Milano','Napoli','Bologna','Palermo','Torino',
+  'Verona','Siena','Amalfi','Ravello','Positano','Capri','Taormina','Orvieto',
+  'Assisi','Lucca','Pisa','Genova','Bari','Lecce','Matera','Perugia',
+  'Rimini','Padova','Vicenza','Bergamo','Como','Cortina','Portofino','Cinque Terre'
+];
+let cityIdx = 0;
+function nextCity() { return CITY_NAMES[cityIdx++ % CITY_NAMES.length]; }
+
+// ══════════════════════════════════════════
 // STATE
-// ═══════════════════════════════════════
-let tables = [];   // { id, name, x, y, seats, rotation, miri }
-let guests = [];   // { id, name, menu, tableId, seatIdx }
+// ══════════════════════════════════════════
+let tables = [];
+let guests = [];
+let decorElements = []; // {type:'ring'|'bar'|'stage', x, y, w, h, label}
 let nextTid = 1, nextGid = 1;
 
-// canvas
 let sc = 1, ox = 0, oy = 0;
 let dragT = null, dragSX, dragSY, dragTX0, dragTY0;
 let pan = false, panSX, panSY, panOX, panOY;
 let clickMoved = false;
-let activeTid = null;
-let activeSeat = null; // { tableId, seatIdx }
+let activeTid = null, activeSeat = null;
 
 const cv = document.getElementById('cv');
 const ctx = cv.getContext('2d');
 const ca = document.getElementById('ca');
 
-// Table dimensions (world)
-const TW = 220;  // long side (vertical, parallel to guests' walk)
-const TH = 70;   // short side
-const SEAT_R = 10;
-const SEAT_GAP = 28; // spacing between seats along the long side
+// Default dimensions
+const TW_DEF = 220; // normal table long axis (horizontal)
+const TH_DEF = 65;  // normal table short axis (vertical)
+const SEAT_R = 9;
+const CORNER_R = 7; // screen px for resize handles
 
-// ═══════════════════════════════════════
-// CANVAS SETUP
-// ═══════════════════════════════════════
-function resize() { cv.width = ca.clientWidth; cv.height = ca.clientHeight; draw(); }
-window.addEventListener('resize', resize);
-resize();
+// Per-table size helpers (support custom tw/th stored on table object)
+function tW(t){ return t.tw !== undefined ? t.tw : (t.miri ? TH_DEF : TW_DEF); }
+function tH(t){ return t.th !== undefined ? t.th : (t.miri ? TW_DEF*0.55 : TH_DEF); }
 
-function w2s(wx,wy){ return {x: wx*sc+ox, y: wy*sc+oy}; }
-function s2w(sx,sy){ return {x:(sx-ox)/sc, y:(sy-oy)/sc}; }
+const MENU_COLORS = {normal:'#c8956a',veg:'#6aad82',vegan:'#6a9aad',copil:'#d4b84a',empty:'#ddd5c5'};
+const MENU_LABELS = {normal:'Normal',veg:'Vegetarian',vegan:'Vegan',copil:'Copil'};
+function menuColor(m){ return MENU_COLORS[m]||MENU_COLORS.empty; }
 
-// ═══════════════════════════════════════
+// Resize state
+let resizing = null; // {t, corner, startSX, startSY, origTW, origTH, origX, origY}
+
+// ══════════════════════════════════════════
+// CANVAS
+// ══════════════════════════════════════════
+function resize(){ cv.width=ca.clientWidth; cv.height=ca.clientHeight; draw(); }
+window.addEventListener('resize',resize); resize();
+function w2s(wx,wy){return{x:wx*sc+ox,y:wy*sc+oy};}
+function s2w(sx,sy){return{x:(sx-ox)/sc,y:(sy-oy)/sc};}
+
+// ══════════════════════════════════════════
 // SEAT POSITIONS
-// Returns array of {x,y} in TABLE-LOCAL coords (center of table = 0,0)
-// Tables are VERTICAL (TH wide, TW tall) — long side runs top-bottom
-// ═══════════════════════════════════════
+// Normal tables: HORIZONTAL (tW wide, tH tall) → seats top + bottom
+// Miri table:    VERTICAL   (tW wide, tH tall) → seats left + right
+// ══════════════════════════════════════════
 function getSeatPositions(t) {
-  // table is drawn vertically: width=TH, height=TW
-  const halfW = TH / 2;
-  const halfH = TW / 2;
+  const hw = tW(t) / 2;
+  const hh = tH(t) / 2;
   const seats = t.seats;
   const pos = [];
+  const half1 = Math.ceil(seats/2);
+  const half2 = seats - half1;
 
-  // distribute seats: left column and right column
-  // left side: x = -halfW - SEAT_R, along y axis
-  // right side: x = +halfW + SEAT_R, along y axis
-  const perSide = Math.ceil(seats / 2);
-  const other = seats - perSide;
-
-  // left side (perSide seats)
-  for (let i = 0; i < perSide; i++) {
-    const frac = perSide === 1 ? 0.5 : i / (perSide - 1);
-    const y = -halfH * 0.85 + frac * halfH * 1.7;
-    pos.push({ x: -halfW - SEAT_R - 2, y });
-  }
-  // right side (other seats)
-  for (let i = 0; i < other; i++) {
-    const frac = other === 1 ? 0.5 : i / (other - 1);
-    const y = -halfH * 0.85 + frac * halfH * 1.7;
-    pos.push({ x: halfW + SEAT_R + 2, y });
+  if(t.miri) {
+    // Vertical table → seats on LEFT and RIGHT sides
+    for(let i=0;i<half1;i++){
+      const frac = half1===1?0.5:i/(half1-1);
+      pos.push({x: -hw-SEAT_R-2, y: -hh*0.88 + frac*hh*1.76});
+    }
+    for(let i=0;i<half2;i++){
+      const frac = half2===1?0.5:i/(half2-1);
+      pos.push({x: hw+SEAT_R+2, y: -hh*0.88 + frac*hh*1.76});
+    }
+  } else {
+    // Horizontal table → seats on TOP and BOTTOM
+    for(let i=0;i<half1;i++){
+      const frac = half1===1?0.5:i/(half1-1);
+      pos.push({x: -hw*0.88 + frac*hw*1.76, y: -hh-SEAT_R-2});
+    }
+    for(let i=0;i<half2;i++){
+      const frac = half2===1?0.5:i/(half2-1);
+      pos.push({x: -hw*0.88 + frac*hw*1.76, y: hh+SEAT_R+2});
+    }
   }
   return pos;
 }
 
-// For miri table: horizontal, seats on top and bottom
-function getMiriSeatPositions(t) {
-  const halfW = TW * 0.8;  // miri table is wide
-  const halfH = TH / 2;
-  const seats = t.seats;
-  const pos = [];
-  const perSide = Math.ceil(seats / 2);
-  const other = seats - perSide;
-  for (let i = 0; i < perSide; i++) {
-    const frac = perSide === 1 ? 0.5 : i / (perSide - 1);
-    const x = -halfW * 0.85 + frac * halfW * 1.7;
-    pos.push({ x, y: -halfH - SEAT_R - 2 });
+// ══════════════════════════════════════════
+// CORNER HANDLES (resize) — screen coords of 4 corners
+// ══════════════════════════════════════════
+function getCorners(t) {
+  const s = w2s(t.x, t.y);
+  const hw = tW(t)*sc/2, hh = tH(t)*sc/2;
+  return [
+    {id:'nw', x:s.x-hw, y:s.y-hh},
+    {id:'ne', x:s.x+hw, y:s.y-hh},
+    {id:'sw', x:s.x-hw, y:s.y+hh},
+    {id:'se', x:s.x+hw, y:s.y+hh},
+  ];
+}
+function getCornerAt(sx,sy) {
+  for(const t of tables) {
+    for(const c of getCorners(t)) {
+      if(Math.sqrt((sx-c.x)**2+(sy-c.y)**2) < CORNER_R+3) return {t, corner:c.id};
+    }
   }
-  for (let i = 0; i < other; i++) {
-    const frac = other === 1 ? 0.5 : i / (other - 1);
-    const x = -halfW * 0.85 + frac * halfW * 1.7;
-    pos.push({ x, y: halfH + SEAT_R + 2 });
-  }
-  return pos;
+  return null;
 }
 
-// ═══════════════════════════════════════
-// MENU COLORS
-// ═══════════════════════════════════════
-const MENU_COLORS = {
-  normal: '#c8956a',
-  veg:    '#6aad82',
-  vegan:  '#6a9aad',
-  copil:  '#d4b84a',
-  empty:  '#ddd5c5'
-};
-const MENU_LABELS = { normal:'Normal', veg:'Vegetarian', vegan:'Vegan', copil:'Copil' };
-
-function menuColor(menu) { return MENU_COLORS[menu] || MENU_COLORS.empty; }
-
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 // DRAW
-// ═══════════════════════════════════════
-function draw() {
+// ══════════════════════════════════════════
+function draw(){
   ctx.clearRect(0,0,cv.width,cv.height);
   drawGrid();
-  // draw floor/room hint
+  decorElements.forEach(d=>drawDecor(d));
   tables.filter(t=>!t.miri).forEach(t=>drawTable(t));
   tables.filter(t=>t.miri).forEach(t=>drawMiriTable(t));
 }
 
-function drawGrid() {
-  ctx.save();
-  ctx.strokeStyle = 'rgba(184,146,74,0.08)';
-  ctx.lineWidth = 1;
-  const gs = 60*sc;
-  const sx = ox%gs, sy = oy%gs;
+function drawGrid(){
+  ctx.save();ctx.strokeStyle='rgba(184,146,74,.07)';ctx.lineWidth=1;
+  const gs=60*sc,sx=ox%gs,sy=oy%gs;
   for(let x=sx;x<cv.width;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,cv.height);ctx.stroke();}
   for(let y=sy;y<cv.height;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cv.width,y);ctx.stroke();}
   ctx.restore();
 }
 
-function drawTable(t) {
-  const s = w2s(t.x, t.y);
-  // vertical table: width=TH*sc, height=TW*sc
-  const tw = TH*sc, th = TW*sc;
-  const rx = s.x - tw/2, ry = s.y - th/2;
-  const isAct = activeTid === t.id;
-
+function drawDecor(d){
+  const s=w2s(d.x,d.y);
+  const dw=d.w*sc, dh=d.h*sc;
+  const isAct = activeDecor===d;
   ctx.save();
-  // shadow
-  ctx.shadowColor='rgba(26,20,16,0.16)';ctx.shadowBlur=12*sc;ctx.shadowOffsetY=3*sc;
-  // table body
-  ctx.beginPath(); ctx.roundRect(rx,ry,tw,th,5*sc);
-  // wood-like gradient
-  const g = ctx.createLinearGradient(rx,ry,rx+tw,ry+th);
-  g.addColorStop(0,'#f8f2e8'); g.addColorStop(0.5,'#fdfaf4'); g.addColorStop(1,'#f0e8d8');
-  ctx.fillStyle = g; ctx.fill();
+  let fillColor, strokeColor;
+  if(d.type==='ring'){fillColor='#ede8f8';strokeColor='#9080c0';}
+  else if(d.type==='bar'){fillColor='#e0f0e8';strokeColor='#3a7a54';}
+  else{fillColor='#f0e8d8';strokeColor='#b8924a';}
+
+  ctx.shadowColor='rgba(0,0,0,.1)';ctx.shadowBlur=8*sc;
+  ctx.beginPath();ctx.roundRect(s.x-dw/2,s.y-dh/2,dw,dh,8*sc);
+  ctx.fillStyle=fillColor;ctx.fill();
   ctx.shadowColor='transparent';
-  ctx.strokeStyle = isAct ? '#b8924a' : '#cfc0a0';
-  ctx.lineWidth = isAct ? 2.5*sc : 1.5*sc;
-  ctx.stroke();
+  ctx.strokeStyle=isAct?'#b8924a':strokeColor;
+  ctx.lineWidth=(isAct?2.5:2)*sc;ctx.setLineDash([6*sc,4*sc]);ctx.stroke();
+  ctx.setLineDash([]);
 
-  // tablecloth runner (center strip)
-  ctx.beginPath(); ctx.roundRect(rx+tw*0.2, ry+th*0.06, tw*0.6, th*0.88, 3*sc);
-  ctx.fillStyle = 'rgba(255,255,255,0.65)'; ctx.fill();
-  ctx.strokeStyle='rgba(200,190,170,0.4)'; ctx.lineWidth=0.8*sc; ctx.stroke();
-
-  // table name
-  ctx.save();
-  ctx.translate(s.x, s.y);
-  ctx.font = `italic ${Math.max(8,11*sc)}px 'Cormorant Garamond',serif`;
-  ctx.fillStyle='#6a4a30'; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(t.name, 0, -10*sc);
-  ctx.font = `${Math.max(6,9*sc)}px 'Jost',sans-serif`;
-  ctx.fillStyle='#b0a090';
-  const filled = guests.filter(g=>g.tableId===t.id).length;
-  ctx.fillText(`${filled}/${t.seats}`, 0, 6*sc);
-  ctx.restore();
-
-  // draw seats
-  const seatPos = getSeatPositions(t);
-  seatPos.forEach((sp, idx) => {
-    drawSeat(s.x + sp.x*sc, s.y + sp.y*sc, t.id, idx, t, sp);
-  });
-
-  ctx.restore();
-}
-
-function drawMiriTable(t) {
-  const s = w2s(t.x, t.y);
-  // horizontal, wide
-  const tw = TW*1.5*sc, th = TH*sc;
-  const rx = s.x - tw/2, ry = s.y - th/2;
-  const isAct = activeTid === t.id;
-
-  ctx.save();
-  ctx.shadowColor='rgba(201,168,76,0.4)';ctx.shadowBlur=20*sc;ctx.shadowOffsetY=4*sc;
-
-  // gold gradient
-  const g = ctx.createLinearGradient(rx,ry,rx,ry+th);
-  g.addColorStop(0,'#fffcee'); g.addColorStop(1,'#f8edc8');
-  ctx.beginPath(); ctx.roundRect(rx,ry,tw,th,6*sc);
-  ctx.fillStyle=g; ctx.fill();
-  ctx.shadowColor='transparent';
-  // outer border
-  ctx.strokeStyle = isAct ? '#9a7028' : '#c9a84c';
-  ctx.lineWidth = (isAct?3:2)*sc; ctx.stroke();
-  // inner border
-  ctx.beginPath(); ctx.roundRect(rx+4*sc,ry+4*sc,tw-8*sc,th-8*sc,3*sc);
-  ctx.strokeStyle='rgba(201,168,76,0.35)'; ctx.lineWidth=sc; ctx.stroke();
-
-  // label
-  ctx.save(); ctx.translate(s.x, s.y);
-  if(sc>0.5){ctx.font=`${14*sc}px serif`;ctx.fillStyle='#b8924a';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('♛',0,-7*sc);}
-  ctx.font=`italic ${Math.max(8,12*sc)}px 'Cormorant Garamond',serif`;
-  ctx.fillStyle='#7a5020';ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(t.name, 0, (sc>0.5?6:0)*sc);
-  ctx.restore();
-
-  // seats
-  const seatPos = getMiriSeatPositions(t);
-  seatPos.forEach((sp, idx) => {
-    drawSeat(s.x + sp.x*sc, s.y + sp.y*sc, t.id, idx, t, sp);
-  });
-
-  ctx.restore();
-}
-
-function drawSeat(sx, sy, tableId, idx, t, sp) {
-  const r = SEAT_R*sc;
-  const guest = guests.find(g=>g.tableId===tableId && g.seatIdx===idx);
-  const isActiveSeat = activeSeat && activeSeat.tableId===tableId && activeSeat.seatIdx===idx;
-
-  ctx.save();
-  // seat circle
-  ctx.beginPath(); ctx.arc(sx,sy,r,0,Math.PI*2);
-  // fill based on guest menu
-  if(guest){ ctx.fillStyle=menuColor(guest.menu); }
-  else { ctx.fillStyle = '#e8e0d0'; }
-  ctx.fill();
-  ctx.strokeStyle = isActiveSeat ? '#b8924a' : (guest ? 'rgba(255,255,255,0.6)' : '#cfc5b0');
-  ctx.lineWidth = (isActiveSeat?2.5:1.2)*sc;
-  ctx.stroke();
-
-  // initials or number
-  if(sc > 0.55) {
-    ctx.font=`bold ${Math.max(5,7*sc)}px 'Jost',sans-serif`;
-    ctx.fillStyle = guest ? 'white' : '#b0a898';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    if(guest){
-      const parts = guest.name.split(' ');
-      const initials = parts.map(p=>p[0]||'').join('').substring(0,2).toUpperCase();
-      ctx.fillText(initials, sx, sy);
-    } else {
-      ctx.fillText(idx+1, sx, sy);
-    }
-  }
-  ctx.restore();
-}
-
-// ═══════════════════════════════════════
-// HIT TESTS
-// ═══════════════════════════════════════
-function getTableAt(sx,sy) {
-  for(let i=tables.length-1;i>=0;i--) {
-    const t=tables[i]; const s=w2s(t.x,t.y);
-    const tw=(t.miri?TW*1.5:TH)*sc, th=(t.miri?TH:TW)*sc;
-    if(Math.abs(sx-s.x)<tw/2&&Math.abs(sy-s.y)<th/2) return t;
-  }
-  return null;
-}
-
-function getSeatAt(sx, sy) {
-  for(const t of tables) {
-    const s = w2s(t.x, t.y);
-    const positions = t.miri ? getMiriSeatPositions(t) : getSeatPositions(t);
-    for(let idx=0; idx<positions.length; idx++) {
-      const sp = positions[idx];
-      const cx = s.x + sp.x*sc, cy = s.y + sp.y*sc;
-      const r = (SEAT_R+3)*sc;
-      if(Math.sqrt((sx-cx)**2+(sy-cy)**2) < r) {
-        return { tableId: t.id, seatIdx: idx };
-      }
-    }
-  }
-  return null;
-}
-
-// ═══════════════════════════════════════
-// MOUSE
-// ═══════════════════════════════════════
-let mdX,mdY;
-cv.addEventListener('mousedown', e=>{
-  mdX=e.clientX; mdY=e.clientY; clickMoved=false;
-  closeSeatTip(); closePopup();
-  const t=getTableAt(e.offsetX,e.offsetY);
-  if(t){dragT=t;dragSX=e.offsetX;dragSY=e.offsetY;dragTX0=t.x;dragTY0=t.y;}
-  else{pan=true;panSX=e.clientX;panSY=e.clientY;panOX=ox;panOY=oy;}
-});
-cv.addEventListener('mousemove', e=>{
-  if(Math.abs(e.clientX-mdX)>4||Math.abs(e.clientY-mdY)>4) clickMoved=true;
-  if(dragT){
-    const w=s2w(e.offsetX,e.offsetY),ws=s2w(dragSX,dragSY);
-    dragT.x=dragTX0+w.x-ws.x; dragT.y=dragTY0+w.y-ws.y;
-    draw(); cv.style.cursor='grabbing';
-  } else if(pan){
-    ox=panOX+e.clientX-panSX; oy=panOY+e.clientY-panSY;
-    draw(); cv.style.cursor='move';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  if(sc>0.45){
+    ctx.font=`${Math.max(12,18*sc)}px serif`;
+    ctx.fillStyle=strokeColor;
+    const icon=d.type==='ring'?'♪':d.type==='bar'?'🍾':'♫';
+    ctx.fillText(icon,s.x,s.y-8*sc);
+    ctx.font=`600 ${Math.max(8,11*sc)}px 'Jost',sans-serif`;
+    ctx.fillStyle=strokeColor;
+    ctx.fillText(d.label,s.x,s.y+8*sc);
   } else {
+    ctx.font=`${Math.max(7,10*sc)}px 'Jost',sans-serif`;
+    ctx.fillStyle=strokeColor;ctx.fillText(d.label,s.x,s.y);
+  }
+
+  // Corner resize handles when active
+  if(isAct){
+    getDecorCorners(d).forEach(c=>{
+      ctx.beginPath();ctx.arc(c.x,c.y,CORNER_R,0,Math.PI*2);
+      ctx.fillStyle='#b8924a';ctx.fill();
+      ctx.strokeStyle='white';ctx.lineWidth=1.5;ctx.stroke();
+    });
+  }
+  ctx.restore();
+}
+
+function drawTable(t){
+  const s=w2s(t.x,t.y);
+  const tw=tW(t)*sc, th=tH(t)*sc;
+  const rx=s.x-tw/2, ry=s.y-th/2;
+  const isAct=activeTid===t.id;
+  const gHere=guests.filter(g=>g.tableId===t.id);
+  const filled=gHere.length;
+
+  ctx.save();
+  ctx.shadowColor='rgba(26,20,16,.14)';ctx.shadowBlur=10*sc;ctx.shadowOffsetY=2*sc;
+  const gr=ctx.createLinearGradient(rx,ry,rx,ry+th);
+  gr.addColorStop(0,'#f9f4ec');gr.addColorStop(1,'#f0e8d8');
+  ctx.beginPath();ctx.roundRect(rx,ry,tw,th,5*sc);
+  ctx.fillStyle=gr;ctx.fill();
+  ctx.shadowColor='transparent';
+  ctx.strokeStyle=isAct?'#b8924a':'#cfc0a0';
+  ctx.lineWidth=(isAct?2.5:1.5)*sc;ctx.stroke();
+  // runner
+  ctx.beginPath();ctx.roundRect(rx+tw*.08,ry+th*.15,tw*.84,th*.7,3*sc);
+  ctx.fillStyle='rgba(255,255,255,.6)';ctx.fill();
+  ctx.strokeStyle='rgba(200,185,160,.4)';ctx.lineWidth=.8*sc;ctx.stroke();
+
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font=`italic ${Math.max(8,11*sc)}px 'Cormorant Garamond',serif`;
+  ctx.fillStyle='#6a4a30';
+  ctx.fillText(t.name,s.x,s.y-7*sc);
+  ctx.font=`${Math.max(6,8.5*sc)}px 'Jost',sans-serif`;
+  ctx.fillStyle='#b0a090';
+  ctx.fillText(`${filled}/${t.seats}`,s.x,s.y+7*sc);
+
+  const spos=getSeatPositions(t);
+  spos.forEach((sp,idx)=>drawSeat(s.x+sp.x*sc,s.y+sp.y*sc,t.id,idx));
+
+  // corner resize handles (when active or hovered)
+  if(isAct) drawCornerHandles(t);
+  ctx.restore();
+}
+
+function drawMiriTable(t){
+  const s=w2s(t.x,t.y);
+  const tw=tW(t)*sc, th=tH(t)*sc;
+  const rx=s.x-tw/2,ry=s.y-th/2;
+  const isAct=activeTid===t.id;
+
+  ctx.save();
+  ctx.shadowColor='rgba(201,168,76,.4)';ctx.shadowBlur=18*sc;ctx.shadowOffsetY=3*sc;
+  const gr=ctx.createLinearGradient(rx,ry,rx+tw,ry);  // horizontal gradient on vertical table
+  gr.addColorStop(0,'#fffcee');gr.addColorStop(1,'#f8edc8');
+  ctx.beginPath();ctx.roundRect(rx,ry,tw,th,6*sc);
+  ctx.fillStyle=gr;ctx.fill();ctx.shadowColor='transparent';
+  ctx.strokeStyle=isAct?'#9a7028':'#c9a84c';ctx.lineWidth=(isAct?3:2)*sc;ctx.stroke();
+  ctx.beginPath();ctx.roundRect(rx+3.5*sc,ry+3.5*sc,tw-7*sc,th-7*sc,3.5*sc);
+  ctx.strokeStyle='rgba(201,168,76,.3)';ctx.lineWidth=sc;ctx.stroke();
+
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  if(sc>0.45){ctx.font=`${Math.max(10,13*sc)}px serif`;ctx.fillStyle='#b8924a';ctx.fillText('♛',s.x,s.y-8*sc);}
+  ctx.font=`italic ${Math.max(7,11*sc)}px 'Cormorant Garamond',serif`;
+  ctx.fillStyle='#7a5020';
+  ctx.fillText(t.name,s.x,s.y+(sc>0.45?6:0)*sc);
+
+  const spos=getSeatPositions(t);
+  spos.forEach((sp,idx)=>drawSeat(s.x+sp.x*sc,s.y+sp.y*sc,t.id,idx));
+
+  if(isAct) drawCornerHandles(t);
+  ctx.restore();
+}
+
+function drawCornerHandles(t) {
+  getCorners(t).forEach(c=>{
+    ctx.save();
+    ctx.beginPath();ctx.arc(c.x,c.y,CORNER_R,0,Math.PI*2);
+    ctx.fillStyle='#b8924a';ctx.fill();
+    ctx.strokeStyle='white';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.restore();
+  });
+}
+
+function drawSeat(sx,sy,tableId,idx){
+  const r=SEAT_R*sc;
+  const g=guests.find(x=>x.tableId===tableId&&x.seatIdx===idx);
+  const isAct=activeSeat&&activeSeat.tableId===tableId&&activeSeat.seatIdx===idx;
+  ctx.save();
+  ctx.beginPath();ctx.arc(sx,sy,r,0,Math.PI*2);
+  ctx.fillStyle=g?menuColor(g.menu):'#e8e0d0';ctx.fill();
+  ctx.strokeStyle=isAct?'#b8924a':(g?'rgba(255,255,255,.55)':'#cfc5b0');
+  ctx.lineWidth=(isAct?2.5:1.2)*sc;ctx.stroke();
+  if(g&&sc>0.5){
+    const initials=g.name.split(' ').map(p=>p[0]||'').join('').substring(0,2).toUpperCase();
+    ctx.font=`bold ${Math.max(5,6.5*sc)}px 'Jost',sans-serif`;
+    ctx.fillStyle='white';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(initials,sx,sy);
+  } else if(!g&&sc>0.6){
+    ctx.font=`${Math.max(5,6*sc)}px 'Jost',sans-serif`;
+    ctx.fillStyle='#b5aba0';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(idx+1,sx,sy);
+  }
+  ctx.restore();
+}
+
+// ══════════════════════════════════════════
+// HIT TEST
+// ══════════════════════════════════════════
+function getTableAt(sx,sy){
+  for(let i=tables.length-1;i>=0;i--){
+    const t=tables[i];const s=w2s(t.x,t.y);
+    const tw=tW(t)*sc,th=tH(t)*sc;
+    if(Math.abs(sx-s.x)<tw/2&&Math.abs(sy-s.y)<th/2)return t;
+  }
+  return null;
+}
+function getSeatAt(sx,sy){
+  for(const t of tables){
+    const s=w2s(t.x,t.y);
+    const spos=getSeatPositions(t);
+    for(let idx=0;idx<spos.length;idx++){
+      const sp=spos[idx];
+      const cx=s.x+sp.x*sc,cy=s.y+sp.y*sc;
+      if(Math.sqrt((sx-cx)**2+(sy-cy)**2)<(SEAT_R+4)*sc)return{tableId:t.id,seatIdx:idx};
+    }
+  }
+  return null;
+}
+
+// ══════════════════════════════════════════
+// DECOR HIT TEST
+// ══════════════════════════════════════════
+function getDecorAt(sx,sy){
+  for(let i=decorElements.length-1;i>=0;i--){
+    const d=decorElements[i];
+    const s=w2s(d.x,d.y);
+    if(Math.abs(sx-s.x)<d.w*sc/2&&Math.abs(sy-s.y)<d.h*sc/2)return d;
+  }
+  return null;
+}
+
+function getDecorCorners(d){
+  const s=w2s(d.x,d.y);
+  const hw=d.w*sc/2, hh=d.h*sc/2;
+  return [
+    {id:'nw',x:s.x-hw,y:s.y-hh},
+    {id:'ne',x:s.x+hw,y:s.y-hh},
+    {id:'sw',x:s.x-hw,y:s.y+hh},
+    {id:'se',x:s.x+hw,y:s.y+hh},
+  ];
+}
+
+function getDecorCornerAt(sx,sy){
+  for(const d of decorElements){
+    for(const c of getDecorCorners(d)){
+      if(Math.sqrt((sx-c.x)**2+(sy-c.y)**2)<CORNER_R+3)return{d,corner:c.id};
+    }
+  }
+  return null;
+}
+
+let dragD=null, dragDSX, dragDSY, dragDX0, dragDY0;
+let activeDecor=null;
+let resizingDecor=null; // {d, corner, startSX, startSY, origW, origH, origX, origY}
+
+function showDecorPopup(d, cx, cy){
+  activeDecor=d;
+  const pop=document.getElementById('tpop');
+  document.getElementById('pp-name').textContent=d.label;
+  document.getElementById('pp-sc').textContent=d.type;
+  document.getElementById('pp-snum').textContent='—';
+  const ul=document.getElementById('pp-gl');ul.innerHTML='';
+  const sadj=document.querySelector('.sadj');sadj.style.display='none';
+  document.querySelector('#tpop .pacts').innerHTML=`
+    <button class="btn btn-outline btn-sm" onclick="renameDecor()">✎ Redenumește</button>
+  `;
+  let left=cx+10,top=cy-20;
+  if(left+260>window.innerWidth)left=cx-270;
+  if(top+200>window.innerHeight)top=window.innerHeight-200;
+  pop.style.left=left+'px';pop.style.top=top+'px';pop.style.display='block';
+}
+
+function renameDecor(){
+  if(!activeDecor)return;
+  const n=prompt('Nume nou:',activeDecor.label);
+  if(n&&n.trim()){activeDecor.label=n.trim();draw();save();closePopup();}
+}
+
+// ══════════════════════════════════════════
+// MOUSE / TOUCH
+// ══════════════════════════════════════════
+let mdX,mdY;
+cv.addEventListener('mousedown',e=>{
+  mdX=e.clientX;mdY=e.clientY;clickMoved=false;
+  closeST();closePopup();
+  document.querySelector('.sadj').style.display='';
+
+  // Table corner resize first
+  const cr=getCornerAt(e.offsetX,e.offsetY);
+  if(cr){
+    const t=cr.t;
+    resizing={t,corner:cr.corner,startSX:e.offsetX,startSY:e.offsetY,
+      origTW:tW(t),origTH:tH(t),origX:t.x,origY:t.y};
+    return;
+  }
+
+  // Decor corner resize
+  const dcr=getDecorCornerAt(e.offsetX,e.offsetY);
+  if(dcr){
+    resizingDecor={d:dcr.d,corner:dcr.corner,startSX:e.offsetX,startSY:e.offsetY,
+      origW:dcr.d.w,origH:dcr.d.h,origX:dcr.d.x,origY:dcr.d.y};
+    return;
+  }
+
+  // Table drag
+  const t=getTableAt(e.offsetX,e.offsetY);
+  if(t){dragT=t;dragSX=e.offsetX;dragSY=e.offsetY;dragTX0=t.x;dragTY0=t.y;return;}
+
+  // Decor drag
+  const d=getDecorAt(e.offsetX,e.offsetY);
+  if(d){dragD=d;dragDSX=e.offsetX;dragDSY=e.offsetY;dragDX0=d.x;dragDY0=d.y;return;}
+
+  pan=true;panSX=e.clientX;panSY=e.clientY;panOX=ox;panOY=oy;
+});
+cv.addEventListener('mousemove',e=>{
+  if(Math.abs(e.clientX-mdX)>4||Math.abs(e.clientY-mdY)>4)clickMoved=true;
+
+  if(resizing){
+    const {t,corner,startSX,startSY,origTW,origTH,origX,origY}=resizing;
+    const dx=(e.offsetX-startSX)/sc, dy=(e.offsetY-startSY)/sc;
+    const min=40;
+    let nW=origTW,nH=origTH,nX=origX,nY=origY;
+    if(corner==='se'){nW=Math.max(min,origTW+dx);nH=Math.max(min,origTH+dy);}
+    else if(corner==='sw'){nW=Math.max(min,origTW-dx);nH=Math.max(min,origTH+dy);nX=origX+dx/2;}
+    else if(corner==='ne'){nW=Math.max(min,origTW+dx);nH=Math.max(min,origTH-dy);nY=origY+dy/2;}
+    else if(corner==='nw'){nW=Math.max(min,origTW-dx);nH=Math.max(min,origTH-dy);nX=origX+dx/2;nY=origY+dy/2;}
+    t.tw=nW;t.th=nH;t.x=nX;t.y=nY;
+    cv.style.cursor='nwse-resize';draw();return;
+  }
+
+  if(resizingDecor){
+    const {d,corner,startSX,startSY,origW,origH,origX,origY}=resizingDecor;
+    const dx=(e.offsetX-startSX)/sc, dy=(e.offsetY-startSY)/sc;
+    const min=40;
+    let nW=origW,nH=origH,nX=origX,nY=origY;
+    if(corner==='se'){nW=Math.max(min,origW+dx);nH=Math.max(min,origH+dy);}
+    else if(corner==='sw'){nW=Math.max(min,origW-dx);nH=Math.max(min,origH+dy);nX=origX+dx/2;}
+    else if(corner==='ne'){nW=Math.max(min,origW+dx);nH=Math.max(min,origH-dy);nY=origY+dy/2;}
+    else if(corner==='nw'){nW=Math.max(min,origW-dx);nH=Math.max(min,origH-dy);nX=origX+dx/2;nY=origY+dy/2;}
+    d.w=nW;d.h=nH;d.x=nX;d.y=nY;
+    cv.style.cursor='nwse-resize';draw();return;
+  }
+
+  if(dragT){const w=s2w(e.offsetX,e.offsetY),ws=s2w(dragSX,dragSY);dragT.x=dragTX0+w.x-ws.x;dragT.y=dragTY0+w.y-ws.y;draw();cv.style.cursor='grabbing';}
+  else if(dragD){const w=s2w(e.offsetX,e.offsetY),ws=s2w(dragDSX,dragDSY);dragD.x=dragDX0+w.x-ws.x;dragD.y=dragDY0+w.y-ws.y;draw();cv.style.cursor='grabbing';}
+  else if(pan){ox=panOX+e.clientX-panSX;oy=panOY+e.clientY-panSY;draw();cv.style.cursor='move';}
+  else{
+    // Check corners (tables + decor)
+    if(getCornerAt(e.offsetX,e.offsetY)||getDecorCornerAt(e.offsetX,e.offsetY)){cv.style.cursor='nwse-resize';return;}
     const seat=getSeatAt(e.offsetX,e.offsetY);
-    const table=getTableAt(e.offsetX,e.offsetY);
-    cv.style.cursor= seat?'pointer':(table?'grab':'default');
+    const dec=getDecorAt(e.offsetX,e.offsetY);
+    cv.style.cursor=seat?'pointer':(getTableAt(e.offsetX,e.offsetY)||dec?'grab':'default');
   }
 });
-cv.addEventListener('mouseup', e=>{
-  const wasDrag=dragT&&clickMoved;
-  dragT=null; pan=false; cv.style.cursor='default';
+cv.addEventListener('mouseup',e=>{
+  if(resizing){resizing=null;cv.style.cursor='default';draw();save();return;}
+  if(resizingDecor){resizingDecor=null;cv.style.cursor='default';draw();save();return;}
+  if(dragD){
+    const wasDrag=clickMoved;
+    dragD=null;cv.style.cursor='default';
+    if(!wasDrag){
+      const d=getDecorAt(e.offsetX,e.offsetY);
+      if(d){activeDecor=d;showDecorPopup(d,e.clientX,e.clientY);}
+    }
+    draw();save();return;
+  }
+  const wasDrag=dragT&&clickMoved;dragT=null;pan=false;cv.style.cursor='default';
   if(!wasDrag){
     const seat=getSeatAt(e.offsetX,e.offsetY);
-    if(seat){ showSeatTip(seat,e.clientX,e.clientY); return; }
+    if(seat){showST(seat,e.clientX,e.clientY);return;}
     const t=getTableAt(e.offsetX,e.offsetY);
-    if(t) showPopup(t,e.clientX,e.clientY);
+    if(t)showPopup(t,e.clientX,e.clientY);
   }
-  draw(); save();
+  draw();save();
 });
 cv.addEventListener('wheel',e=>{
-  e.preventDefault();
-  const f=e.deltaY<0?1.1:0.91;
-  ox=e.offsetX-(e.offsetX-ox)*f; oy=e.offsetY-(e.offsetY-oy)*f;
-  sc=Math.min(Math.max(sc*f,0.22),3.5); draw();
+  e.preventDefault();const f=e.deltaY<0?1.1:.91;
+  ox=e.offsetX-(e.offsetX-ox)*f;oy=e.offsetY-(e.offsetY-oy)*f;
+  sc=Math.min(Math.max(sc*f,.18),3.5);draw();
 },{passive:false});
 
 // Touch
 let ltD=null,tMX,tMY,tMv;
 cv.addEventListener('touchstart',e=>{
   if(e.touches.length===1){
-    const r=cv.getBoundingClientRect();
-    const tx=e.touches[0].clientX-r.left,ty=e.touches[0].clientY-r.top;
-    tMX=tx;tMY=ty;tMv=false;closeSeatTip();closePopup();
+    const r=cv.getBoundingClientRect();const tx=e.touches[0].clientX-r.left,ty=e.touches[0].clientY-r.top;
+    tMX=tx;tMY=ty;tMv=false;closeST();closePopup();
+    document.querySelector('.sadj').style.display='';
     const t=getTableAt(tx,ty);
     if(t){dragT=t;dragSX=tx;dragSY=ty;dragTX0=t.x;dragTY0=t.y;}
-    else{pan=true;panSX=e.touches[0].clientX;panSY=e.touches[0].clientY;panOX=ox;panOY=oy;}
-  } else if(e.touches.length===2){
-    ltD=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
-    pan=false;dragT=null;
-  }
-  e.preventDefault();
-},{passive:false});
+    else{
+      const d=getDecorAt(tx,ty);
+      if(d){dragD=d;dragDSX=tx;dragDSY=ty;dragDX0=d.x;dragDY0=d.y;}
+      else{pan=true;panSX=e.touches[0].clientX;panSY=e.touches[0].clientY;panOX=ox;panOY=oy;}
+    }
+  }else if(e.touches.length===2){ltD=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);pan=false;dragT=null;dragD=null;}
+  e.preventDefault();},{passive:false});
 cv.addEventListener('touchmove',e=>{
   if(e.touches.length===1){
-    const r=cv.getBoundingClientRect();
-    const tx=e.touches[0].clientX-r.left,ty=e.touches[0].clientY-r.top;
+    const r=cv.getBoundingClientRect();const tx=e.touches[0].clientX-r.left,ty=e.touches[0].clientY-r.top;
     if(Math.abs(tx-tMX)>4||Math.abs(ty-tMY)>4)tMv=true;
     if(dragT){const w=s2w(tx,ty),ws=s2w(dragSX,dragSY);dragT.x=dragTX0+w.x-ws.x;dragT.y=dragTY0+w.y-ws.y;draw();}
+    else if(dragD){const w=s2w(tx,ty),ws=s2w(dragDSX,dragDSY);dragD.x=dragDX0+w.x-ws.x;dragD.y=dragDY0+w.y-ws.y;draw();}
     else if(pan){ox=panOX+e.touches[0].clientX-panSX;oy=panOY+e.touches[0].clientY-panSY;draw();}
-  } else if(e.touches.length===2&&ltD){
-    const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
-    const f=d/ltD;
-    const r=cv.getBoundingClientRect();
-    const cx=(e.touches[0].clientX+e.touches[1].clientX)/2-r.left;
-    const cy=(e.touches[0].clientY+e.touches[1].clientY)/2-r.top;
-    ox=cx-(cx-ox)*f;oy=cy-(cy-oy)*f;sc=Math.min(Math.max(sc*f,0.22),3.5);ltD=d;draw();
-  }
-  e.preventDefault();
-},{passive:false});
+  }else if(e.touches.length===2&&ltD){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);const f=d/ltD;const r=cv.getBoundingClientRect();const cx=(e.touches[0].clientX+e.touches[1].clientX)/2-r.left;const cy=(e.touches[0].clientY+e.touches[1].clientY)/2-r.top;ox=cx-(cx-ox)*f;oy=cy-(cy-oy)*f;sc=Math.min(Math.max(sc*f,.18),3.5);ltD=d;draw();}
+  e.preventDefault();},{passive:false});
 cv.addEventListener('touchend',e=>{
   if(!tMv&&e.changedTouches.length===1){
     const r=cv.getBoundingClientRect();
     const tx=e.changedTouches[0].clientX-r.left,ty=e.changedTouches[0].clientY-r.top;
     const seat=getSeatAt(tx,ty);
-    if(seat){showSeatTip(seat,e.changedTouches[0].clientX,e.changedTouches[0].clientY);}
-    else{const t=getTableAt(tx,ty);if(t)showPopup(t,e.changedTouches[0].clientX,e.changedTouches[0].clientY);}
+    if(seat)showST(seat,e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+    else{
+      const t=getTableAt(tx,ty);
+      if(t)showPopup(t,e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+      else{const d=getDecorAt(tx,ty);if(d){activeDecor=d;showDecorPopup(d,e.changedTouches[0].clientX,e.changedTouches[0].clientY);}}
+    }
   }
-  dragT=null;pan=false;ltD=null;save();e.preventDefault();
-},{passive:false});
+  dragT=null;dragD=null;pan=false;ltD=null;resizing=null;resizingDecor=null;save();e.preventDefault();},{passive:false});
 
-// Drop from sidebar
 cv.addEventListener('dragover',e=>{e.preventDefault();cv.style.outline='2px dashed #b8924a';});
 cv.addEventListener('dragleave',()=>{cv.style.outline='none';});
 cv.addEventListener('drop',e=>{
@@ -748,123 +749,96 @@ cv.addEventListener('drop',e=>{
   const gid=parseInt(e.dataTransfer.getData('gid'));
   const r=cv.getBoundingClientRect();
   const t=getTableAt(e.clientX-r.left,e.clientY-r.top);
-  if(t&&gid) assignGuestToTable(gid,t.id);
+  if(t&&gid)assignToTable(gid,t.id);
 });
 
-// ═══════════════════════════════════════
-// SEAT TOOLTIP — click on a seat
-// ═══════════════════════════════════════
-function showSeatTip(seat, cx, cy) {
-  activeSeat = seat;
-  const tip = document.getElementById('stip');
-  const t = tables.find(x=>x.id===seat.tableId);
-  const existing = guests.find(g=>g.tableId===seat.tableId&&g.seatIdx===seat.seatIdx);
-
-  document.getElementById('stip-title').textContent =
-    `${t.name} — Scaun ${seat.seatIdx+1}${existing?' (ocupat)':''}`;
-
-  const listEl = document.getElementById('stip-list');
-  listEl.innerHTML='';
-
-  if(existing){
-    // show option to remove
-    const rem = document.createElement('div');
-    rem.className='ua-item';
-    rem.style.color='#c88080';
-    rem.innerHTML=`<span class="ua-name">✕ Scoate pe ${existing.name}</span>`;
-    rem.onclick=()=>{existing.tableId=null;existing.seatIdx=null;closeSeatTip();renderGuests();updateStats();draw();save();};
-    listEl.appendChild(rem);
-  }
-
-  // unassigned guests
-  const unassigned = guests.filter(g=>!g.tableId);
-  if(unassigned.length===0&&!existing){
-    const p=document.createElement('div');p.className='no-guests';p.textContent='Toți invitații sunt așezați.';listEl.appendChild(p);
-  }
-  unassigned.forEach(g=>{
-    const div=document.createElement('div');div.className='ua-item';
-    div.innerHTML=`<span class="ld" style="background:${menuColor(g.menu)};width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0"></span>
-      <span class="ua-name">${g.name}</span>
-      <span class="ua-menu">${MENU_LABELS[g.menu]||''}</span>`;
-    div.onclick=()=>{
-      // remove from previous seat if any
-      if(existing){existing.tableId=null;existing.seatIdx=null;}
-      // check if seat not taken
-      const taken=guests.find(x=>x.tableId===seat.tableId&&x.seatIdx===seat.seatIdx&&x.id!==g.id);
-      if(taken){taken.tableId=null;taken.seatIdx=null;}
-      g.tableId=seat.tableId; g.seatIdx=seat.seatIdx;
-      closeSeatTip();renderGuests();updateStats();draw();save();
-    };
-    listEl.appendChild(div);
-  });
-
-  let left=cx+10,top=cy-20;
-  if(left+250>window.innerWidth)left=cx-260;
-  if(top+300>window.innerHeight)top=window.innerHeight-300;
-  tip.style.left=left+'px';tip.style.top=top+'px';tip.style.display='block';
-  draw();
-}
-
-function closeSeatTip(){
-  document.getElementById('stip').style.display='none';
-  activeSeat=null; draw();
-}
-
-document.addEventListener('click',e=>{
+// ══════════════════════════════════════════
+// SEAT TOOLTIP
+// ══════════════════════════════════════════
+function showST(seat,cx,cy){
+  activeSeat=seat;
   const tip=document.getElementById('stip');
-  const pop=document.getElementById('tpop');
-  if(tip.style.display==='block'&&!tip.contains(e.target)&&e.target!==cv) closeSeatTip();
-  if(pop.style.display==='block'&&!pop.contains(e.target)&&e.target!==cv) closePopup();
+  const t=tables.find(x=>x.id===seat.tableId);
+  const existing=guests.find(g=>g.tableId===seat.tableId&&g.seatIdx===seat.seatIdx);
+  document.getElementById('stip-t').textContent=`${t.name} — Scaun ${seat.seatIdx+1}${existing?' (ocupat)':''}`;
+  const l=document.getElementById('stip-l');l.innerHTML='';
+  if(existing){
+    const d=document.createElement('div');d.className='ua';d.style.color='#f08080';
+    d.innerHTML=`<span class="ua-name">✕ Scoate pe ${existing.name}</span>`;
+    d.onclick=()=>{existing.tableId=null;existing.seatIdx=null;closeST();renderGuests();updateStats();draw();save();};
+    l.appendChild(d);
+  }
+  const ua=guests.filter(g=>!g.tableId);
+  if(!ua.length&&!existing){const p=document.createElement('div');p.className='no-g';p.textContent='Toți invitații sunt așezați.';l.appendChild(p);}
+  ua.forEach(g=>{
+    const d=document.createElement('div');d.className='ua';
+    d.innerHTML=`<span class="ld" style="background:${menuColor(g.menu)};width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0"></span>
+      <span class="ua-name">${g.name}</span><span style="font-size:.6rem;opacity:.6">${MENU_LABELS[g.menu]||''}${g.cazare==='da'?' · 🏨':''}</span>`;
+    d.onclick=()=>{if(existing){existing.tableId=null;existing.seatIdx=null;}g.tableId=seat.tableId;g.seatIdx=seat.seatIdx;closeST();renderGuests();updateStats();draw();save();};
+    l.appendChild(d);
+  });
+  let left=cx+10,top=cy-20;
+  if(left+240>window.innerWidth)left=cx-250;
+  if(top+280>window.innerHeight)top=window.innerHeight-280;
+  tip.style.left=left+'px';tip.style.top=top+'px';tip.style.display='block';draw();
+}
+function closeST(){document.getElementById('stip').style.display='none';activeSeat=null;draw();}
+document.addEventListener('click',e=>{
+  const tip=document.getElementById('stip'),pop=document.getElementById('tpop');
+  if(tip.style.display==='block'&&!tip.contains(e.target)&&e.target!==cv)closeST();
+  if(pop.style.display==='block'&&!pop.contains(e.target)&&e.target!==cv)closePopup();
 });
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 // TABLE POPUP
-// ═══════════════════════════════════════
-function showPopup(t, cx, cy) {
+// ══════════════════════════════════════════
+function showPopup(t,cx,cy){
   activeTid=t.id;
-  const pop=document.getElementById('tpop');
   document.getElementById('pp-name').textContent=t.name;
   document.getElementById('pp-snum').textContent=t.seats;
   const here=guests.filter(g=>g.tableId===t.id);
-  document.getElementById('pp-sc').textContent=`${here.length}/${t.seats} ocupate`;
+  document.getElementById('pp-sc').textContent=`${here.length}/${t.seats}`;
   const ul=document.getElementById('pp-gl');ul.innerHTML='';
   here.forEach(g=>{
     const li=document.createElement('li');
-    const seatNum=g.seatIdx!=null?g.seatIdx+1:'?';
-    li.innerHTML=`<span style="background:${menuColor(g.menu)}" class="seat-badge">${seatNum}</span>
+    li.innerHTML=`<span class="sbadge" style="background:${menuColor(g.menu)}">${g.seatIdx!=null?g.seatIdx+1:'?'}</span>
       <span style="flex:1">${g.name}</span>
-      <span style="font-size:0.62rem;color:#b0a090">${MENU_LABELS[g.menu]||''}</span>
+      <span style="font-size:.58rem;color:#b0a090">${MENU_LABELS[g.menu]||''}${g.cazare==='da'?' 🏨':''}</span>
       <button class="rg" onclick="unassign(${g.id})">✕</button>`;
     ul.appendChild(li);
   });
+  const pop=document.getElementById('tpop');
   let left=cx+10,top=cy-20;
   if(left+260>window.innerWidth)left=cx-270;
   if(top+340>window.innerHeight)top=window.innerHeight-340;
-  pop.style.left=left+'px';pop.style.top=top+'px';pop.style.display='block';
+  pop.style.left=left+'px';pop.style.top=top+'px';pop.style.display='block';draw();
+}
+function closePopup(){
+  document.getElementById('tpop').style.display='none';
+  activeTid=null; activeDecor=null;
+  // restore sadj and pacts to default state for next table popup
+  document.querySelector('.sadj').style.display='';
+  document.querySelector('#tpop .pacts').innerHTML=`
+    <button class="btn btn-outline btn-sm" onclick="renameTable()">✎ Redenumește</button>
+    <button class="btn btn-red btn-sm" onclick="deleteTable()">✕ Șterge</button>
+  `;
   draw();
 }
-
-function closePopup(){document.getElementById('tpop').style.display='none';activeTid=null;draw();}
-
-function adjSeats(delta) {
+function adjSeats(d){
   const t=tables.find(x=>x.id===activeTid);if(!t)return;
-  const newSeats=Math.max(1,t.seats+delta);
-  // remove guests from seats that no longer exist
-  guests.forEach(g=>{if(g.tableId===t.id&&g.seatIdx>=newSeats){g.tableId=null;g.seatIdx=null;}});
-  t.seats=newSeats;
-  document.getElementById('pp-snum').textContent=newSeats;
+  const ns=Math.max(1,t.seats+d);
+  guests.forEach(g=>{if(g.tableId===t.id&&g.seatIdx>=ns){g.tableId=null;g.seatIdx=null;}});
+  t.seats=ns;document.getElementById('pp-snum').textContent=ns;
   const here=guests.filter(g=>g.tableId===t.id);
-  document.getElementById('pp-sc').textContent=`${here.length}/${t.seats} ocupate`;
+  document.getElementById('pp-sc').textContent=`${here.length}/${ns}`;
   draw();renderGuests();updateStats();save();
 }
-
 function renameTable(){
   const t=tables.find(x=>x.id===activeTid);if(!t)return;
-  const n=prompt('Nume nou:',t.name);
-  if(n&&n.trim()){t.name=n.trim();draw();save();showPopup(t,parseInt(document.getElementById('tpop').style.left),parseInt(document.getElementById('tpop').style.top));}
+  const n=prompt('Nume nou:',t.name);if(n&&n.trim()){t.name=n.trim();draw();save();showPopup(t,parseInt(document.getElementById('tpop').style.left),parseInt(document.getElementById('tpop').style.top));}
 }
 function deleteTable(){
-  if(!confirm('Ștergi masa? Invitații devin neașezați.'))return;
+  if(!confirm('Ștergi masa?'))return;
   guests.forEach(g=>{if(g.tableId===activeTid){g.tableId=null;g.seatIdx=null;}});
   tables=tables.filter(t=>t.id!==activeTid);
   closePopup();renderGuests();updateStats();draw();save();
@@ -877,172 +851,343 @@ function unassign(gid){
   renderGuests();updateStats();draw();save();
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 // ADD ROW
-// ═══════════════════════════════════════
-function addRow() {
-  const count=parseInt(document.getElementById('r-cnt').value)||3;
+// Tables go LEFT→RIGHT (increasing X), stacked vertically in columns
+// Each call adds a new COLUMN of N tables
+// ══════════════════════════════════════════
+function addRow(){
+  const count=parseInt(document.getElementById('r-cnt').value)||4;
   const seats=parseInt(document.getElementById('r-seats').value)||8;
 
   const existing=tables.filter(t=>!t.miri);
-  // find existing columns (x positions)
-  const xs=[...new Set(existing.map(t=>Math.round(t.x/10)*10))].sort((a,b)=>a-b);
+  const maxX=existing.length?Math.max(...existing.map(t=>t.x)):200;
+  const colX = existing.length ? maxX + TW_DEF + 60 : 250;
 
-  // Each table occupies TH width + gap; rows are vertical (TW height)
-  const colGap = TH + 60; // horizontal spacing between columns
-  // Count unique Y rows
-  const ys=[...new Set(existing.map(t=>Math.round(t.y/10)*10))].sort((a,b)=>a-b);
-  const nextY = ys.length===0 ? 250 : Math.max(...ys) + TW + 80;
-
-  // Center columns
-  const totalW=(count-1)*colGap;
-  const startX=-totalW/2;
+  const rowGap=TH_DEF+52;
+  const totalH=(count-1)*rowGap;
+  const startY=-totalH/2;
 
   for(let i=0;i<count;i++){
-    const x=startX+i*colGap;
-    tables.push({id:nextTid++,name:`Masa ${nextTid-1}`,seats,shape:'rect',x,y:nextY,miri:false});
+    tables.push({id:nextTid++,name:nextCity(),seats,x:colX,y:startY+i*rowGap,miri:false});
   }
   draw();updateStats();save();
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 // GUESTS
-// ═══════════════════════════════════════
-function openAddGuest(){
-  document.getElementById('g-name').value='';
-  document.getElementById('m-g').classList.add('open');
-  setTimeout(()=>document.getElementById('g-name').focus(),80);
-}
+// ══════════════════════════════════════════
+function openAddGuest(){document.getElementById('g-name').value='';document.getElementById('m-g').classList.add('open');setTimeout(()=>document.getElementById('g-name').focus(),80);}
 function confirmGuest(){
   const name=document.getElementById('g-name').value.trim();
   if(!name){alert('Introdu un nume.');return;}
   const menu=document.getElementById('g-menu').value;
-  guests.push({id:nextGid++,name,menu,tableId:null,seatIdx:null});
+  const cazare=document.getElementById('g-caz').value;
+  const obs=document.getElementById('g-obs').value.trim();
+  guests.push({id:nextGid++,name,menu,cazare,obs,tableId:null,seatIdx:null});
   cm('m-g');renderGuests();updateStats();save();
 }
-
-function assignGuestToTable(gid, tid) {
-  const g=guests.find(x=>x.id===gid);
-  const t=tables.find(x=>x.id===tid);
-  if(!g||!t)return;
-  // find first free seat
-  const occupied=new Set(guests.filter(x=>x.tableId===tid&&x.seatIdx!=null).map(x=>x.seatIdx));
-  let freeSeat=null;
-  for(let i=0;i<t.seats;i++){if(!occupied.has(i)){freeSeat=i;break;}}
-  if(freeSeat===null){alert(`Masa "${t.name}" nu mai are scaune libere!`);return;}
-  g.tableId=tid;g.seatIdx=freeSeat;
-  renderGuests();updateStats();draw();save();
+function assignToTable(gid,tid){
+  const g=guests.find(x=>x.id===gid),t=tables.find(x=>x.id===tid);if(!g||!t)return;
+  const occ=new Set(guests.filter(x=>x.tableId===tid&&x.seatIdx!=null).map(x=>x.seatIdx));
+  let free=null;for(let i=0;i<t.seats;i++){if(!occ.has(i)){free=i;break;}}
+  if(free===null){alert(`Masa "${t.name}" e plină!`);return;}
+  g.tableId=tid;g.seatIdx=free;renderGuests();updateStats();draw();save();
 }
-
 function renderGuests(filter=''){
   const fl=filter.toLowerCase();
   const list=document.getElementById('gl');list.innerHTML='';
-  const filtered=guests.filter(g=>g.name.toLowerCase().includes(fl));
+  const filt=guests.filter(g=>g.name.toLowerCase().includes(fl));
   document.getElementById('gc').textContent=guests.length;
-  filtered.forEach(g=>{
+  filt.forEach(g=>{
     const t=g.tableId?tables.find(x=>x.id===g.tableId):null;
     const div=document.createElement('div');
-    div.className='gi'+(g.tableId?' assigned':'');
-    div.draggable=true;
+    div.className='gi'+(g.tableId?' assigned':'');div.draggable=true;
     div.innerHTML=`<div class="ld" style="background:${menuColor(g.menu)}"></div>
       <span class="gi-name">${g.name}</span>
       ${t?`<span class="tbadge">${t.name}${g.seatIdx!=null?' #'+(g.seatIdx+1):''}</span>`:''}
+      ${g.cazare==='da'?'<span class="cazare-tag">🏨</span>':''}
       <button class="del-g" onclick="delGuest(${g.id},event)">✕</button>`;
     div.addEventListener('dragstart',e=>{e.dataTransfer.setData('gid',g.id);div.classList.add('dragging');});
     div.addEventListener('dragend',()=>div.classList.remove('dragging'));
     list.appendChild(div);
   });
 }
-
 function delGuest(id,e){
-  e.stopPropagation();
-  guests=guests.filter(g=>g.id!==id);
-  renderGuests(document.getElementById('gs').value);
-  updateStats();draw();save();
+  e.stopPropagation();guests=guests.filter(g=>g.id!==id);
+  renderGuests(document.getElementById('gs').value);updateStats();draw();save();
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 // STATS
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 function updateStats(){
   document.getElementById('s-t').textContent=tables.length;
   document.getElementById('s-g').textContent=guests.length;
   const a=guests.filter(g=>g.tableId).length;
   document.getElementById('s-a').textContent=a;
   document.getElementById('s-u').textContent=guests.length-a;
+  document.getElementById('s-caz').textContent=guests.filter(g=>g.cazare==='da').length;
+  document.getElementById('ms-n').textContent=guests.filter(g=>g.menu==='normal').length;
+  document.getElementById('ms-v').textContent=guests.filter(g=>g.menu==='veg').length;
+  document.getElementById('ms-vn').textContent=guests.filter(g=>g.menu==='vegan').length;
+  document.getElementById('ms-c').textContent=guests.filter(g=>g.menu==='copil').length;
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 // ZOOM
-// ═══════════════════════════════════════
-function doZoom(f){
-  const cx=cv.width/2,cy=cv.height/2;
-  ox=cx-(cx-ox)*f;oy=cy-(cy-oy)*f;
-  sc=Math.min(Math.max(sc*f,0.22),3.5);draw();
-}
-function resetView(){sc=1;ox=cv.width/2;oy=80;draw();}
+// ══════════════════════════════════════════
+function doZoom(f){const cx=cv.width/2,cy=cv.height/2;ox=cx-(cx-ox)*f;oy=cy-(cy-oy)*f;sc=Math.min(Math.max(sc*f,.18),3.5);draw();}
+function resetView(){sc=.85;ox=80;oy=cv.height/2;draw();}
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 // MODALS
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 function cm(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.ov').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){
-    document.querySelectorAll('.ov.open').forEach(m=>m.classList.remove('open'));
-    closePopup();closeSeatTip();
-  }
-});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.ov.open').forEach(m=>m.classList.remove('open'));closePopup();closeST();}});
 
-function exportData(){
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([JSON.stringify({tables,guests,nextTid,nextGid},null,2)],{type:'application/json'}));
-  a.download='mese-theo-dalia.json';a.click();
-}
-function openImport(){document.getElementById('imp-ta').value='';document.getElementById('m-imp').classList.add('open');}
+// ══════════════════════════════════════════
+// WORD IMPORT (via mammoth.js)
+// ══════════════════════════════════════════
+function openImport(){document.getElementById('imp-file').value='';document.getElementById('imp-res').style.display='none';document.getElementById('m-imp').classList.add('open');}
+
 function confirmImport(){
-  try{
-    const d=JSON.parse(document.getElementById('imp-ta').value);
-    if(d.tables)tables=d.tables;if(d.guests)guests=d.guests;
-    if(d.nextTid)nextTid=d.nextTid;if(d.nextGid)nextGid=d.nextGid;
-    cm('m-imp');renderGuests();updateStats();draw();save();
-  }catch{alert('JSON invalid.');}
+  const file=document.getElementById('imp-file').files[0];
+  if(!file){alert('Selectează un fișier .docx');return;}
+  const resEl=document.getElementById('imp-res');
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    try{
+      const result=await mammoth.extractRawText({arrayBuffer:e.target.result});
+      const text=result.value;
+      const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);
+
+      // Find table rows: look for lines that contain tab-separated or whitespace-separated data
+      // Columns: Nume | Meniu | Cazare | Observatii
+      // Skip header and instruction lines
+      const validMenus=['normal','vegetarian','veg','vegan','copil'];
+      const validCazare=['da','nu'];
+
+      let imported=0, skipped=0;
+
+      for(const line of lines){
+        // Split by tabs or multiple spaces
+        const parts=line.split(/\t/).map(p=>p.trim());
+        if(parts.length<2)continue;
+
+        const name=parts[0];
+        const menuRaw=(parts[1]||'').toLowerCase().trim();
+        const cazareRaw=(parts[2]||'').toLowerCase().trim();
+        const obs=(parts[3]||'').trim();
+
+        // Skip header row
+        if(name.toLowerCase()==='nume complet'||name.toLowerCase()==='nume')continue;
+        // Skip empty or instruction lines
+        if(!name||name.startsWith('•')||name.startsWith('Instrucțiuni')||name.startsWith('Complet'))continue;
+        // Skip example rows (italics lost in extract, but check for obvious examples)
+        if(menuRaw&&!validMenus.some(m=>menuRaw.includes(m)))continue;
+
+        // Normalize menu
+        let menu='normal';
+        if(menuRaw.includes('vegetarian'))menu='veg';
+        else if(menuRaw.includes('vegan'))menu='vegan';
+        else if(menuRaw.includes('copil'))menu='copil';
+        else if(menuRaw.includes('veg'))menu='veg';
+
+        // Normalize cazare
+        let cazare='nu';
+        if(cazareRaw==='da')cazare='da';
+
+        // Check if already exists
+        if(!guests.find(g=>g.name.toLowerCase()===name.toLowerCase())){
+          guests.push({id:nextGid++,name,menu,cazare,obs,tableId:null,seatIdx:null});
+          imported++;
+        } else { skipped++; }
+      }
+
+      resEl.className='import-result';
+      resEl.style.display='block';
+      resEl.textContent=`✓ Importat: ${imported} invitați${skipped?`, ${skipped} deja existenți (săriți)`:''}`;
+      renderGuests();updateStats();save();
+    }catch(err){
+      resEl.className='import-result err';resEl.style.display='block';
+      resEl.textContent='Eroare la citirea fișierului: '+err.message;
+    }
+  };
+  reader.readAsArrayBuffer(file);
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
+// PDF EXPORT
+// ══════════════════════════════════════════
+function exportPDF(){
+  const win=window.open('','_blank','width=1200,height=800');
+  const tablesByTable=tables.map(t=>{
+    const here=guests.filter(g=>g.tableId===t.id).sort((a,b)=>a.seatIdx-b.seatIdx);
+    return{t,here};
+  });
+  const totalG=guests.length;
+  const assigned=guests.filter(g=>g.tableId).length;
+  const cazare=guests.filter(g=>g.cazare==='da').length;
+  const mn=guests.filter(g=>g.menu==='normal').length;
+  const mv=guests.filter(g=>g.menu==='veg').length;
+  const mvn=guests.filter(g=>g.menu==='vegan').length;
+  const mc=guests.filter(g=>g.menu==='copil').length;
+
+  // Capture canvas as image
+  const canvasImg=cv.toDataURL('image/png');
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Jost',sans-serif;background:white;color:#1a1410;padding:20px 28px;}
+    h1{font-family:'Cormorant Garamond',serif;font-size:2rem;color:#b8924a;text-align:center;letter-spacing:.06em;}
+    .sub{text-align:center;font-size:.85rem;color:#7a5020;font-style:italic;margin-bottom:20px;}
+    .stats-box{display:flex;gap:0;border:1px solid #ddd0b8;border-radius:8px;overflow:hidden;margin-bottom:24px;}
+    .sitem{flex:1;padding:12px;text-align:center;border-right:1px solid #ddd0b8;}
+    .sitem:last-child{border:none;}
+    .sitem b{display:block;font-size:1.6rem;color:#b8924a;font-family:'Cormorant Garamond',serif;}
+    .sitem span{font-size:.72rem;color:#7a5020;text-transform:uppercase;letter-spacing:.05em;}
+    .menu-row{display:flex;gap:10px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;}
+    .mc{display:flex;align-items:center;gap:5px;font-size:.78rem;color:#5a3a28;background:#f0e4c8;padding:5px 12px;border-radius:5px;}
+    .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .plan-img{width:100%;border:1px solid #ddd0b8;border-radius:8px;margin-bottom:28px;}
+    h2{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#5a3a28;margin:20px 0 12px;border-bottom:1px solid #e0d4c0;padding-bottom:6px;}
+    .tables-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:28px;}
+    .tcard{border:1px solid #ddd0b8;border-radius:8px;overflow:hidden;}
+    .thead{background:#1a1410;color:#d4aa62;padding:8px 12px;font-family:'Cormorant Garamond',serif;font-size:.95rem;display:flex;justify-content:space-between;align-items:center;}
+    .thead span{font-size:.68rem;color:#c8aa7a;}
+    .trow{display:flex;align-items:center;gap:7px;padding:5px 10px;border-bottom:1px solid #f5f0e8;font-size:.76rem;}
+    .trow:last-child{border:none;}
+    .trow:nth-child(even){background:#faf7f2;}
+    .snum{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:.62rem;font-weight:600;flex-shrink:0;}
+    .tempty{padding:6px 10px;font-size:.72rem;color:#b0a090;font-style:italic;}
+    .unassigned-section{margin-top:10px;}
+    .urow{display:flex;align-items:center;gap:7px;padding:4px 0;font-size:.76rem;border-bottom:1px solid #f0ece4;}
+    @media print{body{padding:10px;}@page{margin:15mm;size:A4;}}
+  </style>
+  </head><body>
+  <h1>✦ Theo &amp; Dalia ✦</h1>
+  <div class="sub">Plan mese · 23 August 2026 · Moonfields, Tâncăbești</div>
+
+  <div class="stats-box">
+    <div class="sitem"><b>${tables.length}</b><span>Mese</span></div>
+    <div class="sitem"><b>${totalG}</b><span>Invitați</span></div>
+    <div class="sitem"><b>${assigned}</b><span>Așezați</span></div>
+    <div class="sitem"><b>${totalG-assigned}</b><span>Liberi</span></div>
+    <div class="sitem"><b>${cazare}</b><span>Cazare</span></div>
+  </div>
+
+  <div class="menu-row">
+    <div class="mc"><div class="dot" style="background:#c8956a"></div>${mn} Normal</div>
+    <div class="mc"><div class="dot" style="background:#6aad82"></div>${mv} Vegetarian</div>
+    <div class="mc"><div class="dot" style="background:#6a9aad"></div>${mvn} Vegan</div>
+    <div class="mc"><div class="dot" style="background:#d4b84a"></div>${mc} Copil</div>
+  </div>
+
+  <img class="plan-img" src="${canvasImg}" alt="Plan sală">
+
+  <h2>Invitați per masă</h2>
+  <div class="tables-grid">
+  ${tablesByTable.map(({t,here})=>`
+    <div class="tcard">
+      <div class="thead">${t.name}<span>${here.length}/${t.seats} locuri</span></div>
+      ${here.length?here.map(g=>`
+        <div class="trow">
+          <div class="snum" style="background:${menuColor(g.menu)}">${g.seatIdx!=null?g.seatIdx+1:'?'}</div>
+          <span style="flex:1">${g.name}</span>
+          <span style="font-size:.62rem;color:#b0a090">${MENU_LABELS[g.menu]||''}${g.cazare==='da'?' 🏨':''}</span>
+        </div>`).join(''):`<div class="tempty">Masă goală</div>`}
+    </div>`).join('')}
+  </div>
+
+  ${guests.filter(g=>!g.tableId).length?`
+  <h2>Neașezați (${guests.filter(g=>!g.tableId).length})</h2>
+  ${guests.filter(g=>!g.tableId).map(g=>`
+    <div class="urow">
+      <div class="snum" style="background:${menuColor(g.menu)}">?</div>
+      <span style="flex:1">${g.name}</span>
+      <span style="font-size:.62rem;color:#b0a090">${MENU_LABELS[g.menu]||''}${g.cazare==='da'?' 🏨':''}</span>
+    </div>`).join('')}`:''}
+
+  <script>window.onload=()=>window.print();<\/script>
+  </body></html>`;
+  win.document.write(html);win.document.close();
+}
+
+// ══════════════════════════════════════════
 // PERSIST
-// ═══════════════════════════════════════
-function save(){try{localStorage.setItem('mp3',JSON.stringify({tables,guests,nextTid,nextGid}));}catch{}}
+// ══════════════════════════════════════════
+function save(){try{localStorage.setItem('mp6',JSON.stringify({tables,guests,decorElements,nextTid,nextGid,cityIdx}));}catch{}}
 function load(){
   try{
-    const d=JSON.parse(localStorage.getItem('mp3'));
-    if(d){tables=d.tables||[];guests=d.guests||[];nextTid=d.nextTid||1;nextGid=d.nextGid||1;}
+    const d=JSON.parse(localStorage.getItem('mp6'));
+    if(d){tables=d.tables||[];guests=d.guests||[];decorElements=d.decorElements||[];nextTid=d.nextTid||1;nextGid=d.nextGid||1;cityIdx=d.cityIdx||0;}
   }catch{}
 }
 
-// ═══════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
+// INIT — default layout
+// Masa mirilor: VERTICAL (narrow × tall), on the LEFT
+// 4 cols × 4 rows of horizontal tables → Ring → 4 cols × 4 rows
+// Stage above ring, Bar below ring
+// ══════════════════════════════════════════
 load();
 
 if(tables.length===0){
-  // Masa mirilor — orizontală, sus, centrată
-  tables.push({id:nextTid++,name:'Theo & Dalia',seats:2,x:0,y:-60,miri:true});
+  cityIdx=0;
+  const rowGap=TH_DEF+52;
+  const colGap=TW_DEF+55;
+  const rows=4;
+  const totalH=(rows-1)*rowGap;
+  const startY=-totalH/2;
 
-  // 2 rânduri × 3 mese, verticale, perpendiculare pe masa mirilor
-  const colGap=TH+60;
-  const cols=3;
-  const totalW=(cols-1)*colGap;
-  const startX=-totalW/2;
-  [200, 200+TW+80].forEach((y,ri)=>{
-    for(let i=0;i<cols;i++){
-      tables.push({id:nextTid++,name:`Masa ${nextTid-1}`,seats:8,shape:'rect',x:startX+i*colGap,y,miri:false});
+  // Masa mirilor — VERTICAL: narrow width, tall height
+  // tw = TH_DEF (narrow), th = totalH + TH_DEF (as tall as the 4-table group)
+  const miriH = totalH + TH_DEF*2;
+  tables.push({id:nextTid++,name:'Roma',seats:8,x:-TH_DEF/2-30,y:0,miri:true,
+    tw:TH_DEF, th:miriH});
+
+  // Group 1: 4 columns × 4 rows
+  const g1startX=80;
+  for(let col=0;col<4;col++){
+    for(let row=0;row<4;row++){
+      tables.push({id:nextTid++,name:nextCity(),seats:8,x:g1startX+col*colGap,y:startY+row*rowGap,miri:false});
     }
-  });
+  }
+
+  // Ring, Stage, Bar
+  const ringX=g1startX+4*colGap+120;
+  const ringW=180,ringH=230;
+  decorElements.push({type:'ring',x:ringX,y:0,w:ringW,h:ringH,label:'Ring dans'});
+  decorElements.push({type:'stage',x:ringX,y:-ringH/2-70,w:ringW+20,h:100,label:'Scenă / Formație'});
+  decorElements.push({type:'bar',x:ringX,y:ringH/2+70,w:ringW+20,h:100,label:'Bar'});
+
+  // Group 2: 4 columns × 4 rows
+  const g2startX=ringX+ringW/2+100;
+  for(let col=0;col<4;col++){
+    for(let row=0;row<4;row++){
+      tables.push({id:nextTid++,name:nextCity(),seats:8,x:g2startX+col*colGap,y:startY+row*rowGap,miri:false});
+    }
+  }
 }
 
 renderGuests();updateStats();
-setTimeout(()=>{ox=cv.width/2;oy=100;draw();},50);
+setTimeout(()=>{
+  if(tables.length){
+    const xs=tables.map(t=>t.x), ys=tables.map(t=>t.y);
+    const minX=Math.min(...xs)-TW_DEF, maxX=Math.max(...xs)+TW_DEF;
+    const minY=Math.min(...ys)-TH_DEF*3, maxY=Math.max(...ys)+TH_DEF*3;
+    const scX=cv.width/(maxX-minX+120), scY=cv.height/(maxY-minY+100);
+    sc=Math.min(scX,scY,0.88);
+    ox=cv.width/2-((minX+maxX)/2)*sc;
+    oy=cv.height/2-((minY+maxY)/2)*sc;
+  }
+  draw();
+},60);
+
 </script>
 </body>
 </html>
