@@ -5,179 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan Mese · Theo & Dalia · Moonfields</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<script>
-// ── Minimal XLSX parser (no external dependencies) ──────────────────────────
-// Reads .xlsx files using browser's native ZIP (via fflate-like approach with
-// DataView) + DOMParser for XML. Works offline in all modern browsers.
-const XLSXMini = (() => {
-  // ── ZIP parser ─────────────────────────────────────────────────────────────
-  function parseZip(ab) {
-    const view = new DataView(ab);
-    const files = {};
-    let i = 0;
-    const u8 = new Uint8Array(ab);
-    while (i < u8.length - 4) {
-      if (view.getUint32(i, true) !== 0x04034b50) { i++; continue; }
-      const flags      = view.getUint16(i + 6,  true);
-      const method     = view.getUint16(i + 8,  true);
-      let   cmpSize    = view.getUint32(i + 18, true);
-      let   uncmpSize  = view.getUint32(i + 22, true);
-      const fnLen      = view.getUint16(i + 26, true);
-      const extraLen   = view.getUint16(i + 28, true);
-      const fname      = new TextDecoder().decode(u8.slice(i + 30, i + 30 + fnLen));
-      const dataStart  = i + 30 + fnLen + extraLen;
 
-      // Handle data descriptor (flag bit 3)
-      if (flags & 0x08) {
-        // sizes in local header may be 0; find data descriptor after compressed data
-        // We'll locate it after we decompress — skip for now, use central dir later
-      }
-
-      if (method === 0) {
-        // Stored
-        files[fname] = u8.slice(dataStart, dataStart + uncmpSize);
-      } else if (method === 8) {
-        // Deflated — use DecompressionStream if available
-        try {
-          const compressed = u8.slice(dataStart, dataStart + cmpSize);
-          files[fname] = { compressed, uncmpSize, deferred: true };
-        } catch(e) {}
-      }
-      i = dataStart + cmpSize;
-    }
-    return files;
-  }
-
-  async function decompressEntry(entry) {
-    if (!entry.deferred) return entry;
-    const cs = new DecompressionStream('deflate-raw');
-    const writer = cs.writable.getWriter();
-    writer.write(entry.compressed);
-    writer.close();
-    const chunks = [];
-    const reader = cs.readable.getReader();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-    }
-    const total = chunks.reduce((s, c) => s + c.length, 0);
-    const out = new Uint8Array(total);
-    let off = 0;
-    for (const c of chunks) { out.set(c, off); off += c.length; }
-    return out;
-  }
-
-  function u8str(u8) { return new TextDecoder('utf-8').decode(u8); }
-
-  function xmlDoc(str) {
-    return new DOMParser().parseFromString(str, 'application/xml');
-  }
-
-  // ── Main read function ─────────────────────────────────────────────────────
-  async function read(arrayBuffer) {
-    const raw = parseZip(arrayBuffer);
-
-    // Decompress all needed files
-    async function getText(name) {
-      const e = raw[name]; if (!e) return '';
-      const u8 = e.deferred ? await decompressEntry(e) : e;
-      return u8str(u8);
-    }
-
-    const ssXml   = await getText('xl/sharedStrings.xml');
-    const sh1Xml  = await getText('xl/worksheets/sheet1.xml');
-
-    // Parse shared strings
-    const ssDoc = xmlDoc(ssXml);
-    const sharedStrings = [];
-    ssDoc.querySelectorAll('si').forEach(si => {
-      // Collect all <t> text, handle rich text
-      let txt = '';
-      si.querySelectorAll('t').forEach(t => { txt += t.textContent; });
-      sharedStrings.push(txt);
-    });
-
-    // Parse sheet1
-    const shDoc = sh1Xml ? xmlDoc(sh1Xml) : null;
-    if (!shDoc) return [];
-
-    // Build cell map
-    const cellMap = {};
-    shDoc.querySelectorAll('c').forEach(c => {
-      const ref = c.getAttribute('r');
-      const t   = c.getAttribute('t'); // type: s=shared string, else number/inline
-      const vEl = c.querySelector('v');
-      const isEl = c.querySelector('is');
-      let val = '';
-      if (isEl) {
-        // inline string
-        isEl.querySelectorAll('t').forEach(t => { val += t.textContent; });
-      } else if (vEl) {
-        if (t === 's') {
-          val = sharedStrings[parseInt(vEl.textContent)] || '';
-        } else {
-          val = vEl.textContent;
-        }
-      }
-      cellMap[ref] = val;
-    });
-
-    // Find dimensions
-    const dimEl = shDoc.querySelector('dimension');
-    let maxRow = 200, maxCol = 10;
-    if (dimEl) {
-      const ref = dimEl.getAttribute('ref') || '';
-      const m = ref.match(/:([A-Z]+)(\d+)$/);
-      if (m) { maxCol = colNum(m[1]); maxRow = parseInt(m[2]); }
-    }
-
-    // Convert to row objects using row 3 as header
-    // Find header row (row with "Nume complet")
-    let headerRow = 3;
-    for (let r = 1; r <= 5; r++) {
-      for (let c = 1; c <= maxCol; c++) {
-        const v = (cellMap[cellRef(r,c)]||'').toLowerCase();
-        if (v.includes('nume')) { headerRow = r; break; }
-      }
-    }
-
-    const headers = [];
-    for (let c = 1; c <= maxCol; c++) {
-      headers.push((cellMap[cellRef(headerRow, c)] || '').trim());
-    }
-
-    const rows = [];
-    for (let r = headerRow + 1; r <= maxRow; r++) {
-      const row = {};
-      let hasData = false;
-      for (let c = 1; c <= maxCol; c++) {
-        const v = (cellMap[cellRef(r, c)] || '').trim();
-        if (headers[c-1]) row[headers[c-1]] = v;
-        if (v) hasData = true;
-      }
-      if (hasData) rows.push(row);
-    }
-    return rows;
-  }
-
-  function cellRef(r, c) {
-    return colLetter(c) + r;
-  }
-  function colLetter(n) {
-    let s = '';
-    while (n > 0) { s = String.fromCharCode(65 + (n-1)%26) + s; n = Math.floor((n-1)/26); }
-    return s;
-  }
-  function colNum(s) {
-    let n = 0;
-    for (const ch of s) n = n * 26 + ch.charCodeAt(0) - 64;
-    return n;
-  }
-
-  return { read };
-})();
-</script>
 
 <style>
 :root {
@@ -421,6 +249,178 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
 </div>
 
 <script>
+// ── Minimal XLSX parser (no external dependencies) ──────────────────────────
+// Reads .xlsx files using browser's native ZIP (via fflate-like approach with
+// DataView) + DOMParser for XML. Works offline in all modern browsers.
+const XLSXMini = (() => {
+  // ── ZIP parser ─────────────────────────────────────────────────────────────
+  function parseZip(ab) {
+    const view = new DataView(ab);
+    const files = {};
+    let i = 0;
+    const u8 = new Uint8Array(ab);
+    while (i < u8.length - 4) {
+      if (view.getUint32(i, true) !== 0x04034b50) { i++; continue; }
+      const flags      = view.getUint16(i + 6,  true);
+      const method     = view.getUint16(i + 8,  true);
+      let   cmpSize    = view.getUint32(i + 18, true);
+      let   uncmpSize  = view.getUint32(i + 22, true);
+      const fnLen      = view.getUint16(i + 26, true);
+      const extraLen   = view.getUint16(i + 28, true);
+      const fname      = new TextDecoder().decode(u8.slice(i + 30, i + 30 + fnLen));
+      const dataStart  = i + 30 + fnLen + extraLen;
+
+      // Handle data descriptor (flag bit 3)
+      if (flags & 0x08) {
+        // sizes in local header may be 0; find data descriptor after compressed data
+        // We'll locate it after we decompress — skip for now, use central dir later
+      }
+
+      if (method === 0) {
+        // Stored
+        files[fname] = u8.slice(dataStart, dataStart + uncmpSize);
+      } else if (method === 8) {
+        // Deflated — use DecompressionStream if available
+        try {
+          const compressed = u8.slice(dataStart, dataStart + cmpSize);
+          files[fname] = { compressed, uncmpSize, deferred: true };
+        } catch(e) {}
+      }
+      i = dataStart + cmpSize;
+    }
+    return files;
+  }
+
+  async function decompressEntry(entry) {
+    if (!entry.deferred) return entry;
+    const cs = new DecompressionStream('deflate-raw');
+    const writer = cs.writable.getWriter();
+    writer.write(entry.compressed);
+    writer.close();
+    const chunks = [];
+    const reader = cs.readable.getReader();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+    const total = chunks.reduce((s, c) => s + c.length, 0);
+    const out = new Uint8Array(total);
+    let off = 0;
+    for (const c of chunks) { out.set(c, off); off += c.length; }
+    return out;
+  }
+
+  function u8str(u8) { return new TextDecoder('utf-8').decode(u8); }
+
+  function xmlDoc(str) {
+    return new DOMParser().parseFromString(str, 'application/xml');
+  }
+
+  // ── Main read function ─────────────────────────────────────────────────────
+  async function read(arrayBuffer) {
+    const raw = parseZip(arrayBuffer);
+
+    // Decompress all needed files
+    async function getText(name) {
+      const e = raw[name]; if (!e) return '';
+      const u8 = e.deferred ? await decompressEntry(e) : e;
+      return u8str(u8);
+    }
+
+    const ssXml   = await getText('xl/sharedStrings.xml');
+    const sh1Xml  = await getText('xl/worksheets/sheet1.xml');
+
+    // Parse shared strings
+    const ssDoc = xmlDoc(ssXml);
+    const sharedStrings = [];
+    ssDoc.querySelectorAll('si').forEach(si => {
+      // Collect all <t> text, handle rich text
+      let txt = '';
+      si.querySelectorAll('t').forEach(t => { txt += t.textContent; });
+      sharedStrings.push(txt);
+    });
+
+    // Parse sheet1
+    const shDoc = sh1Xml ? xmlDoc(sh1Xml) : null;
+    if (!shDoc) return [];
+
+    // Build cell map
+    const cellMap = {};
+    shDoc.querySelectorAll('c').forEach(c => {
+      const ref = c.getAttribute('r');
+      const t   = c.getAttribute('t'); // type: s=shared string, else number/inline
+      const vEl = c.querySelector('v');
+      const isEl = c.querySelector('is');
+      let val = '';
+      if (isEl) {
+        // inline string
+        isEl.querySelectorAll('t').forEach(t => { val += t.textContent; });
+      } else if (vEl) {
+        if (t === 's') {
+          val = sharedStrings[parseInt(vEl.textContent)] || '';
+        } else {
+          val = vEl.textContent;
+        }
+      }
+      cellMap[ref] = val;
+    });
+
+    // Find dimensions
+    const dimEl = shDoc.querySelector('dimension');
+    let maxRow = 200, maxCol = 10;
+    if (dimEl) {
+      const ref = dimEl.getAttribute('ref') || '';
+      const m = ref.match(/:([A-Z]+)(\d+)$/);
+      if (m) { maxCol = colNum(m[1]); maxRow = parseInt(m[2]); }
+    }
+
+    // Convert to row objects using row 3 as header
+    // Find header row (row with "Nume complet")
+    let headerRow = 3;
+    for (let r = 1; r <= 5; r++) {
+      for (let c = 1; c <= maxCol; c++) {
+        const v = (cellMap[cellRef(r,c)]||'').toLowerCase();
+        if (v.includes('nume')) { headerRow = r; break; }
+      }
+    }
+
+    const headers = [];
+    for (let c = 1; c <= maxCol; c++) {
+      headers.push((cellMap[cellRef(headerRow, c)] || '').trim());
+    }
+
+    const rows = [];
+    for (let r = headerRow + 1; r <= maxRow; r++) {
+      const row = {};
+      let hasData = false;
+      for (let c = 1; c <= maxCol; c++) {
+        const v = (cellMap[cellRef(r, c)] || '').trim();
+        if (headers[c-1]) row[headers[c-1]] = v;
+        if (v) hasData = true;
+      }
+      if (hasData) rows.push(row);
+    }
+    return rows;
+  }
+
+  function cellRef(r, c) {
+    return colLetter(c) + r;
+  }
+  function colLetter(n) {
+    let s = '';
+    while (n > 0) { s = String.fromCharCode(65 + (n-1)%26) + s; n = Math.floor((n-1)/26); }
+    return s;
+  }
+  function colNum(s) {
+    let n = 0;
+    for (const ch of s) n = n * 26 + ch.charCodeAt(0) - 64;
+    return n;
+  }
+
+  return { read };
+})();
+
 // ══════════════════════════════════════════
 // ITALIAN CITY NAMES for tables
 // ══════════════════════════════════════════
@@ -1571,7 +1571,6 @@ setTimeout(()=>{
   }
   draw();
 },60);
-
 </script>
 </body>
 </html>
