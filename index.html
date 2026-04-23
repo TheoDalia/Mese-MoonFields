@@ -152,6 +152,7 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
         <button class="btn btn-outline" onclick="exportPDF()">↓ PDF</button>
         <button class="btn btn-outline" onclick="exportExcelTemplate()">↓ CSV</button>
         <button class="btn btn-outline" onclick="openImport()">↑ Excel</button>
+        <button class="btn btn-outline" onclick="exportGuestPage()" style="background:#3a5c44;color:white;border-color:#3a5c44;width:100%;margin-top:4px;justify-content:center;" title="Generează pagina pentru invitați cu QR">📍 Pagină invitați</button>
         <button class="btn btn-red btn-sm" onclick="confirmReset()" style="width:100%;margin-top:4px;justify-content:center;font-size:.72rem;" title="Șterge tot și resetează la layout default">⟳ Reset complet</button>
       </div>
     </div>
@@ -248,8 +249,37 @@ header{background:var(--deep);padding:7px 14px;display:flex;align-items:center;g
     </div>
   </div>
 </div>
+<!-- Buton mobil pagina invitati -->
+<button id="mob-guest-btn"
+  onclick="exportGuestPage()"
+  style="display:none;position:fixed;bottom:20px;right:20px;z-index:50;
+         background:#3a5c44;color:white;border:none;border-radius:8px;
+         padding:12px 16px;font-family:'Jost',sans-serif;font-size:.8rem;
+         font-weight:500;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3);
+         align-items:center;gap:6px;">
+  📍 Pagină invitați
+</button>
+<style>
+@media(max-width:600px){
+  #mob-guest-btn{display:flex!important;}
+}
+</style>
 
 <script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ── Minimal XLSX parser (no external dependencies) ──────────────────────────
 // Reads .xlsx files using browser's native ZIP (via fflate-like approach with
 // DataView) + DOMParser for XML. Works offline in all modern browsers.
@@ -1448,7 +1478,7 @@ function exportPDF(){
       <span style="font-size:.62rem;color:#b0a090">${MENU_LABELS[g.menu]||''}${g.cazare==='da'?' 🏨':''}</span>
     </div>`).join('')}`:''}
 
-  <script>window.onload=()=>window.print();<\/script>
+  <\/script-tag>window.onload=()=>window.print();<\/script-tag>
   </body></html>`;
   win.document.write(html);win.document.close();
 }
@@ -1456,6 +1486,50 @@ function exportPDF(){
 // ══════════════════════════════════════════
 // EXCEL/CSV EXPORT (fără librării externe)
 // ══════════════════════════════════════════
+
+// ══════════════════════════════════════════
+// EXPORT PAGINĂ INVITAȚI (guest.html)
+// ══════════════════════════════════════════
+// Template PassengerMap split in 4 parti
+var P1='<!DOCTYPE html>\n<html lang="ro">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Love Airlines · Masa Ta</title>\n<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">\n<style>\n*{box-sizing:border-box;margin:0;padding:0;}\nbody{font-family:\'Jost\',sans-serif;background:#1a3a2a;color:#f5f0e8;min-height:100vh;}\n\n/* LANG */\n.lsw{position:fixed;top:10px;right:12px;z-index:99;display:flex;gap:5px;}\n.lb{background:rgba(0,0,0,.4);border:1.5px solid rgba(201,168,76,.5);border-radius:4px;\n    padding:5px 10px;cursor:pointer;font-size:.7rem;font-weight:600;letter-spacing:.1em;\n    color:#c9a84c;font-family:\'Jost\',sans-serif;}\n.lb.on{background:#c9a84c;color:#1a3a2a;}\n\n/* HEADER */\nheader{text-align:center;padding:48px 20px 22px;border-bottom:1px solid rgba(201,168,76,.2);}\n.hl{font-size:.62rem;letter-spacing:.22em;color:#c9a84c;text-transform:uppercase;margin-bottom:5px;}\n.ht{font-family:\'Cormorant Garamond\',serif;font-size:clamp(1.8rem,7vw,2.8rem);\n    color:#e8c96a;font-weight:300;line-height:1.1;margin-bottom:5px;}\n.hs{font-size:.7rem;letter-spacing:.13em;color:rgba(245,240,232,.5);text-transform:uppercase;}\n\n/* TICKER */\n.tw{overflow:hidden;background:#c9a84c;padding:6px 0;}\n.ti{display:flex;width:max-content;animation:tick 22s linear infinite;}\n.ts{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:#1a3a2a;\n    font-weight:600;padding:0 26px;white-space:nowrap;}\n@keyframes tick{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}\n\n/* MAIN */\n.main{max-width:540px;margin:0 auto;padding:24px 16px 40px;}\n\n/* SEARCH CARD */\n.card{background:rgba(245,240,232,.96);border-radius:4px;padding:22px;\n      margin-bottom:14px;box-shadow:0 6px 28px rgba(0,0,0,.28);}\n.cl{font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:#8a7a5a;margin-bottom:2px;}\n.ct{font-family:\'Cormorant Garamond\',serif;font-size:1.45rem;color:#1a1a14;margin-bottom:2px;}\n.cs{font-size:.7rem;color:#8a7a5a;margin-bottom:16px;}\n\n/* INPUT */\n.sw{position:relative;}\n.si{width:100%;padding:12px 46px 12px 14px;border:1.5px solid #d0c4a8;border-radius:3px;\n    font-family:\'Jost\',sans-serif;font-size:.95rem;color:#1a1a14;background:#faf7f2;outline:none;}\n.si:focus{border-color:#c9a84c;}\n.si::placeholder{color:#b0a080;}\n.sb{position:absolute;right:5px;top:50%;transform:translateY(-50%);\n    background:#1a3a2a;border:none;border-radius:3px;width:36px;height:36px;\n    cursor:pointer;color:#c9a84c;font-size:1rem;}\n\n/* SUGGESTIONS */\n.sg{background:#fff;border:1.5px solid #d0c4a8;border-top:none;border-radius:0 0 4px 4px;\n    max-height:220px;overflow-y:auto;display:none;}\n.sg.open{display:block;}\n.sit{padding:13px 16px;cursor:pointer;font-size:.88rem;color:#1a1a14;\n     border-bottom:1px solid #f0ebe0;-webkit-tap-highlight-color:transparent;\n     user-select:none;}\n.sit:last-child{border:none;}\n.sit.hl2{background:#f5f0e8;}\n.sit-sub{font-size:.66rem;color:#c9a84c;margin-top:2px;}\n.nf{font-size:.74rem;color:#8b2e2e;padding:8px 0;display:none;}\n\n/* BOARDING PASS */\n.bp{background:rgba(245,240,232,.96);border-radius:4px;overflow:hidden;\n    margin-bottom:14px;box-shadow:0 6px 28px rgba(0,0,0,.28);display:none;}\n.bp.show{display:block;}\n.bph{background:#152e22;padding:11px 16px;display:flex;justify-content:space-between;\n     align-items:center;border-bottom:1px solid rgba(201,168,76,.2);}\n.bphl{font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;color:#c9a84c;}\n.bpal{font-size:.6rem;color:rgba(201,168,76,.5);}\n.bpb{padding:16px;}\n.bpg{font-family:\'Cormorant Garamond\',serif;font-size:1.4rem;color:#1a1a14;margin-bottom:12px;}\n.bpg span{color:#c9a84c;font-style:italic;}\n.bpr{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}\n.bpf{flex:1;min-width:70px;}\n.bpfl{font-size:.52rem;letter-spacing:.13em;text-transform:uppercase;color:#8a7a5a;margin-bottom:2px;}\n.bpfv{font-family:\'Cormorant Garamond\',serif;font-size:1.05rem;color:#1a1a14;}\n.bpdv{border:none;border-top:1px dashed #d0c4a8;margin:10px 0;}\n.bpnav{font-size:.7rem;color:#5a4a2a;background:#faf0d8;border-radius:3px;\n       padding:8px 12px;border-left:3px solid #c9a84c;font-style:italic;}\n\n/* MAP */\n.mc{background:rgba(245,240,232,.96);border-radius:4px;overflow:hidden;\n    margin-bottom:14px;box-shadow:0 6px 28px rgba(0,0,0,.28);display:none;}\n.mc.show{display:block;}\n.mch{background:#152e22;padding:10px 16px;display:flex;justify-content:space-between;\n     font-size:.56rem;letter-spacing:.15em;text-transform:uppercase;color:#c9a84c;}\n#mc{width:100%;display:block;background:#faf7f2;}\n.mcf{padding:7px 16px;background:#152e22;text-align:center;\n     font-size:.58rem;letter-spacing:.11em;text-transform:uppercase;color:#c9a84c;}\n.ea{display:inline-block;animation:ea .9s ease-in-out infinite alternate;}\n@keyframes ea{from{opacity:.5;transform:translateY(0);}to{opacity:1;transform:translateY(4px);}}\n\nfooter{text-align:center;padding:18px;font-size:.58rem;letter-spacing:.1em;\n       color:rgba(201,168,76,.3);text-transform:uppercase;\n       border-top:1px solid rgba(201,168,76,.12);}\n</style>\n</head>\n<body>\n\n<div class="lsw">\n  <button class="lb on" id="lro">RO</button>\n  <button class="lb" id="len">EN</button>\n  <button class="lb" id="lit">IT</button>\n</div>\n\n<header>\n  <div class="hl">✈ Love Airlines · Zbor DL&amp;TH · 23.08.2026</div>\n  <h1 class="ht" id="ttl">Găsește-ți Locul</h1>\n  <p class="hs">Dalia &amp; Theo · 23 August 2026 · Moonfields</p>\n</header>\n\n<div class="tw">\n  <div class="ti">\n    <span class="ts" id="tk1"></span>\n    <span class="ts" id="tk2"></span>\n  </div>\n</div>\n\n<div class="main">\n\n  <div class="card">\n    <div class="cl">BOARDING PASS · PASAGER</div>\n    <div class="ct" id="sct">Caută-ți locul la bord</div>\n    <div class="cs" id="scs">Introdu numele tău pentru a-ți găsi masa</div>\n    <div class="sw">\n      <input class="si" id="inp" type="text" autocomplete="off"\n             autocorrect="off" spellcheck="false" placeholder="ex: Ion Popescu">\n      <button class="sb" id="sbtn">→</button>\n    </div>\n    <div class="sg" id="sg"></div>\n    <div class="nf" id="nf"></div>\n  </div>\n\n  <div class="bp" id="bp">\n    <div class="bph">\n      <div>\n        <div class="bphl">BOARDING PASS</div>\n        <div class="bpal">✈ LOVE AIRLINES · DL&amp;TH-23.08.2026</div>\n      </div>\n      <div style="font-size:1.2rem;color:#c9a84c;opacity:.6">✈</div>\n    </div>\n    <div class="bpb">\n      <div class="bpg">Bun venit, <span id="rn">—</span>!</div>\n      <div class="bpr">\n        <div class="bpf">\n          <div class="bpfl" id="fl1">MASĂ</div>\n          <div class="bpfv" id="rt">—</div>\n        </div>\n        <div class="bpf">\n          <div class="bpfl" id="fl2">SCAUN</div>\n          <div class="bpfv" id="rs">—</div>\n        </div>\n        <div class="bpf">\n          <div class="bpfl" id="fl3">MENIU</div>\n          <div class="bpfv" id="rm">—</div>\n        </div>\n      </div>\n      <hr class="bpdv">\n      <div class="bpnav" id="nav">↓ Urmărește linia roșie pe harta de mai jos</div>\n    </div>\n  </div>\n\n  <div class="mc" id="mcw">\n    <div class="mch">\n      <span id="mct">✈ PLAN SALĂ · MOONFIELDS</span>\n      <span>NORD ↑</span>\n    </div>\n    <canvas id="mc"></canvas>\n    <div class="mcf"><span class="ea">▼</span><span id="el"> INTRARE DREAPTA · ZONA CORTINA / PORTOFINO</span></div>\n  </div>\n\n</div>\n\n<footer>✈ Love Airlines · DL&TH-23.08 · Moonfields, Tâncăbești ✦</footer>\n\nXSCX\n// DATA — injected at export\nvar GUESTS = ';
+var P2=';\nvar TABLES = ';
+var P3=';\nvar DECORS = ';
+var P4=';\n\n// ── LANG ─────────────────────────────────────────\nvar TT = {\n  ro: { ttl:\'Găsește-ți Locul\', sct:\'Caută-ți locul la bord\',\n        scs:\'Introdu numele tău pentru a-ți găsi masa\',\n        ph:\'ex: Ion Popescu\', nf:\'Numele nu a fost găsit.\',\n        fl1:\'MASĂ\', fl2:\'SCAUN\', fl3:\'MENIU\',\n        mct:\'✈ PLAN SALĂ · MOONFIELDS\', el:\' INTRARE DREAPTA · ZONA CORTINA / PORTOFINO\',\n        nav_left:\'stânga\', nav_right:\'dreapta\', nav_front:\'față\', nav_back:\'spate\',\n        nav_tpl:\'Intri pe ușa principală (sud) → mergi spre {side} → rândul din {depth} → masa {table}\',\n        tk:\'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AUGUST 2026 ✈ DESTINAȚIE: FERICIRE ✦ BOARDING NOW\' },\n  en: { ttl:\'Find Your Seat\', sct:\'Find your seat on board\',\n        scs:\'Enter your name to find your table\',\n        ph:\'e.g. John Smith\', nf:\'Name not found.\',\n        fl1:\'TABLE\', fl2:\'SEAT\', fl3:\'MENU\',\n        mct:\'✈ HALL MAP · MOONFIELDS\', el:\' ENTRANCE RIGHT · CORTINA / PORTOFINO AREA\',\n        nav_left:\'left\', nav_right:\'right\', nav_front:\'front\', nav_back:\'back\',\n        nav_tpl:\'Enter main door (south) → go {side} → {depth} row → table {table}\',\n        tk:\'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AUGUST 2026 ✈ DESTINATION: HAPPINESS ✦ BOARDING NOW\' },\n  it: { ttl:\'Trova il Tuo Posto\', sct:\'Trova il tuo posto a bordo\',\n        scs:\'Inserisci il tuo nome per trovare il tuo tavolo\',\n        ph:\'es. Mario Rossi\', nf:\'Nome non trovato.\',\n        fl1:\'TAVOLO\', fl2:\'POSTO\', fl3:\'MENU\',\n        mct:\'✈ MAPPA SALA · MOONFIELDS\', el:\' INGRESSO DESTRA · ZONA CORTINA / PORTOFINO\',\n        nav_left:\'sinistra\', nav_right:\'destra\', nav_front:\'fronte\', nav_back:\'fondo\',\n        nav_tpl:\'Entra porta principale (sud) → vai a {side} → fila {depth} → tavolo {table}\',\n        tk:\'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AGOSTO 2026 ✈ DESTINAZIONE: FELICITÀ ✦ IMBARCO\' }\n};\nvar ML = {\n  ro:{normal:\'Normal\',veg:\'Vegetarian\',vegan:\'Vegan\',copil:\'Copil\'},\n  en:{normal:\'Normal\',veg:\'Vegetarian\',vegan:\'Vegan\',copil:\'Child\'},\n  it:{normal:\'Normale\',veg:\'Vegetariano\',vegan:\'Vegano\',copil:\'Bambino\'}\n};\nvar lang = \'ro\';\n\nfunction applyLang() {\n  var t = TT[lang];\n  document.getElementById(\'ttl\').textContent  = t.ttl;\n  document.getElementById(\'sct\').textContent  = t.sct;\n  document.getElementById(\'scs\').textContent  = t.scs;\n  document.getElementById(\'inp\').placeholder  = t.ph;\n  document.getElementById(\'mct\').textContent  = t.mct;\n  document.getElementById(\'el\').textContent   = t.el;\n  document.getElementById(\'tk1\').textContent  = t.tk;\n  document.getElementById(\'tk2\').textContent  = t.tk;\n  [\'lro\',\'len\',\'lit\'].forEach(function(id,i){\n    document.getElementById(id).className = \'lb\' + (i === [\'ro\',\'en\',\'it\'].indexOf(lang) ? \' on\' : \'\');\n  });\n  if (selG) showBP(selG);\n}\n\nfunction setLang(l) { lang = l; applyLang(); }\n\ndocument.getElementById(\'lro\').onclick = function(){ setLang(\'ro\'); };\ndocument.getElementById(\'len\').onclick = function(){ setLang(\'en\'); };\ndocument.getElementById(\'lit\').onclick = function(){ setLang(\'it\'); };\n\n// ── SEARCH ───────────────────────────────────────\nvar suggs = [], selG = null;\n\nvar inp = document.getElementById(\'inp\');\nvar sgEl = document.getElementById(\'sg\');\nvar nfEl = document.getElementById(\'nf\');\n\ninp.addEventListener(\'input\', function() { doSearch(this.value); });\ninp.addEventListener(\'keydown\', function(e) {\n  if (e.key === \'Enter\') pickFirst();\n});\ndocument.getElementById(\'sbtn\').addEventListener(\'click\', pickFirst);\n\nfunction doSearch(v) {\n  var q = v.trim().toLowerCase();\n  nfEl.style.display = \'none\';\n  sgEl.className = \'sg\';\n  sgEl.innerHTML = \'\';\n  suggs = [];\n  if (q.length < 2) return;\n\n  suggs = GUESTS.filter(function(g) {\n    return g.name.toLowerCase().indexOf(q) >= 0;\n  }).slice(0, 8);\n\n  if (!suggs.length) {\n    if (q.length >= 3) {\n      nfEl.textContent = TT[lang].nf;\n      nfEl.style.display = \'block\';\n    }\n    return;\n  }\n\n  suggs.forEach(function(g, i) {\n    var d = document.createElement(\'div\');\n    d.className = \'sit\';\n    d.innerHTML = \'<strong>\' + g.name + \'</strong><div class="sit-sub">Masa \' + g.table + \'</div>\';\n    (function(idx) {\n      d.onclick = function() { pick(idx); };\n      d.ontouchstart = function() { d.classList.add(\'hl2\'); };\n      d.ontouchend = function(e) { e.preventDefault(); d.classList.remove(\'hl2\'); pick(idx); };\n    })(i);\n    sgEl.appendChild(d);\n  });\n  sgEl.className = \'sg open\';\n}\n\nfunction pickFirst() {\n  if (suggs.length > 0) pick(0);\n}\n\nfunction pick(i) {\n  var g = suggs[i];\n  if (!g) return;\n  selG = g;\n  inp.value = g.name;\n  sgEl.className = \'sg\';\n  sgEl.innerHTML = \'\';\n  nfEl.style.display = \'none\';\n  showBP(g);\n  document.getElementById(\'mcw\').className = \'mc show\';\n  document.getElementById(\'bp\').scrollIntoView({behavior:\'smooth\', block:\'nearest\'});\n  setTimeout(function() { drawMap(g); }, 300);\n}\n\n// ── BOARDING PASS ────────────────────────────────\nfunction showBP(g) {\n  var t = TT[lang];\n  document.getElementById(\'rn\').textContent = g.name.split(\' \')[0];\n  document.getElementById(\'rt\').textContent = g.table;\n  document.getElementById(\'rs\').textContent = \'#\' + (g.seatIdx + 1);\n  document.getElementById(\'rm\').textContent = ML[lang][g.menu] || g.menu;\n  document.getElementById(\'fl1\').textContent = t.fl1;\n  document.getElementById(\'fl2\').textContent = t.fl2;\n  document.getElementById(\'fl3\').textContent = t.fl3;\n\n  var tbl = null;\n  for (var i = 0; i < TABLES.length; i++) {\n    if (String(TABLES[i].id) === String(g.tableId)) { tbl = TABLES[i]; break; }\n  }\n  if (tbl) {\n    var allX = TABLES.filter(function(x){ return !x.miri; }).map(function(x){ return x.x; });\n    var allY = TABLES.filter(function(x){ return !x.miri; }).map(function(x){ return x.y; });\n    var midX = (Math.min.apply(null,allX)+Math.max.apply(null,allX))/2;\n    var midY = (Math.min.apply(null,allY)+Math.max.apply(null,allY))/2;\n    var side  = tbl.x < midX ? t.nav_left : t.nav_right;\n    var depth = tbl.y < midY ? t.nav_front : t.nav_back;\n    var navTxt = t.nav_tpl\n      .replace(\'{side}\', side).replace(\'{depth}\', depth).replace(\'{table}\', g.table);\n    document.getElementById(\'nav\').textContent = navTxt;\n  }\n  document.getElementById(\'bp\').className = \'bp show\';\n}\n\n// ── MAP ──────────────────────────────────────────\nfunction drawMap(g) {\n  var cv = document.getElementById(\'mc\');\n  var ctx = cv.getContext(\'2d\');\n  var container = document.getElementById(\'mcw\');\n  var W = container.getBoundingClientRect().width;\n  if (!W || W < 40) W = window.innerWidth - 32;\n  W = Math.floor(W);\n\n  if (!TABLES || !TABLES.length) return;\n\n  var allX = TABLES.map(function(t){ return t.x; });\n  var allY = TABLES.map(function(t){ return t.y; });\n  var minX = Math.min.apply(null,allX)-80;\n  var maxX = Math.max.apply(null,allX)+160; // spatiu pt intrare dreapta\n  var minY = Math.min.apply(null,allY)-90;\n  var maxY = Math.max.apply(null,allY)+190;\n\n  var sc = Math.min((W-20)/(maxX-minX), Math.max(window.innerHeight*0.55, 500)/(maxY-minY));\n  var H = Math.ceil((maxY-minY)*sc+20);\n  cv.width = W; cv.height = H;\n\n  function wx(x){ return (x-minX)*sc+10; }\n  function wy(y){ return (y-minY)*sc+10; }\n\n  // Background + grid\n  ctx.fillStyle = \'#faf7f2\';\n  ctx.fillRect(0,0,W,H);\n  ctx.strokeStyle = \'rgba(184,146,74,.06)\';\n  ctx.lineWidth = 1;\n  for (var x=0; x<W; x+=28){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }\n  for (var y=0; y<H; y+=28){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }\n\n  // Decors\n  DECORS.forEach(function(d){\n    var sx=wx(d.x), sy=wy(d.y), dw=d.w*sc, dh=d.h*sc;\n    var fill=\'#ede8f8\', stroke=\'#9080c0\';\n    if(d.type===\'bar\'){fill=\'#e0f0e8\';stroke=\'#3a7a54\';}\n    if(d.type===\'stage\'){fill=\'#f0e8d8\';stroke=\'#b8924a\';}\n    ctx.save();\n    ctx.beginPath(); ctx.roundRect(sx-dw/2,sy-dh/2,dw,dh,4);\n    ctx.fillStyle=fill; ctx.fill();\n    ctx.strokeStyle=stroke; ctx.lineWidth=1.5; ctx.setLineDash([5,3]); ctx.stroke(); ctx.setLineDash([]);\n    ctx.font=\'bold \'+Math.max(7,Math.round(8*sc))+\'px sans-serif\';\n    ctx.fillStyle=stroke; ctx.textAlign=\'center\'; ctx.textBaseline=\'middle\';\n    ctx.fillText(d.label,sx,sy); ctx.restore();\n  });\n\n  // Tables\n  var tbl = null;\n  TABLES.forEach(function(t){\n    var isT = String(t.id)===String(g.tableId);\n    if(isT) tbl = t;\n    var sx=wx(t.x), sy=wy(t.y), tw=(t.tw||220)*sc, th=(t.th||65)*sc;\n    ctx.save();\n    ctx.shadowColor=\'rgba(0,0,0,.1)\'; ctx.shadowBlur=4;\n    ctx.beginPath(); ctx.roundRect(sx-tw/2,sy-th/2,tw,th,3);\n    ctx.fillStyle = isT?\'#fff3e8\':(t.miri?\'#fffcf0\':\'#fff\');\n    ctx.fill(); ctx.shadowColor=\'transparent\';\n    ctx.strokeStyle = isT?\'#c03010\':(t.miri?\'#c9a84c\':\'#d0c4b0\');\n    ctx.lineWidth = isT?3:1;\n    if(t.miri) ctx.setLineDash([4,3]);\n    ctx.stroke(); ctx.setLineDash([]);\n    ctx.font=(isT?\'bold \':\'\')+Math.max(6,Math.round(7.5*sc))+\'px sans-serif\';\n    ctx.fillStyle=isT?\'#c03010\':\'#7a6050\';\n    ctx.textAlign=\'center\'; ctx.textBaseline=\'middle\';\n    ctx.fillText(t.name,sx,sy); ctx.restore();\n  });\n\n  if(!tbl) return;\n\n  // Red path from entrance to table\n  // Intrarea e pe DREAPTA, lateral — zona meselor Cortina / Portofino\n  var entX=maxX+30;   // dreapta, in afara salii\n  var entY=(Math.min.apply(null,allY)+Math.max.apply(null,allY))/2;  // mijloc vertical\n  var ex=wx(entX), ey=wy(entY);\n  var tx=wx(tbl.x), ty=wy(tbl.y);\n  var midYs=wy((Math.min.apply(null,allY)+Math.max.apply(null,allY))/2);\n\n  ctx.save();\n  ctx.strokeStyle=\'#c03010\'; ctx.lineWidth=3.5;\n  ctx.lineCap=\'round\'; ctx.lineJoin=\'round\';\n  ctx.setLineDash([9,6]);\n  ctx.shadowColor=\'rgba(192,48,16,.35)\'; ctx.shadowBlur=7;\n  ctx.beginPath(); ctx.moveTo(ex,ey);\n  ctx.bezierCurveTo(ex,ey-(ey-midYs)*.5, tx,midYs, tx,ty+(tbl.th||65)*sc/2+4);\n  ctx.stroke(); ctx.setLineDash([]); ctx.shadowColor=\'transparent\';\n\n  // Green dot at entrance (dreapta lateral)\n  ctx.beginPath(); ctx.arc(ex,ey,8,0,Math.PI*2);\n  ctx.fillStyle=\'#1a3a2a\'; ctx.fill();\n  ctx.strokeStyle=\'#c9a84c\'; ctx.lineWidth=2.5; ctx.stroke();\n  ctx.beginPath(); ctx.arc(ex,ey,4,0,Math.PI*2);\n  ctx.fillStyle=\'#c9a84c\'; ctx.fill();\n  // Linie punctata spre sala\n  ctx.save();\n  ctx.strokeStyle=\'rgba(201,168,76,.5)\'; ctx.lineWidth=1.5;\n  ctx.setLineDash([4,3]);\n  ctx.beginPath(); ctx.moveTo(ex,ey); ctx.lineTo(ex-30,ey); ctx.stroke();\n  ctx.setLineDash([]);\n  ctx.restore();\n\n  // Arrow at table\n  ctx.fillStyle=\'#c03010\';\n  ctx.beginPath(); ctx.moveTo(tx,ty-13); ctx.lineTo(tx-8,ty-1); ctx.lineTo(tx+8,ty-1);\n  ctx.closePath(); ctx.fill();\n\n  // Highlight circle at table\n  ctx.beginPath(); ctx.arc(tx,ty,(tbl.th||65)*sc/2+10,0,Math.PI*2);\n  ctx.fillStyle=\'rgba(192,48,16,.1)\'; ctx.fill();\n  ctx.strokeStyle=\'#c03010\'; ctx.lineWidth=2.5; ctx.stroke();\n\n  // Entrance label — pe dreapta, orizontal\n  var lbl = {ro:\'INTRARE\',en:\'ENTRANCE\',it:\'INGRESSO\'}[lang]||\'INTRARE\';\n  ctx.font=\'bold 10px sans-serif\'; ctx.textAlign=\'left\';\n  var lw=ctx.measureText(\'► \'+lbl).width+16;\n  ctx.fillStyle=\'#c9a84c\';\n  ctx.beginPath(); ctx.roundRect(ex+12,ey-10,lw,20,3); ctx.fill();\n  ctx.fillStyle=\'#1a1a14\';\n  ctx.textBaseline=\'middle\';\n  ctx.fillText(\'► \'+lbl,ex+20,ey);\n  ctx.restore();\n}\n\nwindow.addEventListener(\'resize\', function(){ if(selG) setTimeout(function(){ drawMap(selG); },100); });\n\n// ── INIT ─────────────────────────────────────────\napplyLang();\nXSCEX\n</body>\n</html>\n';
+
+function exportGuestPage(){
+  if(guests.filter(function(g){return g.tableId!=null;}).length===0){
+    alert('Nu exista invitati asignati la mese.');return;
+  }
+  var gD=guests.filter(function(g){return g.tableId!=null;}).map(function(g){
+    var t=tables.find(function(x){return x.id==g.tableId;});
+    return {name:g.name,table:t?t.name:'',tableId:g.tableId,seatIdx:g.seatIdx,menu:g.menu,cazare:g.cazare};
+  });
+  var tD=tables.map(function(t){
+    return {id:t.id,name:t.name,x:t.x,y:t.y,
+      tw:t.tw!==undefined?t.tw:(t.miri?65:220),
+      th:t.th!==undefined?t.th:(t.miri?121:65),
+      miri:!!t.miri,seats:t.seats};
+  });
+  var dD=decorElements.map(function(d){
+    return {type:d.type,x:d.x,y:d.y,w:d.w,h:d.h,label:d.label};
+  });
+  var G=JSON.stringify(gD);
+  var T=JSON.stringify(tD);
+  var D=JSON.stringify(dD);
+  var SC='<'+'script>';
+  var SCE='</'+'script>';
+  function fix(s){return s.replace(/XSCX/g,SC).replace(/XSCEX/g,SCE);}
+  var html=fix(P1)+G+fix(P2)+T+fix(P3)+D+fix(P4);
+  var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='PassengerMap.html';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(a.href);},1000);
+}
+
+
 function exportExcelTemplate(){
   // Generate CSV cu BOM pentru Excel (suportă diacritice)
   const MENU_MAP = {normal:'Normal',veg:'Vegetarian',vegan:'Vegan',copil:'Copil'};
@@ -1585,6 +1659,926 @@ if(tables.length===0) initDefaultLayout();
 renderGuests();
 updateStats();
 setTimeout(()=>{ fitView(); draw(); }, 60);
+
+
+
+// ═══════════════════════════════════════════════════════
+// DATE — înlocuite automat la export din planul de mese
+// ═══════════════════════════════════════════════════════
+var GUESTS  = __GUESTS__;
+var TABLES  = __TABLES__;
+var DECORS  = __DECORS__;
+
+// ═══════════════════════════════════════════════════════
+// TRADUCERI
+// ═══════════════════════════════════════════════════════
+var ML = {
+  ro: {normal:'Normal',veg:'Vegetarian',vegan:'Vegan',copil:'Copil'},
+  en: {normal:'Normal',veg:'Vegetarian',vegan:'Vegan',copil:'Child'},
+  it: {normal:'Normale',veg:'Vegetariano',vegan:'Vegano',copil:'Bambino'}
+};
+var TT = {
+  ro: {
+    ttl:'Găsește-ți Locul', st:'Caută-ți locul la bord',
+    ss:'Introdu numele tău pentru a-ți găsi masa', ph:'ex: Ion Popescu',
+    nf:'Numele nu a fost găsit. Verifică ortografia.',
+    fl1:'MASĂ', fl2:'SCAUN', fl3:'MENIU',
+    mt:'✈ PLAN SALĂ · MOONFIELDS', mn:'NORD ↑',
+    el:' INTRARE SUD · ZONA COMO / CORTINA',
+    tk:'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AUGUST 2026 ✈ DESTINAȚIE: FERICIRE ✦ BOARDING NOW'
+  },
+  en: {
+    ttl:'Find Your Seat', st:'Find your seat on board',
+    ss:'Enter your name to find your table', ph:'e.g. John Smith',
+    nf:'Name not found. Please check the spelling.',
+    fl1:'TABLE', fl2:'SEAT', fl3:'MENU',
+    mt:'✈ HALL MAP · MOONFIELDS', mn:'NORTH ↑',
+    el:' SOUTH ENTRANCE · COMO / CORTINA AREA',
+    tk:'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AUGUST 2026 ✈ DESTINATION: HAPPINESS ✦ BOARDING NOW'
+  },
+  it: {
+    ttl:'Trova il Tuo Posto', st:'Trova il tuo posto a bordo',
+    ss:'Inserisci il tuo nome per trovare il tuo tavolo', ph:'es. Mario Rossi',
+    nf:'Nome non trovato. Controlla l\'ortografia.',
+    fl1:'TAVOLO', fl2:'POSTO', fl3:'MENU',
+    mt:'✈ MAPPA SALA · MOONFIELDS', mn:'NORD ↑',
+    el:' INGRESSO SUD · ZONA COMO / CORTINA',
+    tk:'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AGOSTO 2026 ✈ DESTINAZIONE: FELICITÀ ✦ IMBARCO'
+  }
+};
+
+var lang = 'ro';
+var selG = null;
+var suggs = [];
+var sidx = -1;
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+function gi(id){ return document.getElementById(id); }
+
+function initPage(){
+  var t = TT[lang];
+  gi('tk1').textContent = t.tk;
+  gi('tk2').textContent = t.tk;
+  gi('si').placeholder  = t.ph;
+
+  // Debug info
+  gi('dbg').style.display = 'block';
+  gi('dbg').textContent = 'Invitati: ' + GUESTS.length + ' | Mese: ' + TABLES.length + ' | Decor: ' + DECORS.length;
+}
+
+// ═══════════════════════════════════════════════════════
+// LANGUAGE
+// ═══════════════════════════════════════════════════════
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('.lb').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('title') && b.getAttribute('title').toLowerCase().indexOf(l) >= 0
+      || (l==='ro' && b.title==='Română')
+      || (l==='en' && b.title==='English')
+      || (l==='it' && b.title==='Italiano'));
+  });
+  var t = TT[l];
+  ['ttl','st','ss','mt','mn','el'].forEach(function(k){ if(gi(k) && t[k]) gi(k).textContent = t[k]; });
+  gi('si').placeholder = t.ph;
+  gi('tk1').textContent = t.tk;
+  gi('tk2').textContent = t.tk;
+  if(selG) showBP(selG);
+}
+
+// ═══════════════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════════════
+function onS(v){
+  var q = v.trim().toLowerCase();
+  gi('nf').style.display = 'none';
+  if(q.length < 2){ hideSugg(); return; }
+
+  suggs = GUESTS.filter(function(g){
+    return g.name.toLowerCase().indexOf(q) >= 0;
+  }).slice(0, 8);
+  sidx = -1;
+
+  if(!suggs.length){
+    hideSugg();
+    if(q.length >= 3){
+      gi('nf').textContent = TT[lang].nf;
+      gi('nf').style.display = 'block';
+    }
+    return;
+  }
+
+  var box = gi('sg');
+  box.style.display = 'block';
+  box.innerHTML = suggs.map(function(g, i){
+    return '<div class="si" onclick="selAt(' + i + ')">' +
+           g.name +
+           '<div class="sit">Masa ' + g.table + '</div>' +
+           '</div>';
+  }).join('');
+}
+
+function onK(e){
+  var items = gi('sg').querySelectorAll('.si');
+  if(e.key === 'ArrowDown'){ sidx = Math.min(sidx+1, suggs.length-1); hilit(items); }
+  else if(e.key === 'ArrowUp'){ sidx = Math.max(sidx-1, 0); hilit(items); }
+  else if(e.key === 'Enter'){ selAt(sidx >= 0 ? sidx : 0); }
+}
+
+function hilit(items){
+  items.forEach(function(el, i){ el.classList.toggle('active', i === sidx); });
+  if(sidx >= 0) items[sidx].scrollIntoView({block:'nearest'});
+}
+
+function hideSugg(){ gi('sg').style.display = 'none'; suggs = []; }
+function doS(){ if(suggs.length) selAt(sidx >= 0 ? sidx : 0); }
+
+function selAt(i){
+  hideSugg();
+  var g = suggs[i];
+  if(!g) return;
+  selG = g;
+  gi('si').value = g.name;
+  gi('nf').style.display = 'none';
+
+  showBP(g);
+
+  // Arată harta
+  var mcEl = gi('mc');
+  mcEl.classList.add('show');
+  mcEl.style.display = 'block';
+
+  // Scroll la boarding pass
+  gi('bp').scrollIntoView({behavior:'smooth', block:'nearest'});
+
+  // Desenează harta cu delay pentru a lăsa browserul să rendereze
+  setTimeout(function(){
+    drawMap(g);
+  }, 200);
+}
+
+// ═══════════════════════════════════════════════════════
+// BOARDING PASS
+// ═══════════════════════════════════════════════════════
+function showBP(g){
+  var t = TT[lang];
+  gi('rn').textContent = g.name.split(' ')[0];
+  gi('rt').textContent = g.table;
+  gi('rs').textContent = '#' + (g.seatIdx + 1);
+  gi('rm').textContent = ML[lang][g.menu] || g.menu;
+  gi('fl1').textContent = t.fl1;
+  gi('fl2').textContent = t.fl2;
+  gi('fl3').textContent = t.fl3;
+
+  // Navigare
+  var tbl = null;
+  for(var i=0; i<TABLES.length; i++){
+    if(String(TABLES[i].id) === String(g.tableId)){
+      tbl = TABLES[i]; break;
+    }
+  }
+  if(tbl){
+    var allX = TABLES.filter(function(x){ return !x.miri; }).map(function(x){ return x.x; });
+    var allY = TABLES.filter(function(x){ return !x.miri; }).map(function(x){ return x.y; });
+    var midX = (Math.min.apply(null, allX) + Math.max.apply(null, allX)) / 2;
+    var midY = (Math.min.apply(null, allY) + Math.max.apply(null, allY)) / 2;
+    var sideMap = {ro: tbl.x < midX ? 'stânga' : 'dreapta',
+                   en: tbl.x < midX ? 'left' : 'right',
+                   it: tbl.x < midX ? 'sinistra' : 'destra'};
+    var depthMap = {ro: tbl.y < midY ? 'față' : 'spate',
+                    en: tbl.y < midY ? 'front' : 'back',
+                    it: tbl.y < midY ? 'fronte' : 'fondo'};
+    var navMap = {
+      ro: 'Intri pe ușa principală (sud) → mergi spre ' + sideMap.ro + ' → rândul din ' + depthMap.ro + ' → masa ' + g.table,
+      en: 'Enter the main door (south) → go ' + sideMap.en + ' → ' + depthMap.en + ' row → table ' + g.table,
+      it: 'Entra dalla porta principale (sud) → vai a ' + sideMap.it + ' → fila ' + depthMap.it + ' → tavolo ' + g.table
+    };
+    gi('rnav').textContent = navMap[lang];
+  }
+
+  gi('bp').classList.add('show');
+  gi('bp').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════
+// HARTA
+// ═══════════════════════════════════════════════════════
+function drawMap(g){
+  var cv = gi('mapCanvas');
+  var ctx = cv.getContext('2d');
+
+  // Lățime reală
+  var container = gi('mc');
+  var rect = container.getBoundingClientRect();
+  var W = Math.floor(rect.width);
+  if(!W || W < 50){
+    W = Math.min(window.innerWidth - 36, 520);
+  }
+
+  // Debug
+  gi('dbg').textContent = 'Map drawing: W=' + W + ' | tableId=' + g.tableId +
+    ' | TABLES=' + TABLES.length + ' | matching=' +
+    TABLES.filter(function(t){ return String(t.id) === String(g.tableId); }).length;
+
+  if(!TABLES || !TABLES.length){ return; }
+
+  // Bounds
+  var allX = TABLES.map(function(t){ return t.x; });
+  var allY = TABLES.map(function(t){ return t.y; });
+  var minX = Math.min.apply(null, allX) - 120;
+  var maxX = Math.max.apply(null, allX) + 120;
+  var minY = Math.min.apply(null, allY) - 80;
+  var maxY = Math.max.apply(null, allY) + 180;
+
+  var scale = Math.min((W - 24) / (maxX - minX), 460 / (maxY - minY));
+  var H = Math.ceil((maxY - minY) * scale + 24);
+
+  cv.width  = W;
+  cv.height = H;
+  cv.style.width  = W + 'px';
+  cv.style.height = H + 'px';
+
+  function wx(x){ return (x - minX) * scale + 12; }
+  function wy(y){ return (y - minY) * scale + 12; }
+
+  // Background
+  ctx.fillStyle = '#faf7f2';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(184,146,74,.07)';
+  ctx.lineWidth = 1;
+  for(var gx = 0; gx < W; gx += 30){ ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,H); ctx.stroke(); }
+  for(var gy = 0; gy < H; gy += 30){ ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(W,gy); ctx.stroke(); }
+
+  // Decor
+  DECORS.forEach(function(d){
+    var sx=wx(d.x), sy=wy(d.y), dw=d.w*scale, dh=d.h*scale;
+    var fill='#ede8f8', stroke='#9080c0';
+    if(d.type==='bar')  { fill='#e0f0e8'; stroke='#3a7a54'; }
+    if(d.type==='stage'){ fill='#f0e8d8'; stroke='#b8924a'; }
+    ctx.save();
+    ctx.beginPath(); ctx.roundRect(sx-dw/2, sy-dh/2, dw, dh, 4);
+    ctx.fillStyle = fill; ctx.fill();
+    ctx.strokeStyle = stroke; ctx.lineWidth = 1.5;
+    ctx.setLineDash([5,3]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font = 'bold ' + Math.max(7, Math.round(8*scale)) + 'px sans-serif';
+    ctx.fillStyle = stroke; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(d.label, sx, sy);
+    ctx.restore();
+  });
+
+  // Mese
+  TABLES.forEach(function(t){
+    var isT = String(t.id) === String(g.tableId);
+    var sx=wx(t.x), sy=wy(t.y);
+    var tw=(t.tw||220)*scale, th=(t.th||65)*scale;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.1)'; ctx.shadowBlur = 4;
+    ctx.beginPath(); ctx.roundRect(sx-tw/2, sy-th/2, tw, th, 3);
+    ctx.fillStyle = isT ? '#fff3e8' : (t.miri ? '#fffcf0' : '#fff');
+    ctx.fill(); ctx.shadowColor = 'transparent';
+    ctx.strokeStyle = isT ? '#c03010' : (t.miri ? '#c9a84c' : '#d0c4b0');
+    ctx.lineWidth = isT ? 3 : 1;
+    if(t.miri) ctx.setLineDash([4,3]);
+    ctx.stroke(); ctx.setLineDash([]);
+    var fs = Math.max(6, Math.round(7.5*scale));
+    ctx.font = (isT ? 'bold ' : '') + fs + 'px sans-serif';
+    ctx.fillStyle = isT ? '#c03010' : '#7a6050';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(t.name, sx, sy);
+    ctx.restore();
+  });
+
+  // Găsim masa țintă
+  var tbl = null;
+  for(var i=0; i<TABLES.length; i++){
+    if(String(TABLES[i].id) === String(g.tableId)){
+      tbl = TABLES[i]; break;
+    }
+  }
+  if(!tbl){
+    ctx.fillStyle = 'red'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Masa nu a fost gasita (id:' + g.tableId + ')', W/2, H/2);
+    return;
+  }
+
+  // Linia roșie intrare → masă
+  var entX = (Math.min.apply(null, allX) + Math.max.apply(null, allX)) / 2;
+  var entY = maxY - 100;
+  var ex = wx(entX), ey = wy(entY);
+  var tx = wx(tbl.x), ty = wy(tbl.y);
+  var midY2 = wy((Math.min.apply(null, allY) + Math.max.apply(null, allY)) / 2);
+
+  ctx.save();
+  ctx.strokeStyle = '#c03010';
+  ctx.lineWidth = 3.5;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.setLineDash([9, 6]);
+  ctx.shadowColor = 'rgba(192,48,16,.4)'; ctx.shadowBlur = 8;
+  ctx.beginPath();
+  ctx.moveTo(ex, ey);
+  ctx.bezierCurveTo(ex, ey-(ey-midY2)*0.5, tx, midY2, tx, ty+(tbl.th||65)*scale/2+4);
+  ctx.stroke();
+  ctx.setLineDash([]); ctx.shadowColor = 'transparent';
+
+  // Dot verde la intrare
+  ctx.beginPath(); ctx.arc(ex, ey, 8, 0, Math.PI*2);
+  ctx.fillStyle = '#1a3a2a'; ctx.fill();
+  ctx.strokeStyle = '#c9a84c'; ctx.lineWidth = 2.5; ctx.stroke();
+  ctx.beginPath(); ctx.arc(ex, ey, 4, 0, Math.PI*2);
+  ctx.fillStyle = '#c9a84c'; ctx.fill();
+
+  // Săgeată la masă
+  ctx.fillStyle = '#c03010';
+  ctx.beginPath();
+  ctx.moveTo(tx, ty-14); ctx.lineTo(tx-8, ty-2); ctx.lineTo(tx+8, ty-2);
+  ctx.closePath(); ctx.fill();
+
+  // Highlight masă
+  ctx.beginPath(); ctx.arc(tx, ty, (tbl.th||65)*scale/2+10, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(192,48,16,.1)'; ctx.fill();
+  ctx.strokeStyle = '#c03010'; ctx.lineWidth = 2.5; ctx.stroke();
+
+  // Label intrare
+  var lbl = {ro:'INTRARE', en:'ENTRANCE', it:'INGRESSO'}[lang] || 'INTRARE';
+  ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+  var lw = ctx.measureText('▼ ' + lbl).width + 18;
+  ctx.fillStyle = '#c9a84c';
+  ctx.beginPath(); ctx.roundRect(ex - lw/2, ey+12, lw, 19, 3); ctx.fill();
+  ctx.fillStyle = '#1a1a14'; ctx.fillText('▼ ' + lbl, ex, ey+23);
+
+  ctx.restore();
+}
+
+window.addEventListener('resize', function(){
+  if(selG) setTimeout(function(){ drawMap(selG); }, 100);
+});
+
+// START
+initPage();
+
+
+
+
+
+
+
+
+
+
+var P1 = '<!DOCTYPE html>\n<html lang="ro">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">\n<title>Love Airlines · Găsește-ți Locul</title>\n<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">\n<style>\n*{box-sizing:border-box;margin:0;padding:0;}\nbody{font-family:\'Jost\',sans-serif;background:#1a3a2a;color:#f5f0e8;min-height:100vh;}\n\n.lang-sw{position:fixed;top:12px;right:14px;z-index:200;display:flex;gap:6px;}\n.lb{background:rgba(0,0,0,.3);border:1.5px solid rgba(201,168,76,.5);border-radius:5px;\n    padding:5px 10px;cursor:pointer;font-size:.72rem;font-weight:600;letter-spacing:.1em;\n    font-family:Jost,sans-serif;transition:all .15s;opacity:.8;color:#c9a84c;}\n.lb:hover{opacity:1;background:rgba(201,168,76,.2);}\n.lb.active{opacity:1;background:#c9a84c;color:#1a3a2a;border-color:#c9a84c;}\n\nheader{text-align:center;padding:52px 20px 24px;border-bottom:1px solid rgba(201,168,76,.2);}\n.hlogo{font-size:.65rem;letter-spacing:.25em;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;}\n.htitle{font-family:\'Cormorant Garamond\',serif;font-size:clamp(2rem,8vw,3rem);\n        color:#e8c96a;font-weight:300;letter-spacing:.04em;line-height:1.1;margin-bottom:6px;}\n.hsub{font-size:.72rem;letter-spacing:.15em;color:rgba(245,240,232,.5);text-transform:uppercase;}\n\n.ticker-wrap{overflow:hidden;background:#c9a84c;padding:6px 0;}\n.ticker{display:flex;width:max-content;animation:ticker 24s linear infinite;}\n.ticker-item{font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;\n             color:#1a3a2a;font-weight:600;padding:0 28px;white-space:nowrap;}\n@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}\n\n.main{max-width:560px;margin:0 auto;padding:28px 18px 40px;}\n\n.card{background:rgba(245,240,232,.96);border-radius:4px;padding:24px;\n      margin-bottom:16px;border:1px solid rgba(201,168,76,.2);\n      box-shadow:0 8px 32px rgba(0,0,0,.3);}\n.clabel{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:#8a7a5a;margin-bottom:3px;}\n.ctitle{font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;color:#1a1a14;margin-bottom:3px;}\n.csub{font-size:.73rem;color:#8a7a5a;margin-bottom:18px;}\n\n.swrap{position:relative;}\n.sinput{width:100%;padding:13px 50px 13px 16px;border:1.5px solid #d0c4a8;border-radius:3px;\n        font-family:\'Jost\',sans-serif;font-size:.95rem;color:#1a1a14;background:#faf7f2;\n        outline:none;transition:border-color .2s;}\n.sinput:focus{border-color:#c9a84c;}\n.sinput::placeholder{color:#b0a080;}\n.sbtn{position:absolute;right:6px;top:50%;transform:translateY(-50%);\n      background:#1a3a2a;border:none;border-radius:3px;width:38px;height:38px;\n      cursor:pointer;color:#c9a84c;font-size:1.1rem;\n      display:flex;align-items:center;justify-content:center;}\n.sbtn:hover{background:#152e22;}\n\n.sugg{background:white;border:1.5px solid #d0c4a8;border-radius:3px;margin-top:4px;\n      max-height:200px;overflow-y:auto;box-shadow:0 5px 16px rgba(0,0,0,.12);display:none;}\n.si{padding:11px 16px;cursor:pointer;font-size:.85rem;color:#1a1a14;\n    border-bottom:1px solid #f5f0e8;transition:background .1s;}\n.si:last-child{border:none;}\n.si:hover,.si.active{background:#f5f0e8;}\n.sit{font-size:.67rem;color:#c9a84c;margin-top:2px;}\n\n.nf{font-size:.76rem;color:#8b2e2e;padding:9px 0;display:none;}\n\n/* BOARDING PASS */\n.bp{background:rgba(245,240,232,.96);border-radius:4px;overflow:hidden;\n    margin-bottom:16px;border:1px solid rgba(201,168,76,.2);\n    box-shadow:0 8px 32px rgba(0,0,0,.3);display:none;}\n.bp.show{display:block;}\n.bph{background:#152e22;padding:12px 18px;display:flex;justify-content:space-between;\n     align-items:center;border-bottom:1px solid rgba(201,168,76,.2);}\n.bphl{font-size:.56rem;letter-spacing:.17em;text-transform:uppercase;color:#c9a84c;}\n.bpal{font-size:.62rem;color:rgba(201,168,76,.55);margin-top:2px;}\n.bpb{padding:18px;}\n.bpg{font-family:\'Cormorant Garamond\',serif;font-size:1.45rem;color:#1a1a14;margin-bottom:14px;}\n.bpg em{color:#c9a84c;font-style:italic;}\n.bpr{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}\n.bpf{flex:1;min-width:80px;}\n.bpfl{font-size:.53rem;letter-spacing:.14em;text-transform:uppercase;color:#8a7a5a;margin-bottom:2px;}\n.bpfv{font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:#1a1a14;}\nhr.div{border:none;border-top:1px dashed #d0c4a8;margin:12px 0;}\n.bpnav{font-size:.73rem;color:#5a4a2a;background:#faf0d8;border-radius:3px;\n       padding:9px 13px;border-left:3px solid #c9a84c;font-style:italic;}\n\n/* MAP */\n.mc{background:rgba(245,240,232,.96);border-radius:4px;overflow:hidden;\n    margin-bottom:16px;border:1px solid rgba(201,168,76,.2);\n    box-shadow:0 8px 32px rgba(0,0,0,.3);display:none;}\n.mc.show{display:block;}\n.mch{background:#152e22;padding:11px 18px;font-size:.58rem;letter-spacing:.17em;\n     text-transform:uppercase;color:#c9a84c;display:flex;justify-content:space-between;}\n#mapCanvas{width:100%;display:block;background:#faf7f2;}\n.mcf{padding:8px 18px;background:#152e22;text-align:center;\n     font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a84c;}\n.ea{display:inline-block;animation:pulse .9s ease-in-out infinite alternate;}\n@keyframes pulse{from{opacity:.5;transform:translateY(0);}to{opacity:1;transform:translateY(4px);}}\n\nfooter{text-align:center;padding:20px;font-size:.6rem;\n       color:rgba(201,168,76,.35);text-transform:uppercase;\n       border-top:1px solid rgba(201,168,76,.15);}\n</style>\n</head>\n<body>\n\n<div class="lang-sw">\n  <button class="lb active" onclick="setLang(\'ro\')" title="Română">RO</button>\n  <button class="lb" onclick="setLang(\'en\')" title="English">EN</button>\n  <button class="lb" onclick="setLang(\'it\')" title="Italiano">IT</button>\n</div>\n\n<header>\n  <div class="hlogo">✈ Love Airlines · Zbor DL&amp;TH · 23.08.2026</div>\n  <h1 class="htitle" id="ttl">Găsește-ți Locul</h1>\n  <p class="hsub">Dalia &amp; Theo · 23 August 2026 · Moonfields</p>\n</header>\n\n<div class="ticker-wrap">\n  <div class="ticker">\n    <span class="ticker-item" id="tk1"></span>\n    <span class="ticker-item" id="tk2"></span>\n  </div>\n</div>\n\n<div class="main">\n\n  <div class="card">\n    <div class="clabel">BOARDING PASS · PASAGER</div>\n    <div class="ctitle" id="st">Caută-ți locul la bord</div>\n    <div class="csub" id="ss">Introdu numele tău pentru a-ți găsi masa</div>\n    <div class="swrap">\n      <input class="sinput" id="si" type="text" autocomplete="off"\n             autocorrect="off" spellcheck="false" placeholder="ex: Ion Popescu"\n             oninput="onS(this.value)" onkeydown="onK(event)">\n      <button class="sbtn" onclick="doS()">→</button>\n    </div>\n    <div class="sugg" id="sg"></div>\n    <div class="nf" id="nf"></div>\n  </div>\n\n  <div class="bp" id="bp">\n    <div class="bph">\n      <div>\n        <div class="bphl">BOARDING PASS</div>\n        <div class="bpal">✈ LOVE AIRLINES · DL&amp;TH-23.08.2026</div>\n      </div>\n      <div style="font-size:1.3rem;color:#c9a84c;opacity:.65">✈</div>\n    </div>\n    <div class="bpb">\n      <div class="bpg" id="bg">Bun venit, <em id="rn">—</em>!</div>\n      <div class="bpr">\n        <div class="bpf">\n          <div class="bpfl" id="fl1">MASĂ</div>\n          <div class="bpfv" id="rt">—</div>\n        </div>\n        <div class="bpf">\n          <div class="bpfl" id="fl2">SCAUN</div>\n          <div class="bpfv" id="rs">—</div>\n        </div>\n        <div class="bpf">\n          <div class="bpfl" id="fl3">MENIU</div>\n          <div class="bpfv" id="rm">—</div>\n        </div>\n      </div>\n      <hr class="div">\n      <div class="bpnav" id="rnav">↓ Urmărește linia roșie pe harta de mai jos</div>\n    </div>\n  </div>\n\n  <div class="mc" id="mc">\n    <div class="mch">\n      <span id="mt">✈ PLAN SALĂ · MOONFIELDS</span>\n      <span id="mn">NORD ↑</span>\n    </div>\n    <canvas id="mapCanvas"></canvas>\n    <div class="mcf">\n      <span class="ea">▼</span>\n      <span id="el"> INTRARE SUD · ZONA COMO / CORTINA</span>\n    </div>\n  </div>\n\n</div>\n\n<footer>✈ Love Airlines · DL&TH-23.08 · Moonfields, Tâncăbești ✦</footer>\n\nXSCX\n// ═══════════════════════════════════════════════════════\n// DATE — înlocuite automat la export din planul de mese\n// ═══════════════════════════════════════════════════════\nwindow.onerror=function(m,s,l,c,e){document.body.insertAdjacentHTML(\'afterbegin\',\'<div style="background:red;color:white;padding:10px;font-size:12px;position:fixed;top:0;left:0;right:0;z-index:9999">ERR: \'+m+\' L\'+l+\'</div>\');return true;};\nvar GUESTS  = ';
+var P2 = ';\nvar TABLES  = ';
+var P3 = ';\nvar DECORS  = ';
+var P4 = ';\n\n// ═══════════════════════════════════════════════════════\n// TRADUCERI\n// ═══════════════════════════════════════════════════════\nvar ML = {\n  ro: {normal:\'Normal\',veg:\'Vegetarian\',vegan:\'Vegan\',copil:\'Copil\'},\n  en: {normal:\'Normal\',veg:\'Vegetarian\',vegan:\'Vegan\',copil:\'Child\'},\n  it: {normal:\'Normale\',veg:\'Vegetariano\',vegan:\'Vegano\',copil:\'Bambino\'}\n};\nvar TT = {\n  ro: {\n    ttl:\'Găsește-ți Locul\', st:\'Caută-ți locul la bord\',\n    ss:\'Introdu numele tău pentru a-ți găsi masa\', ph:\'ex: Ion Popescu\',\n    nf:\'Numele nu a fost găsit. Verifică ortografia.\',\n    fl1:\'MASĂ\', fl2:\'SCAUN\', fl3:\'MENIU\',\n    mt:\'✈ PLAN SALĂ · MOONFIELDS\', mn:\'NORD ↑\',\n    el:\' INTRARE SUD · ZONA COMO / CORTINA\',\n    tk:\'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AUGUST 2026 ✈ DESTINAȚIE: FERICIRE ✦ BOARDING NOW\'\n  },\n  en: {\n    ttl:\'Find Your Seat\', st:\'Find your seat on board\',\n    ss:\'Enter your name to find your table\', ph:\'e.g. John Smith\',\n    nf:\'Name not found. Please check the spelling.\',\n    fl1:\'TABLE\', fl2:\'SEAT\', fl3:\'MENU\',\n    mt:\'✈ HALL MAP · MOONFIELDS\', mn:\'NORTH ↑\',\n    el:\' SOUTH ENTRANCE · COMO / CORTINA AREA\',\n    tk:\'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AUGUST 2026 ✈ DESTINATION: HAPPINESS ✦ BOARDING NOW\'\n  },\n  it: {\n    ttl:\'Trova il Tuo Posto\', st:\'Trova il tuo posto a bordo\',\n    ss:\'Inserisci il tuo nome per trovare il tuo tavolo\', ph:\'es. Mario Rossi\',\n    nf:\'Nome non trovato. Controlla l\\\'ortografia.\',\n    fl1:\'TAVOLO\', fl2:\'POSTO\', fl3:\'MENU\',\n    mt:\'✈ MAPPA SALA · MOONFIELDS\', mn:\'NORD ↑\',\n    el:\' INGRESSO SUD · ZONA COMO / CORTINA\',\n    tk:\'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AGOSTO 2026 ✈ DESTINAZIONE: FELICITÀ ✦ IMBARCO\'\n  }\n};\n\nvar lang = \'ro\';\nvar selG = null;\nvar suggs = [];\nvar sidx = -1;\n\n// ═══════════════════════════════════════════════════════\n// INIT\n// ═══════════════════════════════════════════════════════\nfunction gi(id){ return document.getElementById(id); }\n\nfunction initPage(){\n  var t = TT[lang];\n  gi(\'tk1\').textContent = t.tk;\n  gi(\'tk2\').textContent = t.tk;\n  gi(\'si\').placeholder  = t.ph;\n\n}\n\n// ═══════════════════════════════════════════════════════\n// LANGUAGE\n// ═══════════════════════════════════════════════════════\nfunction setLang(l){\n  lang = l;\n  document.querySelectorAll(\'.lb\').forEach(function(b){\n    var titles = {ro:\'Română\', en:\'English\', it:\'Italiano\'};\n    b.classList.toggle(\'active\', b.getAttribute(\'title\') === titles[l]);\n  });\n  var t = TT[l];\n  [\'ttl\',\'st\',\'ss\',\'mt\',\'mn\',\'el\'].forEach(function(k){ if(gi(k) && t[k]) gi(k).textContent = t[k]; });\n  gi(\'si\').placeholder = t.ph;\n  gi(\'tk1\').textContent = t.tk;\n  gi(\'tk2\').textContent = t.tk;\n  if(selG) showBP(selG);\n}\n\n// ═══════════════════════════════════════════════════════\n// SEARCH\n// ═══════════════════════════════════════════════════════\nfunction onS(v){\n  var q = v.trim().toLowerCase();\n  gi(\'nf\').style.display = \'none\';\n  if(q.length < 2){ hideSugg(); return; }\n\n  suggs = GUESTS.filter(function(g){\n    return g.name.toLowerCase().indexOf(q) >= 0;\n  }).slice(0, 8);\n  sidx = -1;\n\n  if(!suggs.length){\n    hideSugg();\n    if(q.length >= 3){\n      gi(\'nf\').textContent = TT[lang].nf;\n      gi(\'nf\').style.display = \'block\';\n    }\n    return;\n  }\n\n  var box = gi(\'sg\');\n  box.style.display = \'block\';\n  box.innerHTML = \'\';\n  suggs.forEach(function(g, i){\n    var div = document.createElement(\'div\');\n    div.className = \'si\';\n    div.innerHTML = g.name + \'<div class="sit">Masa \' + g.table + \'</div>\';\n    div.addEventListener(\'click\', function(){ selAt(i); });\n    div.addEventListener(\'touchend\', function(e){ e.preventDefault(); selAt(i); });\n    box.appendChild(div);\n  });\n}\n\nfunction onK(e){\n  var items = gi(\'sg\').querySelectorAll(\'.si\');\n  if(e.key === \'ArrowDown\'){ sidx = Math.min(sidx+1, suggs.length-1); hilit(items); }\n  else if(e.key === \'ArrowUp\'){ sidx = Math.max(sidx-1, 0); hilit(items); }\n  else if(e.key === \'Enter\'){ selAt(sidx >= 0 ? sidx : 0); }\n}\n\nfunction hilit(items){\n  items.forEach(function(el, i){ el.classList.toggle(\'active\', i === sidx); });\n  if(sidx >= 0) items[sidx].scrollIntoView({block:\'nearest\'});\n}\n\nfunction hideSugg(){ gi(\'sg\').style.display = \'none\'; suggs = []; }\nfunction doS(){ if(suggs.length) selAt(sidx >= 0 ? sidx : 0); }\n\nfunction selAt(i){\n  hideSugg();\n  var g = suggs[i];\n  if(!g) return;\n  selG = g;\n  gi(\'si\').value = g.name;\n  gi(\'nf\').style.display = \'none\';\n\n  // Arată boarding pass\n  showBP(g);\n\n  // Arată containerul hartă ÎNAINTE de a desena\n  var mcEl = gi(\'mc\');\n  mcEl.style.display = \'block\';\n  mcEl.style.visibility = \'visible\';\n\n  // Setăm explicit canvas width înainte de orice\n  var cv = gi(\'mapCanvas\');\n  cv.style.width = \'100%\';\n\n  // Scroll\n  setTimeout(function(){\n    gi(\'bp\').scrollIntoView({behavior:\'smooth\', block:\'start\'});\n  }, 50);\n\n  // Desenăm cu delay - lăsăm browserul să rendereze containerul\n  setTimeout(function(){ _drawMapNow(g); }, 300);\n  setTimeout(function(){ _drawMapNow(g); }, 700);\n}\n// ═══════════════════════════════════════════════════════\n// BOARDING PASS\n// ═══════════════════════════════════════════════════════\nfunction showBP(g){\n  var t = TT[lang];\n  gi(\'rn\').textContent = g.name.split(\' \')[0];\n  gi(\'rt\').textContent = g.table;\n  gi(\'rs\').textContent = \'#\' + (g.seatIdx + 1);\n  gi(\'rm\').textContent = ML[lang][g.menu] || g.menu;\n  gi(\'fl1\').textContent = t.fl1;\n  gi(\'fl2\').textContent = t.fl2;\n  gi(\'fl3\').textContent = t.fl3;\n\n  // Navigare\n  var tbl = null;\n  for(var i=0; i<TABLES.length; i++){\n    if(String(TABLES[i].id) === String(g.tableId)){\n      tbl = TABLES[i]; break;\n    }\n  }\n  if(tbl){\n    var allX = TABLES.filter(function(x){ return !x.miri; }).map(function(x){ return x.x; });\n    var allY = TABLES.filter(function(x){ return !x.miri; }).map(function(x){ return x.y; });\n    var midX = (Math.min.apply(null, allX) + Math.max.apply(null, allX)) / 2;\n    var midY = (Math.min.apply(null, allY) + Math.max.apply(null, allY)) / 2;\n    var sideMap = {ro: tbl.x < midX ? \'stânga\' : \'dreapta\',\n                   en: tbl.x < midX ? \'left\' : \'right\',\n                   it: tbl.x < midX ? \'sinistra\' : \'destra\'};\n    var depthMap = {ro: tbl.y < midY ? \'față\' : \'spate\',\n                    en: tbl.y < midY ? \'front\' : \'back\',\n                    it: tbl.y < midY ? \'fronte\' : \'fondo\'};\n    var navMap = {\n      ro: \'Intri pe ușa principală (sud) → mergi spre \' + sideMap.ro + \' → rândul din \' + depthMap.ro + \' → masa \' + g.table,\n      en: \'Enter the main door (south) → go \' + sideMap.en + \' → \' + depthMap.en + \' row → table \' + g.table,\n      it: \'Entra dalla porta principale (sud) → vai a \' + sideMap.it + \' → fila \' + depthMap.it + \' → tavolo \' + g.table\n    };\n    gi(\'rnav\').textContent = navMap[lang];\n  }\n\n  gi(\'bp\').classList.add(\'show\');\n  gi(\'bp\').style.display = \'block\';\n}\n\n// ═══════════════════════════════════════════════════════\n// HARTA\n// ═══════════════════════════════════════════════════════\nfunction drawMap(g){\n  setTimeout(function(){ _drawMapNow(g); }, 100);\n}\n\nfunction _drawMapNow(g){\n  var cv = gi(\'mapCanvas\');\n  if(!cv){ return; }\n  var ctx = cv.getContext(\'2d\');\n\n  // Lățime: folosim window.innerWidth ca fallback garantat\n  var W = window.innerWidth;\n  var wrap = gi(\'mc\');\n  if(wrap){\n    var r = wrap.getBoundingClientRect();\n    if(r.width > 50) W = Math.floor(r.width);\n  }\n  W = Math.min(W, 560) - 4;\n  if(W < 100) W = 300;\n\n  if(!TABLES || !TABLES.length){ return; }\n\n  var allX = TABLES.map(function(t){ return t.x; });\n  var allY = TABLES.map(function(t){ return t.y; });\n  var minX = Math.min.apply(null, allX) - 120;\n  var maxX = Math.max.apply(null, allX) + 120;\n  var minY = Math.min.apply(null, allY) - 80;\n  var maxY = Math.max.apply(null, allY) + 180;\n\n  var scl = Math.min((W - 8) / (maxX - minX), 460 / (maxY - minY));\n  var H = Math.ceil((maxY - minY) * scl + 24);\n\n  cv.width  = W;\n  cv.height = H;\n  cv.style.width  = W + \'px\';\n  cv.style.height = H + \'px\';\n\n  function wx(x){ return (x - minX) * scl + 12; }\n  function wy(y){ return (y - minY) * scl + 12; }\n\n  // Background\n  ctx.fillStyle = \'#faf7f2\';\n  ctx.fillRect(0, 0, W, H);\n\n  // Grid\n  ctx.strokeStyle = \'rgba(184,146,74,.07)\';\n  ctx.lineWidth = 1;\n  for(var gx=0;gx<W;gx+=30){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();}\n  for(var gy=0;gy<H;gy+=30){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}\n\n  // Decor\n  DECORS.forEach(function(d){\n    var sx=wx(d.x),sy=wy(d.y),dw=d.w*scl,dh=d.h*scl;\n    var fill=\'#ede8f8\',stroke=\'#9080c0\';\n    if(d.type===\'bar\'){fill=\'#e0f0e8\';stroke=\'#3a7a54\';}\n    if(d.type===\'stage\'){fill=\'#f0e8d8\';stroke=\'#b8924a\';}\n    ctx.save();\n    ctx.beginPath();ctx.roundRect(sx-dw/2,sy-dh/2,dw,dh,4);\n    ctx.fillStyle=fill;ctx.fill();\n    ctx.strokeStyle=stroke;ctx.lineWidth=1.5;\n    ctx.setLineDash([5,3]);ctx.stroke();ctx.setLineDash([]);\n    ctx.font=\'bold \'+Math.max(7,Math.round(8*scl))+\'px sans-serif\';\n    ctx.fillStyle=stroke;ctx.textAlign=\'center\';ctx.textBaseline=\'middle\';\n    ctx.fillText(d.label,sx,sy);\n    ctx.restore();\n  });\n\n  // Mese\n  TABLES.forEach(function(tbl){\n    var isT = String(tbl.id)===String(g.tableId);\n    var sx=wx(tbl.x),sy=wy(tbl.y);\n    var tw=(tbl.tw||220)*scl, th=(tbl.th||65)*scl;\n    ctx.save();\n    ctx.shadowColor=\'rgba(0,0,0,.1)\';ctx.shadowBlur=4;\n    ctx.beginPath();ctx.roundRect(sx-tw/2,sy-th/2,tw,th,3);\n    ctx.fillStyle=isT?\'#fff3e8\':(tbl.miri?\'#fffcf0\':\'#fff\');\n    ctx.fill();ctx.shadowColor=\'transparent\';\n    ctx.strokeStyle=isT?\'#c03010\':(tbl.miri?\'#c9a84c\':\'#d0c4b0\');\n    ctx.lineWidth=isT?3:1;\n    if(tbl.miri)ctx.setLineDash([4,3]);\n    ctx.stroke();ctx.setLineDash([]);\n    ctx.font=(isT?\'bold \':\'\')+Math.max(6,Math.round(7.5*scl))+\'px sans-serif\';\n    ctx.fillStyle=isT?\'#c03010\':\'#7a6050\';\n    ctx.textAlign=\'center\';ctx.textBaseline=\'middle\';\n    ctx.fillText(tbl.name,sx,sy);\n    ctx.restore();\n  });\n\n  // Găsim masa țintă\n  var target = null;\n  for(var i=0;i<TABLES.length;i++){\n    if(String(TABLES[i].id)===String(g.tableId)){target=TABLES[i];break;}\n  }\n  if(!target){ return; }\n\n  // Linia roșie intrare → masă\n  var entX=(Math.min.apply(null,allX)+Math.max.apply(null,allX))/2;\n  var entY=maxY-100;\n  var ex=wx(entX), ey=wy(entY);\n  var tx=wx(target.x), ty=wy(target.y);\n  var midY2=wy((Math.min.apply(null,allY)+Math.max.apply(null,allY))/2);\n\n  ctx.save();\n  ctx.strokeStyle=\'#c03010\';ctx.lineWidth=3.5;\n  ctx.lineCap=\'round\';ctx.lineJoin=\'round\';\n  ctx.setLineDash([9,6]);\n  ctx.shadowColor=\'rgba(192,48,16,.4)\';ctx.shadowBlur=8;\n  ctx.beginPath();\n  ctx.moveTo(ex,ey);\n  ctx.bezierCurveTo(ex,ey-(ey-midY2)*0.5, tx,midY2, tx,ty+(target.th||65)*scl/2+4);\n  ctx.stroke();\n  ctx.setLineDash([]);ctx.shadowColor=\'transparent\';\n\n  // Dot verde intrare\n  ctx.beginPath();ctx.arc(ex,ey,8,0,Math.PI*2);\n  ctx.fillStyle=\'#1a3a2a\';ctx.fill();\n  ctx.strokeStyle=\'#c9a84c\';ctx.lineWidth=2.5;ctx.stroke();\n  ctx.beginPath();ctx.arc(ex,ey,4,0,Math.PI*2);\n  ctx.fillStyle=\'#c9a84c\';ctx.fill();\n\n  // Săgeată la masă\n  ctx.fillStyle=\'#c03010\';\n  ctx.beginPath();ctx.moveTo(tx,ty-14);ctx.lineTo(tx-8,ty-2);ctx.lineTo(tx+8,ty-2);\n  ctx.closePath();ctx.fill();\n\n  // Highlight masă\n  ctx.beginPath();ctx.arc(tx,ty,(target.th||65)*scl/2+10,0,Math.PI*2);\n  ctx.fillStyle=\'rgba(192,48,16,.1)\';ctx.fill();\n  ctx.strokeStyle=\'#c03010\';ctx.lineWidth=2.5;ctx.stroke();\n\n  // Label intrare\n  var lbl={ro:\'INTRARE\',en:\'ENTRANCE\',it:\'INGRESSO\'}[lang]||\'INTRARE\';\n  ctx.font=\'bold 10px sans-serif\';ctx.textAlign=\'center\';\n  var lw=ctx.measureText(\'▼ \'+lbl).width+18;\n  ctx.fillStyle=\'#c9a84c\';\n  ctx.beginPath();ctx.roundRect(ex-lw/2,ey+12,lw,19,3);ctx.fill();\n  ctx.fillStyle=\'#1a1a14\';ctx.fillText(\'▼ \'+lbl,ex,ey+23);\n\n  ctx.restore();\n}\nwindow.addEventListener(\'resize\', function(){\n  if(selG) setTimeout(function(){ drawMap(selG); }, 100);\n});\n\n// START\ninitPage();\nXSCEX\n</body>\n</html>\n';
+
+function exportGuestPage(){
+  if(guests.filter(function(g){return g.tableId!=null;}).length===0){
+    alert('Nu exista invitati asignati la mese. Asigneaza invitati inainte de export.');
+    return;
+  }
+  var guestData=guests.filter(function(g){return g.tableId!=null;}).map(function(g){
+    var t=tables.find(function(x){return x.id==g.tableId;});
+    return {name:g.name,table:t?t.name:'',tableId:g.tableId,seatIdx:g.seatIdx,menu:g.menu,cazare:g.cazare};
+  });
+  var tableData=tables.map(function(t){
+    return {id:t.id,name:t.name,x:t.x,y:t.y,
+      tw:t.tw!==undefined?t.tw:(t.miri?65:220),
+      th:t.th!==undefined?t.th:(t.miri?121:65),
+      miri:!!t.miri,seats:t.seats};
+  });
+  var decorData=decorElements.map(function(d){
+    return {type:d.type,x:d.x,y:d.y,w:d.w,h:d.h,label:d.label};
+  });
+  var G=JSON.stringify(guestData);
+  var T=JSON.stringify(tableData);
+  var D=JSON.stringify(decorData);
+  var SC='<'+'script>';
+  var SCE='</'+'script>';
+  function fix(s){return s.replace(/XSCX/g,SC).replace(/XSCEX/g,SCE);}
+  var html=fix(P1)+G+fix(P2)+T+fix(P3)+D+fix(P4);
+  // Deschidem în fereastră nouă direct (evitam Blob/download pe iOS)
+  var w=window.open('','_blank');
+  if(w){
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+  } else {
+    // Fallback: Blob download dacă popup blocat
+    var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='PassengerMap.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    alert('Fereastra a fost blocata. Fisierul a fost descarcat - deschide PassengerMap.html manual.');
+  }
+}
+
+
+function exportExcelTemplate(){
+  // Generate CSV cu BOM pentru Excel (suportă diacritice)
+  const MENU_MAP = {normal:'Normal',veg:'Vegetarian',vegan:'Vegan',copil:'Copil'};
+
+  const headers = ['Nume complet','Telefon','Meniu','Cazare','Masă','Observații','ID'];
+
+  // Existing guests
+  const existingRows = guests.map(g=>{
+    const t = g.tableId ? tables.find(x=>x.id===g.tableId) : null;
+    return [
+      g.name,
+      g.telefon||'',
+      MENU_MAP[g.menu]||'Normal',
+      g.cazare==='da'?'Da':'Nu',
+      t?t.name:'',
+      g.obs||'',
+      g.id
+    ];
+  });
+
+  // Empty rows
+  const emptyRows = Array.from({length:60},()=>['','','','','','','']);
+
+  const allRows = [headers, ...existingRows, ...emptyRows];
+
+  // Escape CSV cell
+  function esc(v){
+    const s=String(v??'');
+    return (s.includes(',') || s.includes('"') || s.includes('\n'))
+      ? '"'+s.replace(/"/g,'""')+'"' : s;
+  }
+
+  const csv = '\uFEFF' + allRows.map(r=>r.map(esc).join(',')).join('\r\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='invitatii-theo-dalia.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+
+
+// ══════════════════════════════════════════
+// RESET COMPLET
+// ══════════════════════════════════════════
+function confirmReset(){
+  if(!confirm('Ești sigur? Se vor șterge TOATE mesele, invitații și configurația salvată.')) return;
+  try{ localStorage.removeItem('mp10'); }catch(e){}
+  tables=[]; guests=[]; decorElements=[];
+  nextTid=1; nextGid=1; cityIdx=0;
+  sc=1; ox=0; oy=0;
+  initDefaultLayout();
+  renderGuests();
+  updateStats();
+  setTimeout(()=>{ fitView(); draw(); }, 50);
+}
+
+function initDefaultLayout(){
+  cityIdx=0;
+  const rowGap=TH_DEF+52;
+  const colGap=TW_DEF+55;
+  const rows=4;
+  const totalH=(rows-1)*rowGap;
+  const startY=-totalH/2;
+  const miriH=totalH+TH_DEF*2;
+  tables.push({id:nextTid++,name:'Roma',seats:4,x:-TH_DEF/2-30,y:0,miri:true,tw:TH_DEF,th:miriH});
+  const g1startX=80;
+  for(let col=0;col<4;col++){
+    for(let row=0;row<4;row++){
+      tables.push({id:nextTid++,name:nextCity(),seats:8,x:g1startX+col*colGap,y:startY+row*rowGap,miri:false});
+    }
+  }
+  const ringX=g1startX+4*colGap+120;
+  const ringW=190, ringH=260;
+  const stageH=100, barH=100, gap=20;
+  // Toate centrate pe ringX, stacked vertical
+  decorElements.push({type:'ring',  x:ringX, y:0,                                   w:ringW,   h:ringH,  label:'Ring dans'});
+  decorElements.push({type:'stage', x:ringX, y:-(ringH/2 + gap + stageH/2),         w:ringW,   h:stageH, label:'Scenă / Formație'});
+  decorElements.push({type:'bar',   x:ringX, y: (ringH/2 + gap + barH/2),           w:ringW,   h:barH,   label:'Bar'});
+  const g2startX=ringX+ringW/2+100;
+  for(let col=0;col<4;col++){
+    for(let row=0;row<4;row++){
+      tables.push({id:nextTid++,name:nextCity(),seats:8,x:g2startX+col*colGap,y:startY+row*rowGap,miri:false});
+    }
+  }
+}
+
+function fitView(){
+  if(!tables.length)return;
+  const xs=tables.map(t=>t.x),ys=tables.map(t=>t.y);
+  const minX=Math.min(...xs)-TW_DEF,maxX=Math.max(...xs)+TW_DEF;
+  const minY=Math.min(...ys)-TH_DEF*3,maxY=Math.max(...ys)+TH_DEF*3;
+  const scX=cv.width/(maxX-minX+120),scY=cv.height/(maxY-minY+100);
+  sc=Math.min(scX,scY,0.88);
+  ox=cv.width/2-((minX+maxX)/2)*sc;
+  oy=cv.height/2-((minY+maxY)/2)*sc;
+}
+
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar');
+  const btn = document.getElementById('sb-toggle');
+  const isCollapsed = sb.classList.toggle('collapsed');
+  btn.textContent = isCollapsed ? '▶' : '◀';
+  btn.style.left = isCollapsed ? '0px' : '255px';
+  setTimeout(() => resize(), 270);
+}
+
+// ══════════════════════════════════════════
+// PERSIST
+// ══════════════════════════════════════════
+function save(){try{localStorage.setItem('mp10',JSON.stringify({tables,guests,decorElements,nextTid,nextGid,cityIdx}));}catch{}}
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem('mp10'));
+    if(d){tables=d.tables||[];guests=d.guests||[];decorElements=d.decorElements||[];nextTid=d.nextTid||1;nextGid=d.nextGid||1;cityIdx=d.cityIdx||0;}
+  }catch{}
+}
+
+// ══════════════════════════════════════════
+// INIT — default layout
+// Masa mirilor: VERTICAL (narrow × tall), on the LEFT
+// 4 cols × 4 rows of horizontal tables → Ring → 4 cols × 4 rows
+// Stage above ring, Bar below ring
+// ══════════════════════════════════════════
+load();
+if(tables.length===0) initDefaultLayout();
+renderGuests();
+updateStats();
+setTimeout(()=>{ fitView(); draw(); }, 60);
+
+
+
+// ═══════════════════════════════════════════════════════
+// DATE — înlocuite automat la export din planul de mese
+// ═══════════════════════════════════════════════════════
+var GUESTS  = __GUESTS__;
+var TABLES  = __TABLES__;
+var DECORS  = __DECORS__;
+
+// ═══════════════════════════════════════════════════════
+// TRADUCERI
+// ═══════════════════════════════════════════════════════
+var ML = {
+  ro: {normal:'Normal',veg:'Vegetarian',vegan:'Vegan',copil:'Copil'},
+  en: {normal:'Normal',veg:'Vegetarian',vegan:'Vegan',copil:'Child'},
+  it: {normal:'Normale',veg:'Vegetariano',vegan:'Vegano',copil:'Bambino'}
+};
+var TT = {
+  ro: {
+    ttl:'Găsește-ți Locul', st:'Caută-ți locul la bord',
+    ss:'Introdu numele tău pentru a-ți găsi masa', ph:'ex: Ion Popescu',
+    nf:'Numele nu a fost găsit. Verifică ortografia.',
+    fl1:'MASĂ', fl2:'SCAUN', fl3:'MENIU',
+    mt:'✈ PLAN SALĂ · MOONFIELDS', mn:'NORD ↑',
+    el:' INTRARE SUD · ZONA COMO / CORTINA',
+    tk:'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AUGUST 2026 ✈ DESTINAȚIE: FERICIRE ✦ BOARDING NOW'
+  },
+  en: {
+    ttl:'Find Your Seat', st:'Find your seat on board',
+    ss:'Enter your name to find your table', ph:'e.g. John Smith',
+    nf:'Name not found. Please check the spelling.',
+    fl1:'TABLE', fl2:'SEAT', fl3:'MENU',
+    mt:'✈ HALL MAP · MOONFIELDS', mn:'NORTH ↑',
+    el:' SOUTH ENTRANCE · COMO / CORTINA AREA',
+    tk:'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AUGUST 2026 ✈ DESTINATION: HAPPINESS ✦ BOARDING NOW'
+  },
+  it: {
+    ttl:'Trova il Tuo Posto', st:'Trova il tuo posto a bordo',
+    ss:'Inserisci il tuo nome per trovare il tuo tavolo', ph:'es. Mario Rossi',
+    nf:'Nome non trovato. Controlla l\'ortografia.',
+    fl1:'TAVOLO', fl2:'POSTO', fl3:'MENU',
+    mt:'✈ MAPPA SALA · MOONFIELDS', mn:'NORD ↑',
+    el:' INGRESSO SUD · ZONA COMO / CORTINA',
+    tk:'✈ LOVE AIRLINES · DL&TH-23.08 ✦ MOONFIELDS · 23 AGOSTO 2026 ✈ DESTINAZIONE: FELICITÀ ✦ IMBARCO'
+  }
+};
+
+var lang = 'ro';
+var selG = null;
+var suggs = [];
+var sidx = -1;
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+function gi(id){ return document.getElementById(id); }
+
+function initPage(){
+  var t = TT[lang];
+  gi('tk1').textContent = t.tk;
+  gi('tk2').textContent = t.tk;
+  gi('si').placeholder  = t.ph;
+
+  // Debug info
+  gi('dbg').style.display = 'block';
+  gi('dbg').textContent = 'Invitati: ' + GUESTS.length + ' | Mese: ' + TABLES.length + ' | Decor: ' + DECORS.length;
+}
+
+// ═══════════════════════════════════════════════════════
+// LANGUAGE
+// ═══════════════════════════════════════════════════════
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('.lb').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('title') && b.getAttribute('title').toLowerCase().indexOf(l) >= 0
+      || (l==='ro' && b.title==='Română')
+      || (l==='en' && b.title==='English')
+      || (l==='it' && b.title==='Italiano'));
+  });
+  var t = TT[l];
+  ['ttl','st','ss','mt','mn','el'].forEach(function(k){ if(gi(k) && t[k]) gi(k).textContent = t[k]; });
+  gi('si').placeholder = t.ph;
+  gi('tk1').textContent = t.tk;
+  gi('tk2').textContent = t.tk;
+  if(selG) showBP(selG);
+}
+
+// ═══════════════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════════════
+function onS(v){
+  var q = v.trim().toLowerCase();
+  gi('nf').style.display = 'none';
+  if(q.length < 2){ hideSugg(); return; }
+
+  suggs = GUESTS.filter(function(g){
+    return g.name.toLowerCase().indexOf(q) >= 0;
+  }).slice(0, 8);
+  sidx = -1;
+
+  if(!suggs.length){
+    hideSugg();
+    if(q.length >= 3){
+      gi('nf').textContent = TT[lang].nf;
+      gi('nf').style.display = 'block';
+    }
+    return;
+  }
+
+  var box = gi('sg');
+  box.style.display = 'block';
+  box.innerHTML = suggs.map(function(g, i){
+    return '<div class="si" onclick="selAt(' + i + ')">' +
+           g.name +
+           '<div class="sit">Masa ' + g.table + '</div>' +
+           '</div>';
+  }).join('');
+}
+
+function onK(e){
+  var items = gi('sg').querySelectorAll('.si');
+  if(e.key === 'ArrowDown'){ sidx = Math.min(sidx+1, suggs.length-1); hilit(items); }
+  else if(e.key === 'ArrowUp'){ sidx = Math.max(sidx-1, 0); hilit(items); }
+  else if(e.key === 'Enter'){ selAt(sidx >= 0 ? sidx : 0); }
+}
+
+function hilit(items){
+  items.forEach(function(el, i){ el.classList.toggle('active', i === sidx); });
+  if(sidx >= 0) items[sidx].scrollIntoView({block:'nearest'});
+}
+
+function hideSugg(){ gi('sg').style.display = 'none'; suggs = []; }
+function doS(){ if(suggs.length) selAt(sidx >= 0 ? sidx : 0); }
+
+function selAt(i){
+  hideSugg();
+  var g = suggs[i];
+  if(!g) return;
+  selG = g;
+  gi('si').value = g.name;
+  gi('nf').style.display = 'none';
+
+  showBP(g);
+
+  // Arată harta
+  var mcEl = gi('mc');
+  mcEl.classList.add('show');
+  mcEl.style.display = 'block';
+
+  // Scroll la boarding pass
+  gi('bp').scrollIntoView({behavior:'smooth', block:'nearest'});
+
+  // Desenează harta cu delay pentru a lăsa browserul să rendereze
+  setTimeout(function(){
+    drawMap(g);
+  }, 200);
+}
+
+// ═══════════════════════════════════════════════════════
+// BOARDING PASS
+// ═══════════════════════════════════════════════════════
+function showBP(g){
+  var t = TT[lang];
+  gi('rn').textContent = g.name.split(' ')[0];
+  gi('rt').textContent = g.table;
+  gi('rs').textContent = '#' + (g.seatIdx + 1);
+  gi('rm').textContent = ML[lang][g.menu] || g.menu;
+  gi('fl1').textContent = t.fl1;
+  gi('fl2').textContent = t.fl2;
+  gi('fl3').textContent = t.fl3;
+
+  // Navigare
+  var tbl = null;
+  for(var i=0; i<TABLES.length; i++){
+    if(String(TABLES[i].id) === String(g.tableId)){
+      tbl = TABLES[i]; break;
+    }
+  }
+  if(tbl){
+    var allX = TABLES.filter(function(x){ return !x.miri; }).map(function(x){ return x.x; });
+    var allY = TABLES.filter(function(x){ return !x.miri; }).map(function(x){ return x.y; });
+    var midX = (Math.min.apply(null, allX) + Math.max.apply(null, allX)) / 2;
+    var midY = (Math.min.apply(null, allY) + Math.max.apply(null, allY)) / 2;
+    var sideMap = {ro: tbl.x < midX ? 'stânga' : 'dreapta',
+                   en: tbl.x < midX ? 'left' : 'right',
+                   it: tbl.x < midX ? 'sinistra' : 'destra'};
+    var depthMap = {ro: tbl.y < midY ? 'față' : 'spate',
+                    en: tbl.y < midY ? 'front' : 'back',
+                    it: tbl.y < midY ? 'fronte' : 'fondo'};
+    var navMap = {
+      ro: 'Intri pe ușa principală (sud) → mergi spre ' + sideMap.ro + ' → rândul din ' + depthMap.ro + ' → masa ' + g.table,
+      en: 'Enter the main door (south) → go ' + sideMap.en + ' → ' + depthMap.en + ' row → table ' + g.table,
+      it: 'Entra dalla porta principale (sud) → vai a ' + sideMap.it + ' → fila ' + depthMap.it + ' → tavolo ' + g.table
+    };
+    gi('rnav').textContent = navMap[lang];
+  }
+
+  gi('bp').classList.add('show');
+  gi('bp').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════
+// HARTA
+// ═══════════════════════════════════════════════════════
+function drawMap(g){
+  var cv = gi('mapCanvas');
+  var ctx = cv.getContext('2d');
+
+  // Lățime reală
+  var container = gi('mc');
+  var rect = container.getBoundingClientRect();
+  var W = Math.floor(rect.width);
+  if(!W || W < 50){
+    W = Math.min(window.innerWidth - 36, 520);
+  }
+
+  // Debug
+  gi('dbg').textContent = 'Map drawing: W=' + W + ' | tableId=' + g.tableId +
+    ' | TABLES=' + TABLES.length + ' | matching=' +
+    TABLES.filter(function(t){ return String(t.id) === String(g.tableId); }).length;
+
+  if(!TABLES || !TABLES.length){ return; }
+
+  // Bounds
+  var allX = TABLES.map(function(t){ return t.x; });
+  var allY = TABLES.map(function(t){ return t.y; });
+  var minX = Math.min.apply(null, allX) - 120;
+  var maxX = Math.max.apply(null, allX) + 120;
+  var minY = Math.min.apply(null, allY) - 80;
+  var maxY = Math.max.apply(null, allY) + 180;
+
+  var scale = Math.min((W - 24) / (maxX - minX), 460 / (maxY - minY));
+  var H = Math.ceil((maxY - minY) * scale + 24);
+
+  cv.width  = W;
+  cv.height = H;
+  cv.style.width  = W + 'px';
+  cv.style.height = H + 'px';
+
+  function wx(x){ return (x - minX) * scale + 12; }
+  function wy(y){ return (y - minY) * scale + 12; }
+
+  // Background
+  ctx.fillStyle = '#faf7f2';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(184,146,74,.07)';
+  ctx.lineWidth = 1;
+  for(var gx = 0; gx < W; gx += 30){ ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,H); ctx.stroke(); }
+  for(var gy = 0; gy < H; gy += 30){ ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(W,gy); ctx.stroke(); }
+
+  // Decor
+  DECORS.forEach(function(d){
+    var sx=wx(d.x), sy=wy(d.y), dw=d.w*scale, dh=d.h*scale;
+    var fill='#ede8f8', stroke='#9080c0';
+    if(d.type==='bar')  { fill='#e0f0e8'; stroke='#3a7a54'; }
+    if(d.type==='stage'){ fill='#f0e8d8'; stroke='#b8924a'; }
+    ctx.save();
+    ctx.beginPath(); ctx.roundRect(sx-dw/2, sy-dh/2, dw, dh, 4);
+    ctx.fillStyle = fill; ctx.fill();
+    ctx.strokeStyle = stroke; ctx.lineWidth = 1.5;
+    ctx.setLineDash([5,3]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font = 'bold ' + Math.max(7, Math.round(8*scale)) + 'px sans-serif';
+    ctx.fillStyle = stroke; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(d.label, sx, sy);
+    ctx.restore();
+  });
+
+  // Mese
+  TABLES.forEach(function(t){
+    var isT = String(t.id) === String(g.tableId);
+    var sx=wx(t.x), sy=wy(t.y);
+    var tw=(t.tw||220)*scale, th=(t.th||65)*scale;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.1)'; ctx.shadowBlur = 4;
+    ctx.beginPath(); ctx.roundRect(sx-tw/2, sy-th/2, tw, th, 3);
+    ctx.fillStyle = isT ? '#fff3e8' : (t.miri ? '#fffcf0' : '#fff');
+    ctx.fill(); ctx.shadowColor = 'transparent';
+    ctx.strokeStyle = isT ? '#c03010' : (t.miri ? '#c9a84c' : '#d0c4b0');
+    ctx.lineWidth = isT ? 3 : 1;
+    if(t.miri) ctx.setLineDash([4,3]);
+    ctx.stroke(); ctx.setLineDash([]);
+    var fs = Math.max(6, Math.round(7.5*scale));
+    ctx.font = (isT ? 'bold ' : '') + fs + 'px sans-serif';
+    ctx.fillStyle = isT ? '#c03010' : '#7a6050';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(t.name, sx, sy);
+    ctx.restore();
+  });
+
+  // Găsim masa țintă
+  var tbl = null;
+  for(var i=0; i<TABLES.length; i++){
+    if(String(TABLES[i].id) === String(g.tableId)){
+      tbl = TABLES[i]; break;
+    }
+  }
+  if(!tbl){
+    ctx.fillStyle = 'red'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Masa nu a fost gasita (id:' + g.tableId + ')', W/2, H/2);
+    return;
+  }
+
+  // Linia roșie intrare → masă
+  var entX = (Math.min.apply(null, allX) + Math.max.apply(null, allX)) / 2;
+  var entY = maxY - 100;
+  var ex = wx(entX), ey = wy(entY);
+  var tx = wx(tbl.x), ty = wy(tbl.y);
+  var midY2 = wy((Math.min.apply(null, allY) + Math.max.apply(null, allY)) / 2);
+
+  ctx.save();
+  ctx.strokeStyle = '#c03010';
+  ctx.lineWidth = 3.5;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.setLineDash([9, 6]);
+  ctx.shadowColor = 'rgba(192,48,16,.4)'; ctx.shadowBlur = 8;
+  ctx.beginPath();
+  ctx.moveTo(ex, ey);
+  ctx.bezierCurveTo(ex, ey-(ey-midY2)*0.5, tx, midY2, tx, ty+(tbl.th||65)*scale/2+4);
+  ctx.stroke();
+  ctx.setLineDash([]); ctx.shadowColor = 'transparent';
+
+  // Dot verde la intrare
+  ctx.beginPath(); ctx.arc(ex, ey, 8, 0, Math.PI*2);
+  ctx.fillStyle = '#1a3a2a'; ctx.fill();
+  ctx.strokeStyle = '#c9a84c'; ctx.lineWidth = 2.5; ctx.stroke();
+  ctx.beginPath(); ctx.arc(ex, ey, 4, 0, Math.PI*2);
+  ctx.fillStyle = '#c9a84c'; ctx.fill();
+
+  // Săgeată la masă
+  ctx.fillStyle = '#c03010';
+  ctx.beginPath();
+  ctx.moveTo(tx, ty-14); ctx.lineTo(tx-8, ty-2); ctx.lineTo(tx+8, ty-2);
+  ctx.closePath(); ctx.fill();
+
+  // Highlight masă
+  ctx.beginPath(); ctx.arc(tx, ty, (tbl.th||65)*scale/2+10, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(192,48,16,.1)'; ctx.fill();
+  ctx.strokeStyle = '#c03010'; ctx.lineWidth = 2.5; ctx.stroke();
+
+  // Label intrare
+  var lbl = {ro:'INTRARE', en:'ENTRANCE', it:'INGRESSO'}[lang] || 'INTRARE';
+  ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+  var lw = ctx.measureText('▼ ' + lbl).width + 18;
+  ctx.fillStyle = '#c9a84c';
+  ctx.beginPath(); ctx.roundRect(ex - lw/2, ey+12, lw, 19, 3); ctx.fill();
+  ctx.fillStyle = '#1a1a14'; ctx.fillText('▼ ' + lbl, ex, ey+23);
+
+  ctx.restore();
+}
+
+window.addEventListener('resize', function(){
+  if(selG) setTimeout(function(){ drawMap(selG); }, 100);
+});
+
+// START
+initPage();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 </body>
 </html>
